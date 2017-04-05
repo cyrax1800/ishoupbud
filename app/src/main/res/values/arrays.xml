@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="bottom_navigation_title">
+        <item>Home</item>
+        <item>Wishlist</item>
+        <item>Transaction</item>
+        <item>Account</item>
+    </string-array>
+</resources>

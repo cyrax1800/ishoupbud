@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.project.ishoupbud.view.activities.MainActivity">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bb_height"
+        >
+    </FrameLayout>
+
+    <com.roughike.bottombar.BottomBar
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        app:bb_tabXmlResource="@xml/bottombar_tab"
+        app:bb_activeTabColor="@color/colorPrimary"
+        app:bb_showShadow="false"
+        />
+
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:id="@+id/floating_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:floatingSearch_searchHint="Search..."
+        app:floatingSearch_suggestionsListAnimDuration="250"
+        app:floatingSearch_showSearchKey="false"
+        app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_menu="@menu/menu_main"
+        />
+</RelativeLayout>
