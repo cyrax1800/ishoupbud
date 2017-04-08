@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/item_space"
+        android:layout_marginBottom="@dimen/item_space"
+        android:text="Alamat"
+        style="@style/ishoupbud_text_black"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Position"
+        style="@style/btn_flat_brown"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/item_space"
+        android:layout_marginBottom="@dimen/item_space"
+        android:text="DetailSpesific"
+        style="@style/ishoupbud_text_black"
+        />
+
+    <EditText
+        android:id="@+id/df_review_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="3"
+        android:gravity="top"
+        style="@style/box_edittext"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/item_space"
+        android:layout_marginBottom="@dimen/item_space"
+        android:text="ETA\nCourier Service \nTotal :\n Current Balance"
+        style="@style/ishoupbud_text_black"
+        />
+
+</LinearLayout>

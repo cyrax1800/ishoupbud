@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    >
+
+    <Spinner
+        android:id="@+id/spinner_vendor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/item_space"
+        style="@style/spinner_style"
+        />
+
+    <RatingBar
+        android:id="@+id/df_review_rating_star"
+        android:theme="@style/RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/item_space"
+        android:numStars="5"
+        android:max="5"
+        android:rating="0"
+        android:stepSize="1"
+        />
+
+    <EditText
+        android:id="@+id/df_review_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="3"
+        android:gravity="top"
+        style="@style/box_edittext"
+        />
+
+</LinearLayout>

@@ -6,7 +6,7 @@
     android:padding="@dimen/activity_horizontal_margin"
     style="@style/product_card"
     >
-    
+
     <ImageView
         android:id="@+id/iv_review"
         android:layout_width="40dp"
@@ -14,7 +14,7 @@
         android:src="@drawable/ic_person"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         />
-    
+
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -50,34 +50,6 @@
             style="@style/review_desc"
             />
 
-        <TextView
-            android:id="@+id/tv_review_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="March 12, 2017"
-            style="@style/review_desc"
-            />
-
-        <TextView
-            android:id="@+id/tv_review_sentiment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/tv_review_date"
-            android:text="Not Recommended"
-            style="@style/review_desc"
-            />
-        
     </RelativeLayout>
-
-    <ImageButton
-        android:id="@+id/own_ib_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_flag"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:background="@null"
-        />
 
 </LinearLayout>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include layout="@layout/app_bar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/item_space"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/comingsoon"
+                    android:layout_marginBottom="@dimen/item_space"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_card_product_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingLeft="@dimen/item_space"
+                    android:paddingRight="@dimen/item_space"
+                    style="@style/product_card_title"
+                    android:text="One Finger"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_card_product_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:maxLines="1"
+                    style="@style/product_card_price"
+                    android:paddingLeft="@dimen/item_space"
+                    android:paddingRight="@dimen/item_space"
+                    android:text="Rp. 10.000"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/item_space"
+                    android:paddingRight="@dimen/item_space"
+                    >
+
+                    <RatingBar
+                        android:id="@+id/rating_bar_card_product"
+                        android:theme="@style/RatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:rating="2.4"
+                        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_rate_value_card_product"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(3)"
+                        android:paddingLeft="@dimen/item_space"
+                        style="@style/product_card_title"
+                        />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="Details"
+                    style="@style/ishoupbud_title_text"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="asdsadsadsadasd"
+                    style="@style/ishoupbud_text_black"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="Reviews"
+                    style="@style/ishoupbud_title_text"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@drawable/bb_divider"
+                />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                >
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/comingsoon"
+                    android:layout_marginBottom="@dimen/item_space"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="2"
+                    android:maxLines="2"
+                    android:paddingLeft="@dimen/item_space"
+                    android:paddingRight="@dimen/item_space"
+                    style="@style/product_card_title"
+                    android:text="One Finger"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:maxLines="1"
+                    style="@style/product_card_price"
+                    android:paddingLeft="@dimen/item_space"
+                    android:paddingRight="@dimen/item_space"
+                    android:text="Rp. 10.000"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/item_space"
+                    android:paddingRight="@dimen/item_space"
+                    >
+
+                    <RatingBar
+                        android:theme="@style/RatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:rating="2.4"
+                        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(3)"
+                        android:paddingLeft="@dimen/item_space"
+                        style="@style/product_card_title"
+                        />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="Details"
+                    style="@style/ishoupbud_title_text"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="asdsadsadsadasd"
+                    style="@style/ishoupbud_text_black"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="Reviews"
+                    style="@style/ishoupbud_title_text"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

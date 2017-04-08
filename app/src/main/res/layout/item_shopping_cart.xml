@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin"
+    style="@style/product_card"
+    >
+
+    <ImageView
+        android:id="@+id/iv_transaction"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/comingsoon"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/tv_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Transaction"
+            android:layout_marginBottom="@dimen/item_space"
+            style="@style/review_name"
+            />
+
+        <TextView
+            android:id="@+id/tv_product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_product_name"
+            android:layout_marginBottom="@dimen/item_space"
+            android:text="Rp. 12312312"
+            style="@style/product_card_price"
+            />
+
+        <TextView
+            android:id="@+id/tv_review_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hypermart"
+            android:layout_below="@+id/tv_product_price"
+            style="@style/review_desc"
+            />
+
+        <ImageButton
+            android:id="@+id/ib_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete"
+            android:layout_alignParentEnd="true"
+            android:background="@null"
+            />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/ib_delete"
+            >
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_up"
+                style="@style/btn_stepper"
+                />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:minEms="3"
+                android:inputType="number"
+                android:text="1"
+                style="@style/edit_text_stepper"
+                />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_arrow_down"
+                style="@style/btn_stepper"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     >
 
-    <include layout="@layout/main_app_bar"/>
+    <include layout="@layout/app_bar"/>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -20,14 +21,37 @@
             android:layout_height="match_parent"
             >
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/item_space"
+                android:text="Categories"
+                style="@style/btnFlat"
+                android:layout_gravity="center_horizontal"
+                />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_wishlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/item_space">
+                android:paddingTop="@dimen/item_space"
+                >
 
             </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_height="56dp"
+        android:layout_width="56dp"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ic_arrow_move_up"
+        app:layout_anchor="@id/nestedScroll"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/light_green"
+        />
+
 </android.support.design.widget.CoordinatorLayout>
