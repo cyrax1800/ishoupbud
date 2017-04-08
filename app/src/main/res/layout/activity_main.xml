@@ -28,6 +28,13 @@
         app:bb_showShadow="false"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@+id/bottomBar"
+        android:background="@drawable/bb_divider"
+        />
+
     <com.arlib.floatingsearchview.FloatingSearchView
         android:id="@+id/floating_search_view"
         android:layout_width="match_parent"

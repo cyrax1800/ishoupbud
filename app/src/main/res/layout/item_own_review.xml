@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/item_space"
+    android:layout_marginBottom="@dimen/item_space"
+    style="@style/product_card"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/item_space"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/item_space"
+            android:text="My Review"
+            style="@style/ishoupbud_title_text"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/item_space"
+            android:layout_marginStart="@dimen/item_space"
+            android:src="@drawable/ic_delete"
+            android:background="@drawable/rounded_corner"
+            />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/item_space"
+            android:src="@drawable/ic_edit"
+            android:background="@drawable/rounded_corner"
+            />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/item_space"
+        >
+
+        <ImageView
+            android:id="@+id/iv_review"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_person"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/tv_review_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ProfileName"
+                style="@style/review_name"
+                />
+
+            <RatingBar
+                android:id="@+id/rating_bar_review"
+                android:theme="@style/RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_review_name"
+                android:numStars="5"
+                android:rating="2.4"
+                style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                />
+
+            <TextView
+                android:id="@+id/tv_review_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="asdasdsad"
+                android:layout_below="@+id/rating_bar_review"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                style="@style/review_desc"
+                />
+
+            <TextView
+                android:id="@+id/tv_review_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="March 12, 2017"
+                style="@style/review_desc"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

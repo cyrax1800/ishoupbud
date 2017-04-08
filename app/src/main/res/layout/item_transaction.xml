@@ -6,15 +6,15 @@
     android:padding="@dimen/activity_horizontal_margin"
     style="@style/product_card"
     >
-    
+
     <ImageView
-        android:id="@+id/iv_review"
+        android:id="@+id/iv_transaction"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_person"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         />
-    
+
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,40 +22,28 @@
         android:orientation="vertical"
         >
         <TextView
-            android:id="@+id/tv_review_name"
+            android:id="@+id/tv_no_transaction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ProfileName"
+            android:text="No Transaction"
             style="@style/review_name"
-            />
-
-        <RatingBar
-            android:id="@+id/rating_bar_review"
-            android:theme="@style/RatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_review_name"
-            android:numStars="5"
-            android:rating="2.4"
-            style="@style/Base.Widget.AppCompat.RatingBar.Small"
-            />
-
-        <TextView
-            android:id="@+id/tv_review_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="asdasdsad"
-            android:layout_below="@+id/rating_bar_review"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            style="@style/review_desc"
             />
 
         <TextView
             android:id="@+id/tv_review_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/tv_no_transaction"
             android:text="March 12, 2017"
+            style="@style/review_desc"
+            />
+
+        <TextView
+            android:id="@+id/tv_review_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hypermart"
+            android:layout_below="@+id/tv_review_date"
             style="@style/review_desc"
             />
 
@@ -64,20 +52,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/tv_review_date"
-            android:text="Not Recommended"
-            style="@style/review_desc"
+            android:text="Rp. 12312312"
+            style="@style/product_card_price"
             />
-        
-    </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/own_ib_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_favorite"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:background="@null"
-        />
+    </RelativeLayout>
 
 </LinearLayout>

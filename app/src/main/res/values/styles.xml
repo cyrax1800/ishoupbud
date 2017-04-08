@@ -31,6 +31,17 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
+    <style name="btnProfile">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/profile_button</item>
+        <item name="android:textAlignment">2</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="btnBorder" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/light_green</item>
         <item name="android:background">@drawable/rounded_corner</item>
@@ -41,6 +52,13 @@
     <style name="btnFlat" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/flat_button_corner</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="btn_flat_brown" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/flat_button_corner_brown</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
@@ -70,12 +88,6 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="review_date">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/dark_green</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="review_desc">
         <item name="android:textSize">12sp</item>
     </style>
@@ -91,5 +103,38 @@
     <style name="ishoupbud_text_link" parent="ishoupbud_text">
         <item name="android:textColor">@color/blue</item>
     </style>
+
+    <style name="ishoupbud_title_text">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="btn_stepper" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/light_green</item>
+        <item name="android:background">@drawable/flat_button_corner</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
+    <style name="edit_text_stepper" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/stepper_background</item>
+        <item name="android:layout_height">60dp</item>
+    </style>
+
+    <style name="btn_flat_brown_no_capes" parent="btn_flat_brown">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="spinner_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/gradient_spinner</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:popupBackground">#DFFFFFFF</item>
+    </style>
+
 
 </resources>

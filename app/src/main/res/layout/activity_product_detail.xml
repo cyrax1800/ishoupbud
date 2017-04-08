@@ -6,17 +6,23 @@
     android:layout_height="match_parent"
     >
 
-    <include layout="@layout/main_app_bar"/>
+    <include layout="@layout/collapsing_app_bar"/>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/item_space"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
 
         <LinearLayout
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <include layout="@layout/layout_product_detail"/>
 
             <android.support.design.widget.TabLayout
                 app:tabGravity="fill"
@@ -34,6 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
 </android.support.design.widget.CoordinatorLayout>

@@ -15,14 +15,17 @@
         >
 
         <LinearLayout
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
 
-            <TextView
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_wishlist"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="wishlist"
-                />
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

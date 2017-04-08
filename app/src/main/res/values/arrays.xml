@@ -6,4 +6,10 @@
         <item>Transaction</item>
         <item>Account</item>
     </string-array>
+
+    <string-array name="review_sort_array">
+        <item>Newest</item>
+        <item>Highest rating</item>
+        <item>Lowest rating</item>
+    </string-array>
 </resources>

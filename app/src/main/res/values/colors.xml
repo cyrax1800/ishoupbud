@@ -15,6 +15,8 @@
     <color name="dark_green">#6c8784</color>
     <color name="light_green">#7bb0a6</color>
     <color name="brown">#45362E</color>
+    <color name="light_brown">#3E4651</color>
+    <color name="ripple_brown">#6F532A</color>
     <color name="ripple_button_border">@color/cyan</color>
     <color name="ripple_flat_button">#557780</color>
 </resources>

@@ -21,13 +21,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="btnCustom">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@color/colorAccent</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-    </style>
-
     <style name="btnBorder" parent="Widget.AppCompat.Button.Borderless">
         <!--<item name="android:textColor">@drawable/border_button_text_color</item>-->
         <item name="android:textColor">@color/colorPrimary</item>
