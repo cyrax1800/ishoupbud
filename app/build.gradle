@@ -34,6 +34,8 @@ dependencies {
     compile 'com.github.arimorty:floatingsearchview:2.0.3'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'info.hoang8f:android-segmented:1.0.6'
+    compile "com.google.android.gms:play-services-vision:${rootProject.googlePlayServicesVersion}"
+    compile "com.google.android.gms:play-services-location:${rootProject.googlePlayServicesVersion}"
 
     testCompile 'junit:junit:4.12'
 }

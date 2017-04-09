@@ -23,6 +23,7 @@
             >
 
             <Button
+                android:id="@+id/btn_categories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/item_space"
@@ -46,6 +47,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_see_all_new"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="See All"
@@ -57,6 +59,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_new_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_space"
@@ -80,6 +83,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_see_all_promo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="See All"
@@ -91,6 +95,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_promo_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_space"
@@ -114,6 +119,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_see_all_popular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="See All"
@@ -125,6 +131,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_popular_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_space"
@@ -138,6 +145,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_barcode"
         android:layout_height="56dp"
         android:layout_width="56dp"
         android:layout_margin="@dimen/activity_horizontal_margin"

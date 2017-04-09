@@ -23,6 +23,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 /**
  * This class contains static utility methods.
@@ -243,5 +246,15 @@ public class Utils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static int random(int from, int to){
+        return from + ((int) Math.floor(Math.random() * (to - from)));
+    }
+
+    public static double randomFloat(double from, double to, int precision){
+        double randomNumber = (Math.random() * (to - from));
+        double scaleRes = new BigDecimal(randomNumber).setScale(precision, RoundingMode.HALF_EVEN).doubleValue();
+        return from + scaleRes;
     }
 }

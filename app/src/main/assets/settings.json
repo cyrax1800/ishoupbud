@@ -2,7 +2,7 @@
     "usingRealmDatabase": false,
     "realmDatabaseName": "ishoupbud",
     "realmDatabaseSchemaVersion": 0,
-    "usingSharedPreference": false,
+    "usingSharedPreference": true,
     "sharedPreferenceName": "ishoupbud",
     "usingRetrofitAPI": false,
     "retrofitAPIUrl": "http://localhost/"

@@ -1,5 +1,6 @@
 package com.project.michael.base.views;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import io.realm.Realm;
 public class BaseActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = "tmp-Activity";
     private Realm realm;
+
+    protected ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -42,6 +45,17 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     public void changeActivityForResult(Context context, Class clazz, int requestCode){
         Intent i = new Intent(context,clazz);
         startActivityForResult(i,requestCode);
+    }
+
+    public void initProgressDialog(String message){
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(message);
+    }
+
+    public void initProgressDialog(String title, String message){
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(title);
+        progressDialog.setMessage(message);
     }
 
     @Override

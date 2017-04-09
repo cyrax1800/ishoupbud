@@ -33,7 +33,8 @@ public class PermissionsUtils {
     public static Boolean isPermissionGranted(Activity activity, String[] permission, boolean requestIfNotGranted){
         if(checkSelfPermission(activity,permission)){
             if(requestIfNotGranted){
-                requestPermissions(activity, permission, getRequestCode(permission));
+//                requestPermissions(activity, permission, getRequestCode(permission));
+                shouldShowRequestPermission(activity, permission);
             }
         }else {
             return true;

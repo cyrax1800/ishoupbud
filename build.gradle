@@ -28,7 +28,7 @@ task clean(type: Delete) {
 ext {
     compileSdkVersion = 25
     buildToolsVersion = "25.0.2"
-    googlePlayServicesVersion = '9.0.2'
+    googlePlayServicesVersion = '10.2.1'
     supportLibraryVersion = '25.3.0'
     butterKnifeVersion = '8.5.1'
     retrofitVersion = '2.1.0'

@@ -34,5 +34,6 @@ public class BaseApplication extends Application {
 
         if(Settings.isUsingRetrofitAPI())
             APIManager.SetUpRetrofit();
+
     }
 }

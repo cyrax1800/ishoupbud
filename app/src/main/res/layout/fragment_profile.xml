@@ -13,57 +13,112 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@color/white"
+        android:fillViewport="true"
         >
 
-        <LinearLayout
-            android:orientation="vertical"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <include layout="@layout/item_top_profile"/>
-
-            <View
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
+            <LinearLayout
+                android:id="@+id/container_profile"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:background="@drawable/bb_divider"
-                />
+                android:layout_height="match_parent">
 
-            <Button
+                <include layout="@layout/item_top_profile"/>
+
+                <View
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@drawable/bb_divider"
+                    />
+
+                <Button
+                    android:id="@+id/btn_edit_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Profile"
+                    android:drawableEnd="@drawable/ic_right_arrow_24"
+                    style="@style/btnProfile"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@drawable/bb_divider"
+                    />
+
+                <Button
+                    android:id="@+id/btn_change_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Change Password"
+                    android:drawableEnd="@drawable/ic_right_arrow_24"
+                    style="@style/btnProfile"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@drawable/bb_divider"
+                    />
+
+                <Button
+                    android:id="@+id/btn_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Logout"
+                    style="@style/btnProfile"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_not_logged_in"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edit Profile"
-                android:drawableEnd="@drawable/ic_right_arrow_24"
-                style="@style/btnProfile"
-                />
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_gravity="center"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Already has account?"
+                    android:layout_marginBottom="@dimen/item_space"
+                    style="@style/ishoupbud_title_text"
+                    android:gravity="center"
+                    />
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="Login"
+                    style="@style/btn_flat_full"
+                    />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:background="@drawable/bb_divider"
-                />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Not have any account?"
+                    android:layout_marginBottom="@dimen/item_space"
+                    style="@style/ishoupbud_title_text"
+                    android:gravity="center"
+                    />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Change Password"
-                android:drawableEnd="@drawable/ic_right_arrow_24"
-                style="@style/btnProfile"
-                />
+                <Button
+                    android:id="@+id/btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Register"
+                    style="@style/btnBorder"
+                    />
+            </LinearLayout>
+        </FrameLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dip"
-                android:background="@drawable/bb_divider"
-                />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                style="@style/btnProfile"
-                />
-        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

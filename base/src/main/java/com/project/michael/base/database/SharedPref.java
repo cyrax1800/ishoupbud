@@ -21,10 +21,10 @@ public class SharedPref {
     private SharedPreferences.Editor editor;
 
     public void SetUpSharedPreference(Context context){
-        if(Settings.getRealmDatabaseName().isEmpty())
+        if(Settings.getSharedPreferenceName().isEmpty())
             throw new ExceptionInInitializerError("sharedPreferenceName must be define in Settings.json file");
 
-        sharedpreferences = context.getSharedPreferences(Settings.getRealmDatabaseName(),Context.MODE_PRIVATE);
+        sharedpreferences = context.getSharedPreferences(Settings.getSharedPreferenceName(),Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
     }
 
@@ -63,9 +63,10 @@ public class SharedPref {
     public static SharedPref getInstance(){
         if(mInstance == null){
             mInstance = new SharedPref();
+        }else{
+            if(mInstance.sharedpreferences == null)
+                throw new NullPointerException("sharedPreference has not defined");
         }
-        if(mInstance.sharedpreferences == null)
-            throw new NullPointerException("sharedPreference has not defined");
         return mInstance;
     }
 }

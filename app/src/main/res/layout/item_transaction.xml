@@ -30,7 +30,7 @@
             />
 
         <TextView
-            android:id="@+id/tv_review_date"
+            android:id="@+id/tv_transcation_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_no_transaction"
@@ -39,16 +39,16 @@
             />
 
         <TextView
-            android:id="@+id/tv_review_description"
+            android:id="@+id/tv_transaction_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hypermart"
-            android:layout_below="@+id/tv_review_date"
+            android:layout_below="@+id/tv_transcation_date"
             style="@style/review_desc"
             />
 
         <TextView
-            android:id="@+id/tv_review_sentiment"
+            android:id="@+id/tv_transaction_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

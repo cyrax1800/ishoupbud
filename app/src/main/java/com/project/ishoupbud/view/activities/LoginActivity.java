@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.utils.ValidationUtils;
 import com.project.michael.base.views.BaseActivity;
 
@@ -73,6 +74,11 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
+
+        if(getIntent().hasExtra(ConstClass.REGISTER_EXTRA)){
+            Intent i = new Intent(getApplicationContext(),RegisterActivity.class);
+            startActivity(i);
+        }
     }
 
     public boolean validation(){

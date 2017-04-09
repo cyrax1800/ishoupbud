@@ -14,7 +14,7 @@ import io.realm.Realm;
  * Created by michael on 1/29/17.
  */
 
-public class BaseFragment extends Fragment {
+public class BaseFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = "tmp-Fragment";
     private Realm realm;
     protected View _rootView;
@@ -31,5 +31,10 @@ public class BaseFragment extends Fragment {
         super.onDestroy();
         if(Settings.isUsingRealmDatabase())
             realm.close();
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

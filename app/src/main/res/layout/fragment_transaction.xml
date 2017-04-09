@@ -15,10 +15,11 @@
         >
 
         <LinearLayout
-            android:orientation="vertical" android:layout_width="match_parent"
+            android:orientation="vertical" android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
             <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout_transaction"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
                 app:tabIndicatorColor="@color/colorPrimary"
@@ -26,11 +27,10 @@
                 app:tabTextColor="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/tab_background"
-                android:id="@+id/tab_layout" />
+                android:background="@drawable/tab_background"/>
 
             <android.support.v4.view.ViewPager
-                android:id="@+id/view_pager"
+                android:id="@+id/view_pager_transaction"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
