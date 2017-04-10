@@ -8,10 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Transaction;
+import com.project.ishoupbud.helper.InsetDividerItemDecoration;
 import com.project.ishoupbud.view.adapters.TransactionAdapter;
 import com.project.michael.base.views.BaseFragment;
 
@@ -24,8 +24,7 @@ import butterknife.ButterKnife;
 
 public class CompleteTransactionFragment extends BaseFragment {
 
-    @BindView(R.id.rv_transaction_complete)
-    RecyclerView rvTransaction;
+    @BindView(R.id.rv_transaction) RecyclerView rvTransaction;
 
     TransactionAdapter<Transaction> transactionAdapter;
 
@@ -33,7 +32,7 @@ public class CompleteTransactionFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(this._rootView == null) {
-            _rootView = inflater.inflate(R.layout.fragment_transaction_complete, container, false);
+            _rootView = inflater.inflate(R.layout.fragment_list_transaction, container, false);
 
             ButterKnife.bind(this, _rootView);
 
@@ -42,6 +41,7 @@ public class CompleteTransactionFragment extends BaseFragment {
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
 
+            rvTransaction.addItemDecoration(new InsetDividerItemDecoration(getContext()));
             rvTransaction.setLayoutManager(layoutManager);
             rvTransaction.setAdapter(transactionAdapter);
         }
@@ -49,10 +49,6 @@ public class CompleteTransactionFragment extends BaseFragment {
         return _rootView;
     }
     
-    public void refresh(){
-        Log.d(TAG, "refresh: ");
-    }
-
     public static CompleteTransactionFragment newInstance() {
 
         Bundle args = new Bundle();

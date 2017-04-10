@@ -47,9 +47,7 @@ public class TransactionFragment extends BaseFragment {
                 @Override
                 public void onPageSelected(int position) {
                     if (position == 0) {
-                        transactionAdapter.pendingTransactionFragment.refresh();
                     } else if (position == 1) {
-                        transactionAdapter.completeTransactionFragment.refresh();
                     }
                 }
 
@@ -61,8 +59,6 @@ public class TransactionFragment extends BaseFragment {
             tabLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "run: ");
-                    transactionAdapter.notifyDataSetChanged();
                     tabLayout.setupWithViewPager(viewPager);
                 }
             });

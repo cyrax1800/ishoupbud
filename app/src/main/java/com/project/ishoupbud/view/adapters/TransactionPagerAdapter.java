@@ -12,7 +12,7 @@ import com.project.ishoupbud.view.fragment.PendingTransactionFragment;
  * Created by michael on 4/9/17.
  */
 
-public class TransactionPagerAdapter extends FragmentPagerAdapter {
+public class TransactionPagerAdapter extends FragmentStatePagerAdapter {
 
     private static final int pages_count = 2;
 
@@ -42,7 +42,7 @@ public class TransactionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return pages_count;
     }
 
     @Override
