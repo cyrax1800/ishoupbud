@@ -19,4 +19,5 @@
     <color name="ripple_brown">#6F532A</color>
     <color name="ripple_button_border">@color/cyan</color>
     <color name="ripple_flat_button">#557780</color>
+    <color name="background_holo_light">#EEEEEE</color>
 </resources>

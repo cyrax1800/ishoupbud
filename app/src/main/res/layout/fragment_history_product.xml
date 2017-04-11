@@ -3,8 +3,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/item_space"
     >
 
@@ -13,8 +11,8 @@
         android:id="@+id/spinner_vendor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        style="@style/spinner_style"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
         />
 
     <info.hoang8f.android.segmented.SegmentedGroup
@@ -26,6 +24,7 @@
         android:orientation="horizontal"
         segmentedgroup:sc_border_width="2dp"
         segmentedgroup:sc_corner_radius="10dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_gravity="right"
         >
 
@@ -54,6 +53,8 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="250dp" />
+        android:layout_height="250dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin" />
 
 </LinearLayout>

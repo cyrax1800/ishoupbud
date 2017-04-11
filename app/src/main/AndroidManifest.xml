@@ -50,6 +50,9 @@
         <activity android:name=".view.activities.ScanBarcodeActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".view.activities.ProductActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

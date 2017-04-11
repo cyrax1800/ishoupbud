@@ -140,7 +140,7 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="spinner_style">
+    <style name="spinner_style" parent="@style/Widget.AppCompat.DropDownItem.Spinner">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/gradient_spinner</item>
@@ -153,6 +153,10 @@
 
     <style name="box_edittext">
         <item name="android:background">@drawable/edit_text_box</item>
+    </style>
+
+    <style name="ToolbarColoredBackArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/black</item>
     </style>
 
 

@@ -3,17 +3,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/item_space"
     >
 
     <include layout="@layout/item_own_review"/>
 
     <Button
+        android:id="@+id/btn_write_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Write a Review"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         style="@style/btn_flat_brown_no_capes"
         />
 
@@ -21,6 +22,8 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="@dimen/item_space"
         android:weightSum="2"
         >
@@ -30,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
             android:layout_marginEnd="8dp"
-            style="@style/spinner_style"
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:entries="@array/review_sort_array"
             />
 
@@ -40,13 +43,15 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight=".8"
-            style="@style/spinner_style"
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_review"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
     </android.support.v7.widget.RecyclerView>
 

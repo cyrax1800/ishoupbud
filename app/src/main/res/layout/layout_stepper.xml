@@ -8,14 +8,16 @@
     >
 
     <ImageButton
+        android:id="@+id/btn_minus_stepper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_arrow_up"
+        android:src="@drawable/ic_arrow_down"
         style="@style/btn_stepper"
         />
 
     <EditText
+        android:id="@+id/et_stepper_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -26,10 +28,11 @@
         />
 
     <ImageButton
+        android:id="@+id/btn_plus_stepper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_arrow_down"
+        android:src="@drawable/ic_arrow_up"
         style="@style/btn_stepper"
         />
 

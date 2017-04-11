@@ -17,9 +17,15 @@ import android.widget.TextView;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
+import com.project.ishoupbud.utils.ConstClass;
+import com.project.ishoupbud.view.activities.ProductActivity;
 import com.project.ishoupbud.view.activities.ScanBarcodeActivity;
 import com.project.ishoupbud.view.adapters.ProductAdapter;
+import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseFragment;
+import com.project.michael.base.views.adapters.BaseAdapter;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,6 +80,15 @@ public class HomeFragment extends BaseFragment {
             tvSeeAllPromo.setText(Html.fromHtml(htmlString));
 
             newProduct = new ProductAdapter<>();
+            newProduct.setOnClickListener(new BaseAdapter.OnClickListener<Product>() {
+                @Override
+                public boolean onClick(View v, List<Product> products, Product product, int position) {
+                    Intent i = new Intent(getContext(), ProductActivity.class);
+                    i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject(product,Product.class));
+                    startActivity(i);
+                    return false;
+                }
+            });
             newProduct.setNew(Product.getDummy(10));
 
             promoProduct = new ProductAdapter<>();

@@ -14,6 +14,7 @@
         android:layout_height="match_parent"
         android:paddingTop="@dimen/item_space"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true"
         >
 
         <LinearLayout
@@ -22,9 +23,9 @@
             android:layout_height="wrap_content"
             >
 
-            <include layout="@layout/layout_product_detail"/>
 
             <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
                 app:tabIndicatorColor="@color/colorPrimary"
@@ -32,8 +33,7 @@
                 app:tabTextColor="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/tab_background"
-                android:id="@+id/tab_layout" />
+                android:background="@drawable/tab_background" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager"

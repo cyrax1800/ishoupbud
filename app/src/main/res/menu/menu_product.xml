@@ -4,13 +4,13 @@
     <item
         android:id="@+id/action_wishlist"
         android:icon="@drawable/ic_favorite_border"
-        app:showAsAction="ifRoom|always"
+        app:showAsAction="ifRoom"
         android:title="Wishlist"
         />
     <item
         android:id="@+id/action_shopping_cart"
         android:icon="@drawable/ic_shopping_cart"
-        app:showAsAction="ifRoom|always"
+        app:showAsAction="ifRoom"
         android:title="Shopping Cart"
         />
 </menu>

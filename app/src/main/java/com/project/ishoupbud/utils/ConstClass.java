@@ -11,4 +11,5 @@ public class ConstClass {
 
     // Extra
     public static String REGISTER_EXTRA = "register";
+    public static String PRODUCT_EXTRA = "product";
 }

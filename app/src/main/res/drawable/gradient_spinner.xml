@@ -12,7 +12,7 @@
             <item
                 android:bottom="1px">
                 <shape>
-                    <solid android:color="@color/white" />
+                    <solid android:color="@color/background_holo_light" />
                     <padding
                         android:bottom="1dp"
                         android:right="1dp"
@@ -21,15 +21,13 @@
                         />
                 </shape>
             </item>
-            <item android:gravity="bottom|right">
+            <item android:gravity="bottom">
                 <rotate
                     android:drawable="@drawable/ic_spinner_arrow"
                     android:fromDegrees="-45"
                     android:pivotX="120%"
                     android:pivotY="20%"
                     />
-                <scale android:level="4"></scale>
-                <!--<bitmap android:gravity="bottom|right" android:src="@drawable/ic_spinner_arrow" />-->
             </item>
         </layer-list>
     </item>
