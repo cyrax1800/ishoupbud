@@ -68,7 +68,8 @@ public class ScanBarcodeActivity extends BaseActivity {
 
         barcodeDetector =
                 new BarcodeDetector.Builder(this)
-                        .setBarcodeFormats(Barcode.UPC_A|Barcode.UPC_E|Barcode.EAN_8|Barcode.EAN_13|Barcode.CODE_128|Barcode.CODE_39)
+//                        .setBarcodeFormats(Barcode.UPC_A|Barcode.UPC_E|Barcode.EAN_8|Barcode.EAN_13|Barcode.CODE_128|Barcode.CODE_39)
+                        .setBarcodeFormats(Barcode.ALL_FORMATS)
                         .build();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -90,6 +91,9 @@ public class ScanBarcodeActivity extends BaseActivity {
                 try {
                     int rc = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
                     if (rc == PackageManager.PERMISSION_GRANTED) {
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                            camera=getCamera(cameraSource);
+                        }
                         cameraSource.start(surfaceView.getHolder());
                         camera=getCamera(cameraSource);
                     } else {
@@ -122,8 +126,13 @@ public class ScanBarcodeActivity extends BaseActivity {
                 if (barcodes.size() != 0) {
                     if(foundedBarcode) return;
                     foundedBarcode = true;
-                    fetchBarcode(barcodes.valueAt(0).displayValue);
-                    Log.d(TAG, "receiveDetections: " + barcodes.valueAt(0).displayValue);
+                    btnSubmit.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "receiveDetections: " + barcodes.valueAt(0).displayValue);
+                            fetchBarcode(barcodes.valueAt(0).displayValue);
+                        }
+                    });
                 }
             }
         });

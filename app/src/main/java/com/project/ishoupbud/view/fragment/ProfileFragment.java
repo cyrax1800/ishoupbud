@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.utils.ConstClass;
+import com.project.ishoupbud.view.activities.EditPasswordActivity;
+import com.project.ishoupbud.view.activities.EditProfileActivity;
 import com.project.ishoupbud.view.activities.LoginActivity;
 import com.project.michael.base.database.SharedPref;
 import com.project.michael.base.views.BaseFragment;
@@ -47,13 +49,13 @@ public class ProfileFragment extends BaseFragment {
 
             ButterKnife.bind(this,_rootView);
 
-            if(SharedPref.getValueString(ConstClass.ACCESS_TOKEN).isEmpty()){
-                llProfile.setVisibility(View.GONE);
-                llNotLoggedIn.setVisibility(View.VISIBLE);
-            }else{
+//            if(SharedPref.getValueString(ConstClass.ACCESS_TOKEN).isEmpty()){
+//                llProfile.setVisibility(View.GONE);
+//                llNotLoggedIn.setVisibility(View.VISIBLE);
+//            }else{
                 llProfile.setVisibility(View.VISIBLE);
                 llNotLoggedIn.setVisibility(View.GONE);
-            }
+//            }
 
             btnTopup.setOnClickListener(this);
             btnEditProfile.setOnClickListener(this);
@@ -84,8 +86,13 @@ public class ProfileFragment extends BaseFragment {
                 startActivity(loginIntent);
                 break;
             case R.id.btn_edit_profile:
+                Intent editProfileIntent = new Intent(getContext(), EditProfileActivity.class);
+                startActivity(editProfileIntent);
                 break;
             case R.id.btn_change_password:
+
+                Intent editPasswordIntent = new Intent(getContext(), EditPasswordActivity.class);
+                startActivity(editPasswordIntent);
                 break;
         }
     }

@@ -9,6 +9,8 @@
     android:layout_marginBottom="@dimen/item_space"
     android:layout_marginLeft="@dimen/item_space"
     android:layout_marginRight="@dimen/item_space"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
     >
     <LinearLayout
         android:orientation="vertical"
