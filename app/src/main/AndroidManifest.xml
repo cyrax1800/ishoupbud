@@ -60,6 +60,9 @@
         <activity android:name=".view.activities.EditProfileActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".view.activities.ShoppingCartActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

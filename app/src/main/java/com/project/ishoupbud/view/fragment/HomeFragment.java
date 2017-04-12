@@ -21,6 +21,7 @@ import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.activities.ProductActivity;
 import com.project.ishoupbud.view.activities.ScanBarcodeActivity;
 import com.project.ishoupbud.view.adapters.ProductAdapter;
+import com.project.ishoupbud.view.dialog.CategoriesDialogFragment;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseFragment;
 import com.project.michael.base.views.adapters.BaseAdapter;
@@ -45,6 +46,8 @@ public class HomeFragment extends BaseFragment {
     @BindView(R.id.rv_popular_product) RecyclerView rvPopular;
     @BindView(R.id.fab_barcode) FloatingActionButton fabBarcode;
     @BindView(R.id.nestedScroll) NestedScrollView nestedScrollView;
+
+    CategoriesDialogFragment categoriesDialogFragment;
 
     public ProductAdapter<Product> newProduct;
     public ProductAdapter<Product> promoProduct;
@@ -101,6 +104,7 @@ public class HomeFragment extends BaseFragment {
             rvPromo.setAdapter(promoProduct);
             rvPopular.setAdapter(popularProduct);
 
+            categoriesDialogFragment = new CategoriesDialogFragment();
 
         }
         return _rootView;
@@ -119,6 +123,7 @@ public class HomeFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_categories:
+                categoriesDialogFragment.show(getFragmentManager(),"categoriesDF");
                 break;
             case R.id.fab_barcode:
                 Intent i = new Intent(this.getContext(), ScanBarcodeActivity.class);

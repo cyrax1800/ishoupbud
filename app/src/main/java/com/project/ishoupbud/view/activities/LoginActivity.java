@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.utils.ValidationUtils;
+import com.project.ishoupbud.view.dialog.ForgotPasswordDialogFragment;
 import com.project.michael.base.views.BaseActivity;
 
 import butterknife.BindView;
@@ -34,6 +35,8 @@ public class LoginActivity extends BaseActivity {
     //Text Input Layout
     @BindView(R.id.etl_email) TextInputLayout ttlEmail;
     @BindView(R.id.etl_password) TextInputLayout ttlPassword;
+
+    ForgotPasswordDialogFragment forgotPasswordDialogFragment;
 
     String email, password;
 
@@ -74,6 +77,8 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
+
+        forgotPasswordDialogFragment = new ForgotPasswordDialogFragment();
 
         if(getIntent().hasExtra(ConstClass.REGISTER_EXTRA)){
             Intent i = new Intent(getApplicationContext(),RegisterActivity.class);
@@ -134,6 +139,7 @@ public class LoginActivity extends BaseActivity {
                 startActivity(i);
                 break;
             case R.id.tv_forgot_password:
+                forgotPasswordDialogFragment.show(getSupportFragmentManager(),"Forget Password");
                 break;
         }
     }

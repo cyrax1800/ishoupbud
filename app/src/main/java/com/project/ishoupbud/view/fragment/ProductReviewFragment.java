@@ -20,6 +20,7 @@ import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Review;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
 import com.project.ishoupbud.view.adapters.ReviewAdapter;
+import com.project.ishoupbud.view.dialog.AddEditReviewDialogFragment;
 import com.project.michael.base.utils.DateUtils;
 import com.project.michael.base.views.BaseFragment;
 
@@ -47,6 +48,7 @@ public class ProductReviewFragment extends BaseFragment {
     @BindView(R.id.rv_review) RecyclerView rvReview;
 
     ReviewAdapter<Review> reviewAdapter;
+    AddEditReviewDialogFragment addEditReviewDialogFragment;
 
     boolean hasOwnReview;
     Review ownReivew;
@@ -82,6 +84,8 @@ public class ProductReviewFragment extends BaseFragment {
                 btnWriteReview.setVisibility(View.VISIBLE);
             }
 
+            btnWriteReview.setOnClickListener(this);
+
             reviewAdapter = new ReviewAdapter<>();
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
@@ -90,9 +94,24 @@ public class ProductReviewFragment extends BaseFragment {
             rvReview.setLayoutManager(layoutManager);
             rvReview.setAdapter(reviewAdapter);
 
+            addEditReviewDialogFragment = new AddEditReviewDialogFragment();
+
         }
 
         return _rootView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_write_review:
+                addEditReviewDialogFragment.show(getFragmentManager(),"addEditReviewDialog");
+                break;
+            case R.id.btn_delete:
+                break;
+            case R.id.btn_edit:
+                break;
+        }
     }
 
     public static ProductReviewFragment newInstance() {

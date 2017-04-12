@@ -36,4 +36,9 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
+    <style name="btn_dialog" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/light_green</item>
+        <item name="android:background">@drawable/dialog_button</item>
+    </style>
+
 </resources>

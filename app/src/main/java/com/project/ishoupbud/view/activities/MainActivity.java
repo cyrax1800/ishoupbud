@@ -1,12 +1,15 @@
 package com.project.ishoupbud.view.activities;
 
+import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.ncapdevi.fragnav.FragNavController;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.view.fragment.HomeFragment;
@@ -30,12 +33,15 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
 
     private FragNavController mNavController;
 
+    FloatingSearchView floatingSearchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        floatingSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
 
         List<Fragment> fragments = new ArrayList<>(4);
 
@@ -73,6 +79,16 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
             @Override
             public void onTabReSelected(@IdRes int tabId) {
                 Log.d(TAG, "onTabReSelected: " + tabId);
+            }
+        });
+
+        floatingSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+                if(item.getItemId() == R.id.action_shopping_cart){
+                    Intent i = new Intent(getApplicationContext(), ShoppingCartActivity.class);
+                    startActivity(i);
+                }
             }
         });
     }

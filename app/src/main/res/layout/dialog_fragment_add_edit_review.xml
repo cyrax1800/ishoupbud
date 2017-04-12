@@ -3,37 +3,83 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/activity_horizontal_margin"
     >
 
-    <Spinner
-        android:id="@+id/spinner_vendor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/item_space"
-        style="@style/spinner_style"
-        />
-
-    <RatingBar
-        android:id="@+id/df_review_rating_star"
-        android:theme="@style/RatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/item_space"
-        android:numStars="5"
-        android:max="5"
-        android:rating="0"
-        android:stepSize="1"
-        />
-
-    <EditText
-        android:id="@+id/df_review_desc"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="3"
-        android:gravity="top"
-        style="@style/box_edittext"
+        android:layout_margin="@dimen/activity_horizontal_margin">
+
+        <Spinner
+            android:id="@+id/spinner_vendor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/item_space"
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+            />
+
+        <RatingBar
+            android:id="@+id/df_review_rating_star"
+            android:theme="@style/dialogRatingBAr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/item_space"
+            android:numStars="5"
+            android:max="5"
+            android:rating="0"
+            android:stepSize="1"
+            />
+
+        <EditText
+            android:id="@+id/df_review_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="3"
+            android:gravity="top"
+            style="@style/box_edittext"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/bb_divider"
         />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        >
+        
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel"
+            style="@style/btn_dialog"
+            />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/bb_divider"
+            />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Submit"
+            style="@style/btn_dialog"
+            />
+        
+    </LinearLayout>
 
 </LinearLayout>

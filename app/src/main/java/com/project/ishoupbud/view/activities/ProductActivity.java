@@ -1,6 +1,7 @@
 package com.project.ishoupbud.view.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -196,6 +197,9 @@ public class ProductActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
+        }else if(item.getItemId() == R.id.action_shopping_cart){
+            Intent i = new Intent(this, ShoppingCartActivity.class);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }

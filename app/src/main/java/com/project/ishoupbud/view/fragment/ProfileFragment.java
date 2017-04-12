@@ -16,6 +16,7 @@ import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.activities.EditPasswordActivity;
 import com.project.ishoupbud.view.activities.EditProfileActivity;
 import com.project.ishoupbud.view.activities.LoginActivity;
+import com.project.ishoupbud.view.dialog.TopUpDialogFragment;
 import com.project.michael.base.database.SharedPref;
 import com.project.michael.base.views.BaseFragment;
 
@@ -39,6 +40,8 @@ public class ProfileFragment extends BaseFragment {
     @BindView(R.id.iv_profile_pic) ImageView ivProfilePicture;
     @BindView(R.id.tv_profile_name) TextView tvUsername;
     @BindView(R.id.tv_profile_saldo) TextView tvSaldo;
+
+    TopUpDialogFragment topUpDialogFragment;
 
 
     @Nullable
@@ -64,6 +67,8 @@ public class ProfileFragment extends BaseFragment {
             btnLogout.setOnClickListener(this);
             btnRegister.setOnClickListener(this);
 
+            topUpDialogFragment = new TopUpDialogFragment();
+
             //TODO implemen to profile user data to view
         }
         return _rootView;
@@ -73,6 +78,7 @@ public class ProfileFragment extends BaseFragment {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_top_up:
+                topUpDialogFragment.show(getFragmentManager(),"Top Up");
                 break;
             case R.id.btn_login:
                 Intent i = new Intent(getContext(), LoginActivity.class);
