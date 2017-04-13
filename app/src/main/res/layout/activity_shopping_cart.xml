@@ -27,14 +27,13 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 >
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_wishlist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/item_space"
                     >
 
                 </android.support.v7.widget.RecyclerView>

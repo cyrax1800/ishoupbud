@@ -210,6 +210,8 @@ public class ProductActivity extends BaseActivity {
             case R.id.btn_add_to_cart:
                 break;
             case R.id.btn_compare:
+                Intent compareIntent = new Intent(this,CompareActivity.class);
+                startActivity(compareIntent);
                 break;
             case R.id.btn_plus_stepper:
                 break;

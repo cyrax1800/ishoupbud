@@ -34,6 +34,7 @@
                 >
 
                 <ImageView
+                    android:id="@+id/iv_product"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:src="@drawable/comingsoon"
@@ -101,6 +102,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_detail_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/item_space"
@@ -117,6 +119,7 @@
                     />
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -141,6 +144,7 @@
                 >
 
                 <ImageView
+                    android:id="@+id/iv_compare_product"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:src="@drawable/comingsoon"
@@ -148,6 +152,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_compare_product_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lines="2"
@@ -159,6 +164,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_compare_product_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lines="1"
@@ -178,6 +184,7 @@
                     >
 
                     <RatingBar
+                        android:id="@+id/rating_bar_compare_product"
                         android:theme="@style/RatingBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -187,6 +194,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/tv_rate_value_compare_product"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="(3)"
@@ -204,6 +212,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tv_detail_compare_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/item_space"
@@ -220,6 +229,7 @@
                     />
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_compare_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 

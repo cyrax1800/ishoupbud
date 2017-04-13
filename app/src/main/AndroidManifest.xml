@@ -60,8 +60,18 @@
         <activity android:name=".view.activities.EditProfileActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".view.activities.ListProductActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".view.activities.CompareActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".view.activities.BuktiTransferActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity android:name=".view.activities.ShoppingCartActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
             />
     </application>
 

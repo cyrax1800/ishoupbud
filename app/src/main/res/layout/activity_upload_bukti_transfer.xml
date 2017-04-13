@@ -40,6 +40,7 @@
         >
 
         <TextView
+            android:id="@+id/tvPathImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Foto bukti transfer : None"
@@ -50,6 +51,7 @@
             />
 
         <Button
+            android:id="@+id/btn_upload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
@@ -71,6 +73,7 @@
         >
 
         <Button
+            android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/item_space"
@@ -80,6 +83,7 @@
             />
 
         <Button
+            android:id="@+id/btn_confirmation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

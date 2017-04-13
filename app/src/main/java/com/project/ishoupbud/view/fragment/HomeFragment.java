@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.utils.ConstClass;
+import com.project.ishoupbud.view.activities.ListProductActivity;
 import com.project.ishoupbud.view.activities.ProductActivity;
 import com.project.ishoupbud.view.activities.ScanBarcodeActivity;
 import com.project.ishoupbud.view.adapters.ProductAdapter;
@@ -130,6 +131,8 @@ public class HomeFragment extends BaseFragment {
                 startActivity(i);
                 break;
             case R.id.tv_see_all_promo:
+                Intent listIntent = new Intent(this.getContext(), ListProductActivity.class);
+                startActivity(listIntent);
                 break;
             case R.id.tv_see_all_popular:
                 break;
