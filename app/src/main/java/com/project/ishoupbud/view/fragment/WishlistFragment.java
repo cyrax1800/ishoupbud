@@ -1,8 +1,10 @@
 package com.project.ishoupbud.view.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +38,8 @@ public class WishlistFragment extends BaseFragment {
 
     ProductAdapter<Product> wishListAdapter;
 
+    AlertDialog removeFavorite;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,12 +58,37 @@ public class WishlistFragment extends BaseFragment {
                     return false;
                 }
             });
+            wishListAdapter.setOnLongClickListener(new BaseAdapter.OnLongClickListener<Product>() {
+                @Override
+                public boolean onLongClick(View v, List<Product> products, Product product, int position) {
+                    removeFavorite.show();
+                    return false;
+                }
+            });
             wishListAdapter.setNew(Product.getDummy(11));
 
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),2, LinearLayoutManager.VERTICAL, false);
             rvWishlist.setLayoutManager(layoutManager);
             rvWishlist.addItemDecoration(new GridSpacingItemDecoration(2,Utils.dpToPx(16),true));
             rvWishlist.setAdapter(wishListAdapter);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Remove Favorite")
+                    .setMessage("Are you sure want to Remove from Wishlist?")
+                    .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            removeFavorite.dismiss();
+                        }
+                    });
+
+            removeFavorite = builder.create();
         }
         return _rootView;
     }

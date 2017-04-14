@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.ncapdevi.fragnav.FragNavController;
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.manager.GoogleAPIManager;
 import com.project.ishoupbud.view.fragment.HomeFragment;
 import com.project.ishoupbud.view.fragment.ProfileFragment;
 import com.project.ishoupbud.view.fragment.TransactionFragment;
@@ -91,6 +92,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                 }
             }
         });
+
+        GoogleAPIManager.getGoogleApi().initGoogleAPI(this);
     }
 
     @Override

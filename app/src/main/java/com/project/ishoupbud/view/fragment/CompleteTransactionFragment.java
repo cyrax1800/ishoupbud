@@ -1,5 +1,6 @@
 package com.project.ishoupbud.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +13,12 @@ import android.view.ViewGroup;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Transaction;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
+import com.project.ishoupbud.view.activities.DetailTransactionActivity;
 import com.project.ishoupbud.view.adapters.TransactionAdapter;
 import com.project.michael.base.views.BaseFragment;
+import com.project.michael.base.views.adapters.BaseAdapter;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +42,14 @@ public class CompleteTransactionFragment extends BaseFragment {
             ButterKnife.bind(this, _rootView);
 
             transactionAdapter = new TransactionAdapter<>();
+            transactionAdapter.setOnClickListener(new BaseAdapter.OnClickListener<Transaction>() {
+                @Override
+                public boolean onClick(View v, List<Transaction> transactions, Transaction transaction, int position) {
+                    Intent i = new Intent(getContext(), DetailTransactionActivity.class);
+                    startActivity(i);
+                    return false;
+                }
+            });
             transactionAdapter.setNew(Transaction.getDummy(10));
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);

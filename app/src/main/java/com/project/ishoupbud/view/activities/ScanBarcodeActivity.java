@@ -195,7 +195,11 @@ public class ScanBarcodeActivity extends BaseActivity {
             try {
                 if(PermissionsUtils.checkSelfPermission(this,PermissionsUtils.PERMISSION_CAMERA)) {
                     Log.d(TAG, "onRequestPermissionsResult: ");
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        camera=getCamera(cameraSource);
+                    }
                     cameraSource.start(surfaceView.getHolder());
+                    camera=getCamera(cameraSource);
                 }
             } catch (IOException ie) {
                 Log.e("tmp", ie.getMessage());

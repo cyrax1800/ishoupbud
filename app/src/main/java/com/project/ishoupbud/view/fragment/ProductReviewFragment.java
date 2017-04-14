@@ -1,7 +1,9 @@
 package com.project.ishoupbud.view.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,6 +51,7 @@ public class ProductReviewFragment extends BaseFragment {
 
     ReviewAdapter<Review> reviewAdapter;
     AddEditReviewDialogFragment addEditReviewDialogFragment;
+    AlertDialog deleteReviewDialog;
 
     boolean hasOwnReview;
     Review ownReivew;
@@ -96,6 +99,24 @@ public class ProductReviewFragment extends BaseFragment {
 
             addEditReviewDialogFragment = new AddEditReviewDialogFragment();
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Detele Review")
+                    .setMessage("Are you sure want to delete your review of this product?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteReviewDialog.dismiss();
+                        }
+                    });
+
+            deleteReviewDialog = builder.create();
+
         }
 
         return _rootView;
@@ -108,8 +129,10 @@ public class ProductReviewFragment extends BaseFragment {
                 addEditReviewDialogFragment.show(getFragmentManager(),"addEditReviewDialog");
                 break;
             case R.id.btn_delete:
+                deleteReviewDialog.show();
                 break;
             case R.id.btn_edit:
+                addEditReviewDialogFragment.show(getFragmentManager(),"addEditReviewDialog");
                 break;
         }
     }

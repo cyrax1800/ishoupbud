@@ -12,7 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin">
 
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:tag="googleMaps"
+            />
+
         <TextView
+            android:id="@+id/tv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/item_space"
@@ -22,6 +31,7 @@
             />
 
         <Button
+            android:id="@+id/btn_change_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Change Position"
@@ -38,7 +48,7 @@
             />
 
         <EditText
-            android:id="@+id/df_review_desc"
+            android:id="@+id/et_df_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="3"
@@ -47,6 +57,7 @@
             />
 
         <TextView
+            android:id="@+id/tv_detail_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/item_space"

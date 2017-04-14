@@ -14,6 +14,7 @@ import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
 import com.project.ishoupbud.view.adapters.ShoppingCartAdapter;
+import com.project.ishoupbud.view.dialog.ConfirmationTransactionDialogFragment;
 import com.project.michael.base.views.BaseActivity;
 
 import butterknife.BindView;
@@ -71,6 +72,7 @@ public class ShoppingCartActivity extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_continue:
+                new ConfirmationTransactionDialogFragment().show(getSupportFragmentManager(),"Confirmation Transaction");
                 break;
         }
     }
