@@ -4,6 +4,8 @@
     "realmDatabaseSchemaVersion": 0,
     "usingSharedPreference": true,
     "sharedPreferenceName": "ishoupbud",
-    "usingRetrofitAPI": false,
-    "retrofitAPIUrl": "http://localhost/"
+    "usingRetrofitAPI": true,
+    "retrofitAPIUrl": "https://shoupbud.xyz/api/",
+    "clientID":2,
+    "clientSecret":"5Oi33uVODilqafeS3WZTlySG2UobaJnSCCDjwSNk"
 }

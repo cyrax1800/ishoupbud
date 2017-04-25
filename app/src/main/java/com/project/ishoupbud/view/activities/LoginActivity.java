@@ -6,19 +6,36 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.Token;
+import com.project.ishoupbud.api.model.User;
+import com.project.ishoupbud.api.repositories.AuthenticationRepo;
+import com.project.ishoupbud.api.repositories.UserRepo;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.utils.ValidationUtils;
 import com.project.ishoupbud.view.dialog.ForgotPasswordDialogFragment;
+import com.project.ishoupbud.view.fragment.ProfileFragment;
+import com.project.michael.base.api.APICallback;
+import com.project.michael.base.api.APIManager;
+import com.project.michael.base.database.SharedPref;
+import com.project.michael.base.utils.GsonUtils;
+import com.project.michael.base.utils.Settings;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by michael on 3/25/17.
@@ -80,10 +97,7 @@ public class LoginActivity extends BaseActivity {
 
         forgotPasswordDialogFragment = new ForgotPasswordDialogFragment();
 
-        if(getIntent().hasExtra(ConstClass.REGISTER_EXTRA)){
-            Intent i = new Intent(getApplicationContext(),RegisterActivity.class);
-            startActivity(i);
-        }
+        initProgressDialog("Loging In...");
     }
 
     public boolean validation(){
@@ -122,6 +136,70 @@ public class LoginActivity extends BaseActivity {
         return true;
     }
 
+    public void getOwnData(){
+        Call<User> ownData = APIManager.getRepository(UserRepo.class).getOwnData(ConstClass.getApiAuthorization());
+        ownData.enqueue(new APICallback<User>() {
+            @Override
+            public void onSuccess(Call<User> call, Response<User> response) {
+                super.onSuccess(call, response);
+                progressDialog.dismiss();
+
+                if(getIntent().hasExtra(ConstClass.REGISTER_EXTRA)){
+                    Intent i = new Intent();
+                    i.putExtra(ConstClass.USER, GsonUtils.getJsonFromObject(response.body(),User.class));
+                    setResult(ProfileFragment.RESULT_SUCCESS,i);
+                }
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                super.onFailure(call, t);
+                progressDialog.dismiss();
+            }
+        });
+
+    }
+
+    public void login(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("grant_type", "password");
+        map.put("client_id", Settings.getClientID());
+        map.put("client_secret", Settings.getclientSecret());
+        map.put("username", email);
+        map.put("password", password);
+        Call<Token> login = APIManager.getRepository(AuthenticationRepo.class).login(map);
+        login.enqueue(new APICallback<Token>() {
+            @Override
+            public void onSuccess(Call<Token> call, Response<Token> response) {
+                super.onSuccess(call, response);
+                Log.d(TAG, "onSuccess: " + response.body().access_token);
+                SharedPref.save(ConstClass.ACCESS_TOKEN,response.body().access_token);
+
+                getOwnData();
+            }
+
+            @Override
+            public void onUnauthorized(Call<Token> call, Response<Token> response) {
+                super.onUnauthorized(call, response);
+                progressDialog.dismiss();
+                Toast.makeText(LoginActivity.this,"Email or Password is wrong", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNotFound(Call<Token> call, Response<Token> response) {
+                super.onNotFound(call, response);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+                super.onFailure(call, t);
+                progressDialog.dismiss();
+            }
+        });
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -129,14 +207,13 @@ public class LoginActivity extends BaseActivity {
                 email = etEmail.getText().toString();
                 password = etPassword.getText().toString();
                 if(validation()){
-
-                }else {
-
+                    progressDialog.show();
+                    login();
                 }
                 break;
             case R.id.tv_register:
-                Intent i = new Intent(getApplicationContext(),RegisterActivity.class);
-                startActivity(i);
+                setResult(ProfileFragment.RESULT_FOR_REGISTER);
+                finish();
                 break;
             case R.id.tv_forgot_password:
                 forgotPasswordDialogFragment.show(getSupportFragmentManager(),"Forget Password");

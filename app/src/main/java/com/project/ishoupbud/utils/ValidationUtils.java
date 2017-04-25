@@ -33,8 +33,8 @@ public class ValidationUtils {
         if((password == null) || (confirmPassword == null)) return false;
         if(password.isEmpty() || confirmPassword.isEmpty()) return false;
         if(!password.equals(confirmPassword)) return false;
-        if(password.length() >= minPasswordLength) return false;
-        if(confirmPassword.length() >= minPasswordLength) return false;
+        if(password.length() < minPasswordLength) return false;
+        if(confirmPassword.length() < minPasswordLength) return false;
         return true;
     }
 

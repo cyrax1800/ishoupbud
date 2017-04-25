@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 
 /**
@@ -257,4 +259,17 @@ public class Utils {
         double scaleRes = new BigDecimal(randomNumber).setScale(precision, RoundingMode.HALF_EVEN).doubleValue();
         return from + scaleRes;
     }
+
+    public static String indonesiaFormat(double angka) {
+        DecimalFormat mataUangIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp. ");
+        formatRp.setMonetaryDecimalSeparator(',');
+        formatRp.setGroupingSeparator('.');
+
+        mataUangIndonesia.setDecimalFormatSymbols(formatRp);
+        return mataUangIndonesia.format(angka);
+    }
+
 }

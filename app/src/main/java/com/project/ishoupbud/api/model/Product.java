@@ -12,9 +12,11 @@ import java.util.List;
 public class Product {
 
     public int id;
+    public String barcode;
     public String name;
     public int price;
     public double ratingSummary;
+    public String deskipsi;
     public String picUrl;
 
     public Product(){

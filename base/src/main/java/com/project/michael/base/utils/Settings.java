@@ -13,6 +13,8 @@ public class Settings {
     private String sharedPreferenceName =  "";
     private Boolean usingRetrofitAPI = false;
     private String retrofitAPIUrl = "";
+    private int clientID = 0;
+    private String clientSecret = "";
 
     private Settings(){ }
 
@@ -48,6 +50,14 @@ public class Settings {
         return getInstance().realmDatabaseSchemaVersion;
     }
 
+    public static int getClientID() {
+        return getInstance().clientID;
+    }
+
+    public static String getclientSecret() {
+        return getInstance().clientSecret;
+    }
+
     public synchronized static Settings getInstance() {
         if(instance == null){
             instance = new Settings();
@@ -65,6 +75,8 @@ public class Settings {
                 ", sharedPreferenceName='" + sharedPreferenceName + "\'" +
                 ", usingRetrofitAPI=" + usingRetrofitAPI +
                 ", retrofitAPIUrl='" + retrofitAPIUrl + "\'" +
+                ", clientID=" + clientID +
+                ", clientSecret='" + clientSecret + "\'" +
                 '}';
     }
 }

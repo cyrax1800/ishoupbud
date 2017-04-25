@@ -14,6 +14,9 @@ public class Vendor {
     public int id;
     public String name;
     public String address;
+    public Double longitude;
+    public Double latitude;
+    public String pic_url;
     public int price;
 
     public Vendor(int id, String name, String address, int price){

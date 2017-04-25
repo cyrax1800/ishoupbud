@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.utils.ValidationUtils;
+import com.project.ishoupbud.view.fragment.ProfileFragment;
 import com.project.michael.base.views.BaseActivity;
 
 import butterknife.BindView;
@@ -31,6 +33,8 @@ public class EditPasswordActivity extends BaseActivity {
     @BindView(R.id.etl_conf_password) TextInputLayout etlRePassword;
     @BindView(R.id.btn_save) Button btnSave;
 
+    String currentPassword, password, rePassword;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,62 @@ public class EditPasswordActivity extends BaseActivity {
         btnSave.setOnClickListener(this);
     }
 
+    public boolean validation(){
+        boolean isValid = true;
+
+        if(!ValidationUtils.isPasswordValid(password,rePassword)){
+            isValid =false;
+            etRePassword.requestFocus();
+        }
+
+        if(!checkConfPasswordValid()){
+            isValid = false;
+            etRePassword.requestFocus();
+        }
+
+        if(!checkPasswordValid()){
+            isValid = false;
+            etNewPassword.requestFocus();
+        }
+
+        if(!checkCurrentPasswordValid()){
+            isValid = false;
+            etCurrentPassword.requestFocus();
+        }
+
+        return isValid;
+    }
+
+    public boolean checkCurrentPasswordValid(){
+        if(!ValidationUtils.isPasswordValid(currentPassword)){
+            etlCurrentPassword.setError("Password must have min length 4");
+            return false;
+        }else{
+            etlCurrentPassword.setError("");
+        }
+        return true;
+    }
+
+    public boolean checkPasswordValid(){
+        if(!ValidationUtils.isPasswordValid(password)){
+            etlNewPassword.setError("Password must have min length 4");
+            return false;
+        }else{
+            etlNewPassword.setError("");
+        }
+        return true;
+    }
+
+    public boolean checkConfPasswordValid(){
+        if(!ValidationUtils.isPasswordValid(rePassword)){
+            etlRePassword.setError("Password must have min length 4");
+            return false;
+        }else{
+            etlRePassword.setError("");
+        }
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
@@ -57,9 +117,18 @@ public class EditPasswordActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(ProfileFragment.RESULT_NO_CHANGES);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_save:
+                if(validation()){
+
+                }
                 break;
         }
     }

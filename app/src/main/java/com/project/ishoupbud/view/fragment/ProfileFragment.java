@@ -1,6 +1,7 @@
 package com.project.ishoupbud.view.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,13 +12,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.User;
+import com.project.ishoupbud.helper.TextImageCircleHelper;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.activities.EditPasswordActivity;
 import com.project.ishoupbud.view.activities.EditProfileActivity;
 import com.project.ishoupbud.view.activities.LoginActivity;
+import com.project.ishoupbud.view.activities.RegisterActivity;
 import com.project.ishoupbud.view.dialog.TopUpDialogFragment;
 import com.project.michael.base.database.SharedPref;
+import com.project.michael.base.utils.GsonUtils;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseFragment;
 
 import butterknife.BindView;
@@ -28,6 +36,17 @@ import butterknife.ButterKnife;
  */
 
 public class ProfileFragment extends BaseFragment {
+
+    public final static int REQUEST_LOGIN = 1;
+    public final static int REQUEST_REGISTER = 2;
+    public final static int REQUEST_EDIT_PROFILE = 3;
+    public final static int REQUEST_EDIT_PASSWORD = 4;
+
+    public final static int RESULT_SUCCESS = 1;
+    public final static int RESULT_FOR_LOGIN = 2;
+    public final static int RESULT_FOR_REGISTER = 3;
+    public final static int RESULT_NO_CHANGES = 4;
+    public final static int RESULT_CHANGES = 5;
 
     @BindView(R.id.container_profile) LinearLayout llProfile;
     @BindView(R.id.container_not_logged_in) LinearLayout llNotLoggedIn;
@@ -43,6 +62,7 @@ public class ProfileFragment extends BaseFragment {
 
     TopUpDialogFragment topUpDialogFragment;
 
+    User user;
 
     @Nullable
     @Override
@@ -52,13 +72,7 @@ public class ProfileFragment extends BaseFragment {
 
             ButterKnife.bind(this,_rootView);
 
-//            if(SharedPref.getValueString(ConstClass.ACCESS_TOKEN).isEmpty()){
-//                llProfile.setVisibility(View.GONE);
-//                llNotLoggedIn.setVisibility(View.VISIBLE);
-//            }else{
-                llProfile.setVisibility(View.VISIBLE);
-                llNotLoggedIn.setVisibility(View.GONE);
-//            }
+            updateProfile();
 
             btnTopup.setOnClickListener(this);
             btnEditProfile.setOnClickListener(this);
@@ -74,6 +88,60 @@ public class ProfileFragment extends BaseFragment {
         return _rootView;
     }
 
+    public void updateProfile(){
+        if(SharedPref.getValueString(ConstClass.ACCESS_TOKEN).isEmpty()){
+            llProfile.setVisibility(View.GONE);
+            llNotLoggedIn.setVisibility(View.VISIBLE);
+        }else{
+            llProfile.setVisibility(View.VISIBLE);
+            llNotLoggedIn.setVisibility(View.GONE);
+
+            user = GsonUtils.getObjectFromJson(SharedPref.getValueString(ConstClass.USER), User.class);
+
+            tvUsername.setText(user.name);
+            tvSaldo.setText("Saldo: " + Utils.indonesiaFormat(user.saldo));
+
+            Glide.with(getContext())
+                    .load(user.picture_url)
+                    .placeholder(TextImageCircleHelper.getInstance().getImage(user.name))
+                    .centerCrop()
+                    .crossFade()
+                    .into(ivProfilePicture);
+
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_REGISTER || requestCode == REQUEST_LOGIN){
+            if(resultCode == RESULT_SUCCESS){
+                user = GsonUtils.getObjectFromJson(data.getStringExtra(ConstClass.USER), User.class);
+                SharedPref.save(ConstClass.USER,data.getStringExtra(ConstClass.USER));
+                updateProfile();
+            }else if(resultCode == RESULT_FOR_LOGIN){
+                Intent i = new Intent(getContext(), LoginActivity.class);
+                i.putExtra(ConstClass.LOGIN_EXTRA,true);
+                getActivity().startActivityForResult(i,REQUEST_LOGIN);
+            }else if(resultCode == RESULT_FOR_REGISTER){
+                Intent registerIntent = new Intent(getContext(), RegisterActivity.class);
+                registerIntent.putExtra(ConstClass.REGISTER_EXTRA,true);
+                getActivity().startActivityForResult(registerIntent,REQUEST_REGISTER);
+            }
+        }else if(requestCode == REQUEST_EDIT_PROFILE){
+            if(resultCode == RESULT_CHANGES){
+                user = GsonUtils.getObjectFromJson(data.getStringExtra(ConstClass.USER), User.class);
+                SharedPref.save(ConstClass.USER,data.getStringExtra(ConstClass.USER));
+                updateProfile();
+            }
+        }else if(requestCode == REQUEST_EDIT_PASSWORD){
+            if(resultCode == RESULT_CHANGES){
+                user = GsonUtils.getObjectFromJson(data.getStringExtra(ConstClass.USER), User.class);
+                SharedPref.save(ConstClass.USER,data.getStringExtra(ConstClass.USER));
+            }
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -82,23 +150,26 @@ public class ProfileFragment extends BaseFragment {
                 break;
             case R.id.btn_login:
                 Intent i = new Intent(getContext(), LoginActivity.class);
-                startActivity(i);
+                i.putExtra(ConstClass.LOGIN_EXTRA,true);
+                getActivity().startActivityForResult(i,REQUEST_LOGIN);
                 break;
             case R.id.btn_logout:
+                SharedPref.save(ConstClass.ACCESS_TOKEN,"");
+                SharedPref.save(ConstClass.USER,"");
+                updateProfile();
                 break;
             case R.id.btn_register:
-                Intent loginIntent = new Intent(getContext(), LoginActivity.class);
-                loginIntent.putExtra(ConstClass.REGISTER_EXTRA,true);
-                startActivity(loginIntent);
+                Intent registerIntent = new Intent(getContext(), RegisterActivity.class);
+                registerIntent.putExtra(ConstClass.REGISTER_EXTRA,true);
+                getActivity().startActivityForResult(registerIntent,REQUEST_REGISTER);
                 break;
             case R.id.btn_edit_profile:
                 Intent editProfileIntent = new Intent(getContext(), EditProfileActivity.class);
-                startActivity(editProfileIntent);
+                getActivity().startActivityForResult(editProfileIntent,REQUEST_EDIT_PROFILE);
                 break;
             case R.id.btn_change_password:
-
                 Intent editPasswordIntent = new Intent(getContext(), EditPasswordActivity.class);
-                startActivity(editPasswordIntent);
+                getActivity().startActivityForResult(editPasswordIntent,REQUEST_EDIT_PASSWORD);
                 break;
         }
     }

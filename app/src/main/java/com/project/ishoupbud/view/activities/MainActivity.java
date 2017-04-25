@@ -97,6 +97,21 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: " + requestCode + " " + resultCode);
+        if(requestCode == ProfileFragment.REQUEST_LOGIN ||
+                requestCode == ProfileFragment.REQUEST_REGISTER ||
+                requestCode == ProfileFragment.REQUEST_EDIT_PROFILE ||
+                requestCode == ProfileFragment.REQUEST_EDIT_PASSWORD
+                ){
+            if(mNavController.getCurrentFrag() != null){
+                mNavController.getCurrentFrag().onActivityResult(requestCode,resultCode,data);
+            }
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mNavController != null) {

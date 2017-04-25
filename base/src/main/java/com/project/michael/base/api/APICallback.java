@@ -20,26 +20,27 @@ public abstract class APICallback<T> implements Callback<T> {
     private static final int UNAUTHORIZED = 401;
     private static final int FORBIDDEN = 403;
     private static final int NOT_FOUND = 404;
+    private static final int UNPROCESSABLE_ENTITY = 422;
     private static final int INTERNAL_SERVER_ERROR = 500;
 
     public void onSuccess(Call<T> call, Response<T> response){
-        Log.i(TAG, "onSuccess: " + call.getClass());
+        Log.i(TAG, "onSuccess: " + response.message());
     }
 
     public void onCreated(Call<T> call, Response<T> response){
-        Log.i(TAG, "onCreated: " + call.getClass());
+        Log.i(TAG, "onCreated: " + response.message());
     }
 
     public void onNotFound(Call<T> call, Response<T> response){
-        Log.i(TAG, "onNotFound: " + call.getClass());
+        Log.i(TAG, "onNotFound: " + response.message());
     }
 
     public void onUnauthorized(Call<T> call, Response<T> response){
-        Log.i(TAG, "onUnauthorized: " + call.getClass());
+        Log.i(TAG, "onUnauthorized: " + response.message());
     }
 
     public void onForbidden(Call<T> call, Response<T> response){
-        Log.i(TAG, "onForbidden: " + call.getClass());
+        Log.i(TAG, "onForbidden: " + response.message());
     }
 
     public void onError(Call<T> call, Response<T> response){
@@ -52,6 +53,10 @@ public abstract class APICallback<T> implements Callback<T> {
                 break;
         }
 
+    }
+
+    public void onUnprocessableEntity(Call<T> call, Response<T> response) {
+        Log.i(TAG, "onUnprocessableEntity: " + response.message());
     }
 
     @Override
@@ -72,6 +77,9 @@ public abstract class APICallback<T> implements Callback<T> {
             case FORBIDDEN:
                 onForbidden(call, response);
                 break;
+            case UNPROCESSABLE_ENTITY:
+                onUnprocessableEntity(call, response);
+                break;
             case BAD_REQUEST: case INTERNAL_SERVER_ERROR:
                 onError(call, response);
                 break;
@@ -82,6 +90,6 @@ public abstract class APICallback<T> implements Callback<T> {
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-
+        Log.i(TAG, "onFailure: " + t.toString());
     }
 }

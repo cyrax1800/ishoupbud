@@ -91,7 +91,7 @@ public class ScanBarcodeActivity extends BaseActivity {
                 try {
                     int rc = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
                     if (rc == PackageManager.PERMISSION_GRANTED) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        if (!Utils.hasLollipop()) {
                             camera=getCamera(cameraSource);
                         }
                         cameraSource.start(surfaceView.getHolder());
@@ -195,7 +195,7 @@ public class ScanBarcodeActivity extends BaseActivity {
             try {
                 if(PermissionsUtils.checkSelfPermission(this,PermissionsUtils.PERMISSION_CAMERA)) {
                     Log.d(TAG, "onRequestPermissionsResult: ");
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    if (!Utils.hasLollipop()) {
                         camera=getCamera(cameraSource);
                     }
                     cameraSource.start(surfaceView.getHolder());
