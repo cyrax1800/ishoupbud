@@ -6,9 +6,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.project.michael.base.utils.Settings;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -26,10 +29,16 @@ public class APIManager {
 
     private static HashMap<String,Object> repositories;
 
+    private static List<Interceptor> interceptors = new ArrayList<>();
+
     public static void SetUpRetrofit(){
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        clientBuilder.addInterceptor(interceptor);
+        for(int i = 0; i< interceptors.size(); i++){
+            clientBuilder.addInterceptor(interceptors.get(i));
+        }
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -41,11 +50,15 @@ public class APIManager {
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(Settings.getRetrofitAPIUrl())
-                .client(client)
+                .client(clientBuilder.build())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         repositories = new HashMap<>();
+    }
+
+    public static void addInterceptor(Interceptor interceptor){
+        interceptors.add(interceptor);
     }
 
     public static void registerRepository(Class clazz){

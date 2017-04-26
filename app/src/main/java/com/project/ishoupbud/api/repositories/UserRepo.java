@@ -19,5 +19,5 @@ public interface UserRepo {
 
     @Headers("Accept: application/json")
     @GET("me")
-    Call<User> getOwnData(@Header("Authorization") String authorizaition);
+    Call<User> getOwnData();
 }

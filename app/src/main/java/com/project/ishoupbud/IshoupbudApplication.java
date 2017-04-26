@@ -7,6 +7,7 @@ import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.api.repositories.UserRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.helper.TextImageCircleHelper;
+import com.project.ishoupbud.network.SessionInterceptor;
 import com.project.michael.base.BaseApplication;
 import com.project.michael.base.api.APIManager;
 import com.squareup.leakcanary.LeakCanary;
@@ -19,7 +20,11 @@ public class IshoupbudApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
+
+        APIManager.addInterceptor(new SessionInterceptor());
+
         super.onCreate();
+
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.

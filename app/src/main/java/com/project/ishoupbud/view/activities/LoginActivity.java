@@ -137,7 +137,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void getOwnData(){
-        Call<User> ownData = APIManager.getRepository(UserRepo.class).getOwnData(ConstClass.getApiAuthorization());
+        Call<User> ownData = APIManager.getRepository(UserRepo.class).getOwnData();
         ownData.enqueue(new APICallback<User>() {
             @Override
             public void onSuccess(Call<User> call, Response<User> response) {

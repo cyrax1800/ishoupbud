@@ -17,7 +17,6 @@ public class ConstClass {
     public static String LOGIN_EXTRA = "register";
     public static String PRODUCT_EXTRA = "product";
 
-    public static String getApiAuthorization(){
-        return "Bearer " + SharedPref.getValueString(ACCESS_TOKEN);
-    }
+    //API
+    public static String AUTHORIZATION_HEADER = "Authorization";
 }
