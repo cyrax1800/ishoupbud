@@ -39,6 +39,10 @@ public class ProductDetailFragment extends BaseFragment {
         return _rootView;
     }
 
+    public void updateDetail(String detail){
+        tvDetail.setText(detail);
+    }
+
     public static ProductDetailFragment newInstance() {
         
         Bundle args = new Bundle();

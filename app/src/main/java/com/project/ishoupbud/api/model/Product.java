@@ -1,5 +1,7 @@
 package com.project.ishoupbud.api.model;
 
+import com.google.gson.annotations.SerializedName;
+import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.Utils;
 
 import java.util.ArrayList;
@@ -9,15 +11,16 @@ import java.util.List;
  * Created by michael on 4/9/17.
  */
 
-public class Product {
+public class Product extends GenericResponse<Product>{
 
     public int id;
     public String barcode;
     public String name;
     public int price;
     public double ratingSummary;
-    public String deskipsi;
-    public String picUrl;
+    public String description;
+    @SerializedName("picture_url")
+    public PictureSize pictureUrl;
 
     public Product(){
 
@@ -28,7 +31,8 @@ public class Product {
         this.name = name;
         this.price = price;
         this.ratingSummary = ratingSummary;
-        this.picUrl = picUrl;
+        this.pictureUrl = new PictureSize();
+        this.pictureUrl.medium = "";
     }
 
     public static Product createDummy(){

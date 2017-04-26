@@ -2,13 +2,9 @@ package com.project.ishoupbud.view.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraDevice;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -21,17 +17,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.Product;
+import com.project.ishoupbud.api.repositories.ProductRepo;
+import com.project.ishoupbud.helper.DialogMessageHelper;
+import com.project.ishoupbud.utils.ConstClass;
+import com.project.michael.base.api.APICallback;
+import com.project.michael.base.api.APIManager;
+import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.PermissionsUtils;
 import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
-import android.hardware.camera2.CameraManager;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ import java.lang.reflect.Field;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by michael on 4/9/17.
@@ -178,8 +181,33 @@ public class ScanBarcodeActivity extends BaseActivity {
     }
 
     //TODO Cek if found then go to Product detail, if not then go to not found page
-    private void fetchBarcode(String barcode){
+    private void fetchBarcode(final String barcode){
         progressDialog.show();
+        Call<Product> getProduct = APIManager.getRepository(ProductRepo.class).getProductByBarcode(barcode);
+        getProduct.enqueue(new APICallback<Product>() {
+            @Override
+            public void onSuccess(Call<Product> call, Response<Product> response) {
+                super.onSuccess(call, response);
+                progressDialog.dismiss();
+                Product product = response.body().product;
+                Intent i = new Intent(ScanBarcodeActivity.this, ProductActivity.class);
+                i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject(product, Product.class));
+                startActivity(i);
+                finish();
+            }
+
+            @Override
+            public void onNotFound(Call<Product> call, Response<Product> response) {
+                super.onNotFound(call, response);
+                foundedBarcode = false;
+                progressDialog.dismiss();
+                DialogMessageHelper.getInstance().show(
+                        ScanBarcodeActivity.this,
+                        "Not Found",
+                        "Product with barcode " + barcode + " is not found. please try another product or contect developer for adding the product",
+                        "Ok", null);
+            }
+        });
     }
 
     @Override
@@ -215,6 +243,7 @@ public class ScanBarcodeActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(),"Barcode field cannot be blank",Toast.LENGTH_SHORT).show();
                     return;
                 }
+                foundedBarcode = true;
                 fetchBarcode(etBarcode.getText().toString());
                 break;
         }

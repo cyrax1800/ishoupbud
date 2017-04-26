@@ -83,7 +83,7 @@ public class ProductActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         productQuantity = 1;
-        product = GsonUtils.getObjectFromJson(getIntent().getStringExtra(ConstClass.PRODUCT_EXTRA),Product.class);
+        product = GsonUtils.getObjectFromJson(getIntent().getStringExtra(ConstClass.PRODUCT_EXTRA), Product.class);
 
         collapsingToolbarLayout.setTitleEnabled(false);
         setSupportActionBar(toolbar);
@@ -116,12 +116,11 @@ public class ProductActivity extends BaseActivity {
         });
 
         Glide
-                .with(this)
-//                .load(product.picUrl)
-                .load("http://kingofwallpapers.com/aqua/aqua-001.jpg")
-                .centerCrop()
-                .crossFade()
-                .into(ivProduct);
+            .with(this)
+            .load(product.pictureUrl.medium)
+            .centerCrop()
+            .crossFade()
+            .into(ivProduct);
 
         tvProductName.setText(product.name);
         tvRatingSummary.setText(String.valueOf(product.ratingSummary));
@@ -164,6 +163,7 @@ public class ProductActivity extends BaseActivity {
             @Override
             public void run() {
                 tabLayout.setupWithViewPager(viewPager);
+                productPagerAdapter.productDetailFragment.updateDetail(product.description);
             }
         });
 

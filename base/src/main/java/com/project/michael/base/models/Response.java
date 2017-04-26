@@ -7,4 +7,5 @@ package com.project.michael.base.models;
 public class Response {
     public int code;
     public String message;
+    public String status;
 }
