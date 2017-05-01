@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -23,7 +23,9 @@
         android:layout_gravity="center"
         android:minEms="3"
         android:inputType="number"
+        android:maxLength="4"
         android:text="1"
+        android:textColor="@color/black"
         style="@style/edit_text_stepper"
         />
 
@@ -36,4 +38,4 @@
         style="@style/btn_stepper"
         />
 
-</LinearLayout>
+</merge>

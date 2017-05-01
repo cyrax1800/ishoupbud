@@ -20,7 +20,7 @@ public class RealmDb {
 
     private static RealmConfiguration realmConfiguration;
 
-    public static void SetUpRealmDatabase(Context context){
+    public static void SetUpRealmDatabase(Context context, Object... modules){
         Realm.init(context);
 
         if(Settings.getRealmDatabaseName().isEmpty())
@@ -28,11 +28,15 @@ public class RealmDb {
 
         RealmConfiguration.Builder builder = new RealmConfiguration.Builder()
                 .name(Settings.getRealmDatabaseName())
+                .modules(Realm.getDefaultModule(), modules)
+                .deleteRealmIfMigrationNeeded()
                 .schemaVersion(Settings.getRealmDatabaseSchemaVersion());
+
 
         realmConfiguration = builder.build();
 
         Realm.setDefaultConfiguration(realmConfiguration);
+//        Realm.deleteRealm(realmConfiguration);
 
         RealmLog.setLevel(Log.VERBOSE);
     }
@@ -41,7 +45,7 @@ public class RealmDb {
         try {
             Realm.migrateRealm(realmConfiguration, realmMigration);
         }catch (Exception e){
-            Log.e(TAG, "migrate: ", e.getCause());
+            Log.e(TAG, "migrate: " + e.toString());
         }
     }
 
@@ -49,7 +53,7 @@ public class RealmDb {
         try {
             getRealm().executeTransaction(transaction);
         }catch (Exception e){
-            Log.e(TAG, "migrate: ", e.getCause());
+            Log.e(TAG, "initiateData: " + e.toString());
         }
     }
 

@@ -1,5 +1,5 @@
 {
-    "usingRealmDatabase": false,
+    "usingRealmDatabase": true,
     "realmDatabaseName": "ishoupbud",
     "realmDatabaseSchemaVersion": 0,
     "usingSharedPreference": true,

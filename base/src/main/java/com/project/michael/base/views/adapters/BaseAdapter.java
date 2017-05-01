@@ -163,6 +163,9 @@ public class BaseAdapter<Model> extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
+        if(mModelList == null){
+            return 0;
+        }
         return mModelList .size();
     }
 

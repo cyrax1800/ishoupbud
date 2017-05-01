@@ -16,6 +16,7 @@ public abstract class APICallback<T> implements Callback<T> {
 
     private static final int OK = 200;
     private static final int CREATED = 201;
+    private static final int NO_CONTENT = 204;
     private static final int BAD_REQUEST = 400;
     private static final int UNAUTHORIZED = 401;
     private static final int FORBIDDEN = 403;
@@ -59,6 +60,10 @@ public abstract class APICallback<T> implements Callback<T> {
         Log.i(TAG, "onUnprocessableEntity: " + response.message());
     }
 
+    public void onNoContent(Call<T> call, Response<T> response) {
+        Log.i(TAG, "onNoContent: " + response.message());
+    }
+
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         switch (response.code()){
@@ -79,6 +84,9 @@ public abstract class APICallback<T> implements Callback<T> {
                 break;
             case UNPROCESSABLE_ENTITY:
                 onUnprocessableEntity(call, response);
+                break;
+            case NO_CONTENT:
+                onNoContent(call, response);
                 break;
             case BAD_REQUEST: case INTERNAL_SERVER_ERROR:
                 onError(call, response);

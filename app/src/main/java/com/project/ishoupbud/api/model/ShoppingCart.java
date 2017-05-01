@@ -13,13 +13,13 @@ public class ShoppingCart {
     public int id;
     public int quantity;
     public Product product;
-    public Vendor vendor;
+    public ProductVendors vendor;
 
     public ShoppingCart(){
 
     }
 
-    public ShoppingCart(int id, int quantity, Product product, Vendor vendor){
+    public ShoppingCart(int id, int quantity, Product product, ProductVendors vendor){
         this.id = id;
         this.quantity = quantity;
         this.product = product;
@@ -27,7 +27,7 @@ public class ShoppingCart {
     }
 
     public static ShoppingCart createDummy(){
-        return new ShoppingCart(1,Utils.random(1,100), Product.createDummy(), Vendor.createDummy());
+        return new ShoppingCart(1,Utils.random(1,100), Product.createDummy(), ProductVendors.createDummy());
     }
 
     public static List<ShoppingCart> getDummy(int count){

@@ -82,7 +82,12 @@
         android:orientation="horizontal"
         >
 
-        <include layout="@layout/layout_stepper"/>
+        <com.project.ishoupbud.view.StepperView
+            android:id="@+id/stepper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
 
         <Button
             android:id="@+id/btn_add_to_cart"
@@ -90,7 +95,7 @@
             android:layout_height="wrap_content"
             android:text="Add To Cart"
             android:drawablePadding="@dimen/item_space"
-            android:drawableEnd="@drawable/ic_shopping_cart"
+            android:drawableEnd="@drawable/ic_add_shopping_cart"
             style="@style/btnFlat"
             />
 

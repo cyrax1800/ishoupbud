@@ -30,7 +30,7 @@ public class ProductTransactionAdapter<Model> extends FastAdapter<Model> {
 
         shoppingCartHolder.tvProductName.setText(shoppingCart.product.name);
         shoppingCartHolder.tvPrice.setText("Rp. " + shoppingCart.vendor.price);
-        shoppingCartHolder.tvVendor.setText(shoppingCart.vendor.name);
+        shoppingCartHolder.tvVendor.setText(shoppingCart.vendor.vendor.name);
         shoppingCartHolder.tvQuantity.setText("Quantity: " + shoppingCart.quantity);
         shoppingCartHolder.tvSummary.setText("Summary: Rp. " + shoppingCart.quantity * shoppingCart.vendor.price);
 

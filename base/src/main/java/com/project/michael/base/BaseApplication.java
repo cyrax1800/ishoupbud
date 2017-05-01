@@ -10,6 +10,8 @@ import com.project.michael.base.utils.FileUtils;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.Settings;
 
+import io.realm.Realm;
+
 /**
  * Created by michael on 1/29/17.
  */
@@ -25,9 +27,6 @@ public class BaseApplication extends Application {
                         FileUtils.loadSettingsJsonFile(getApplicationContext()),
                         Settings.class
                 ));
-
-        if(Settings.isUsingRealmDatabase())
-            RealmDb.SetUpRealmDatabase(getApplicationContext());
 
         if(Settings.isUsingSharedPreference())
             SharedPref.getInstance().SetUpSharedPreference(getApplicationContext());

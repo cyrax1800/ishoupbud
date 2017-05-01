@@ -24,8 +24,8 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     protected ProgressDialog progressDialog;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if(Settings.isUsingRealmDatabase())
             realm = RealmDb.getRealm();
     }
@@ -33,7 +33,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(Settings.isUsingRealmDatabase())
+        if(Settings.isUsingRealmDatabase() && realm != null)
             realm.close();
     }
 

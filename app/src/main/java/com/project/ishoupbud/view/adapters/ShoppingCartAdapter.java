@@ -30,7 +30,7 @@ public class ShoppingCartAdapter<Model> extends FastAdapter<Model> {
 
         shoppingCartHolder.tvProductName.setText(shoppingCart.product.name);
         shoppingCartHolder.tvPrice.setText("Rp. " + shoppingCart.vendor.price);
-        shoppingCartHolder.tvVendor.setText(shoppingCart.vendor.name);
+        shoppingCartHolder.tvVendor.setText(shoppingCart.vendor.vendor.name);
         shoppingCartHolder.etStepperCount.setText(String.valueOf(shoppingCart.quantity));
 
         Glide

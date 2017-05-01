@@ -17,12 +17,16 @@ import android.widget.TextView;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
+import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.activities.ListProductActivity;
 import com.project.ishoupbud.view.activities.ProductActivity;
 import com.project.ishoupbud.view.activities.ScanBarcodeActivity;
 import com.project.ishoupbud.view.adapters.ProductAdapter;
 import com.project.ishoupbud.view.dialog.CategoriesDialogFragment;
+import com.project.michael.base.api.APICallback;
+import com.project.michael.base.api.APIManager;
+import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseFragment;
 import com.project.michael.base.views.adapters.BaseAdapter;
@@ -31,6 +35,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by michael on 4/4/17.
@@ -93,13 +99,28 @@ public class HomeFragment extends BaseFragment {
                     return false;
                 }
             });
-            newProduct.setNew(Product.getDummy(10));
 
             promoProduct = new ProductAdapter<>();
-            promoProduct.setNew(Product.getDummy(10));
+            promoProduct.setOnClickListener(new BaseAdapter.OnClickListener<Product>() {
+                @Override
+                public boolean onClick(View v, List<Product> products, Product product, int position) {
+                    Intent i = new Intent(getContext(), ProductActivity.class);
+                    i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject(product,Product.class));
+                    startActivity(i);
+                    return false;
+                }
+            });
 
             popularProduct = new ProductAdapter<>();
-            popularProduct.setNew(Product.getDummy(10));
+            popularProduct.setOnClickListener(new BaseAdapter.OnClickListener<Product>() {
+                @Override
+                public boolean onClick(View v, List<Product> products, Product product, int position) {
+                    Intent i = new Intent(getContext(), ProductActivity.class);
+                    i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject(product,Product.class));
+                    startActivity(i);
+                    return false;
+                }
+            });
 
             rvNewProduct.setAdapter(newProduct);
             rvPromo.setAdapter(promoProduct);
@@ -109,6 +130,54 @@ public class HomeFragment extends BaseFragment {
 
         }
         return _rootView;
+    }
+
+    public void fetchAllPromo(){
+        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo.class).getAllProduct();
+        productCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
+            @Override
+            public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
+                super.onSuccess(call, response);
+                promoProduct.setNew(response.body().data);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse<List<Product>>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
+    }
+
+    public void fetchAllNew(){
+        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo.class).getAllProduct();
+        productCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
+            @Override
+            public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
+                super.onSuccess(call, response);
+                newProduct.setNew(response.body().data);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse<List<Product>>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
+    }
+
+    public void fetchAllPopular(){
+        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo.class).getAllProduct();
+        productCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
+            @Override
+            public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
+                super.onSuccess(call, response);
+                popularProduct.setNew(response.body().data);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse<List<Product>>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
     }
 
     public static HomeFragment newInstance() {
@@ -135,8 +204,12 @@ public class HomeFragment extends BaseFragment {
                 startActivity(listIntent);
                 break;
             case R.id.tv_see_all_popular:
+                Intent popularIntent = new Intent(this.getContext(), ListProductActivity.class);
+                startActivity(popularIntent);
                 break;
             case R.id.tv_see_all_new:
+                Intent seeAllIntent = new Intent(this.getContext(), ListProductActivity.class);
+                startActivity(seeAllIntent);
                 break;
         }
     }

@@ -29,6 +29,7 @@ import com.project.ishoupbud.helper.DialogMessageHelper;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
+import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.PermissionsUtils;
 import com.project.michael.base.utils.Utils;
@@ -183,13 +184,13 @@ public class ScanBarcodeActivity extends BaseActivity {
     //TODO Cek if found then go to Product detail, if not then go to not found page
     private void fetchBarcode(final String barcode){
         progressDialog.show();
-        Call<Product> getProduct = APIManager.getRepository(ProductRepo.class).getProductByBarcode(barcode);
-        getProduct.enqueue(new APICallback<Product>() {
+        Call<GenericResponse<Product>> getProduct = APIManager.getRepository(ProductRepo.class).getProductByBarcode(barcode);
+        getProduct.enqueue(new APICallback<GenericResponse<Product>>() {
             @Override
-            public void onSuccess(Call<Product> call, Response<Product> response) {
+            public void onSuccess(Call<GenericResponse<Product>> call, Response<GenericResponse<Product>> response) {
                 super.onSuccess(call, response);
                 progressDialog.dismiss();
-                Product product = response.body().product;
+                Product product = response.body().data;
                 Intent i = new Intent(ScanBarcodeActivity.this, ProductActivity.class);
                 i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject(product, Product.class));
                 startActivity(i);
@@ -197,7 +198,7 @@ public class ScanBarcodeActivity extends BaseActivity {
             }
 
             @Override
-            public void onNotFound(Call<Product> call, Response<Product> response) {
+            public void onNotFound(Call<GenericResponse<Product>> call, Response<GenericResponse<Product>> response) {
                 super.onNotFound(call, response);
                 foundedBarcode = false;
                 progressDialog.dismiss();

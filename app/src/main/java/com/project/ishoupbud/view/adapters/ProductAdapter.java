@@ -30,14 +30,13 @@ public class ProductAdapter<Model> extends FastAdapter<Model> {
 
         productHolder.tvTitle.setText(product.name);
         productHolder.tvPrice.setText("Rp. " + product.price);
-        productHolder.tvRating.setText("(" + product.ratingSummary + ")");
-        productHolder.ratingBar.setRating((float)product.ratingSummary);
+        productHolder.tvRating.setText("(" + product.totalRating + ")");
+        productHolder.ratingBar.setRating((float)product.totalRating);
 
         Glide
                 .with(productHolder.ivProductImage.getContext())
-//                .load(product.picUrl)
-                .load("http://kingofwallpapers.com/aqua/aqua-001.jpg")
-                .centerCrop()
+                .load(product.pictureUrl.small)
+                .fitCenter()
                 .crossFade()
                 .into(productHolder.ivProductImage);
 

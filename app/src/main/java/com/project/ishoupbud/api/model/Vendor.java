@@ -5,25 +5,29 @@ import com.project.michael.base.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmObject;
+
 /**
  * Created by michael on 4/10/17.
  */
 
-public class Vendor {
+public class Vendor extends RealmObject {
 
     public int id;
     public String name;
     public String address;
     public Double longitude;
     public Double latitude;
-    public String pic_url;
-    public int price;
+    public String picture_url;
+
+    public Vendor(){
+
+    }
 
     public Vendor(int id, String name, String address, int price){
         this.id = id;
         this.name = name;
         this.address = address;
-        this.price = price;
     }
 
     public static Vendor createDummy(){

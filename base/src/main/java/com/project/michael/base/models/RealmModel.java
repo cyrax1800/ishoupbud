@@ -12,7 +12,7 @@ public class RealmModel extends RealmObject{
     private static int Increment = -1;
 
     @PrimaryKey
-    private int id;
+    public int id;
 
     public static int getIncrement(Realm realm, Class T) {
         if(Increment == -1){

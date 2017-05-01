@@ -4,9 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.ProductVendors;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.view.holders.VendorHolder;
 import com.project.michael.base.views.adapters.FastAdapter;
@@ -18,6 +20,7 @@ import com.project.michael.base.views.adapters.FastAdapter;
 public class VendorAdapter<Model> extends FastAdapter<Model> {
 
     private RadioButton lastChecked = null;
+    private int checkedIdx = -1;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -27,11 +30,25 @@ public class VendorAdapter<Model> extends FastAdapter<Model> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        VendorHolder vendorHolder = (VendorHolder) holder;
-        Vendor vendor = (Vendor) mModelList.get(position);
+        final VendorHolder vendorHolder = (VendorHolder) holder;
+        ProductVendors vendor = (ProductVendors) mModelList.get(position);
 
-        vendorHolder.tvName.setText(vendor.name);
-        vendorHolder.tvAddress.setText(vendor.address);
+        vendorHolder.tvName.setText(vendor.vendor.name);
+        vendorHolder.tvAddress.setText(vendor.vendor.address);
         vendorHolder.tvPrice.setText("Rp. " + vendor.price);
+        vendorHolder.radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(lastChecked != null) lastChecked.setChecked(false);
+                lastChecked = vendorHolder.radioButton;
+                checkedIdx = vendorHolder.getAdapterPosition();
+            }
+        });
     }
+
+    public int getCheckedIdx(){
+        return checkedIdx;
+    }
+
+
 }

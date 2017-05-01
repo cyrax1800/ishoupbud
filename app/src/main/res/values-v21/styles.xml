@@ -41,4 +41,8 @@
         <item name="android:background">@drawable/dialog_button</item>
     </style>
 
+    <style name="radioButton" parent="Base.Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:buttonTint">@color/dark_green</item>
+    </style>
+
 </resources>
