@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/item_space"
-    >
-
+    android:paddingTop="@dimen/item_space">
 
     <Spinner
         android:id="@+id/spinner_vendor"
@@ -15,7 +14,52 @@
         android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
         />
 
-    <info.hoang8f.android.segmented.SegmentedGroup
+    <co.ceryle.segmentedbutton.SegmentedButtonGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/segmented2"
+        app:sbg_animateSelector="linear"
+        app:sbg_animateSelectorDuration="100"
+        app:sbg_backgroundColor="@color/white"
+        app:sbg_dividerColor="@color/background_holo_light"
+        app:sbg_dividerPadding="10dp"
+        app:sbg_dividerRadius="10dp"
+        app:sbg_dividerSize="1dp"
+        app:sbg_position="1"
+        app:sbg_radius="2dp"
+        app:sbg_ripple="true"
+        app:sbg_rippleColor="@color/ripple_button_border"
+        app:sbg_selectorColor="@color/light_green"
+        app:sbg_selectorTextColor="@color/white"
+        app:sbg_borderSize="1dp"
+        app:sbg_borderColor="@color/light_green"
+        >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="7 days"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="1 Month"
+            android:textAllCaps="false" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="10dp"
+            android:text="3 Months"
+            android:textAllCaps="false" />
+
+    </co.ceryle.segmentedbutton.SegmentedButtonGroup>
+
+    <!--<info.hoang8f.android.segmented.SegmentedGroup
         xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
         android:id="@+id/segmented2"
         android:layout_width="wrap_content"
@@ -48,7 +92,7 @@
             android:layout_height="wrap_content"
             android:text="3 Months"
             style="@style/RadioButton" />
-    </info.hoang8f.android.segmented.SegmentedGroup>
+    </info.hoang8f.android.segmented.SegmentedGroup>-->
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"

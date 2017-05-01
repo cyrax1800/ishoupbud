@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.project.ishoupbud.R;
@@ -14,6 +15,7 @@ import com.project.michael.base.views.BaseFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import co.ceryle.segmentedbutton.SegmentedButtonGroup;
 import info.hoang8f.android.segmented.SegmentedGroup;
 
 /**
@@ -23,7 +25,8 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 public class ProductStatisticFragment extends BaseFragment {
 
     @BindView(R.id.spinner_vendor) Spinner spinnerVendor;
-    @BindView(R.id.segmented2) SegmentedGroup sgDayFilter;
+    @BindView(R.id.segmented2)
+    SegmentedButtonGroup sgDayFilter;
     @BindView(R.id.chart) LineChart lineChart;
 
     @Nullable
@@ -34,12 +37,20 @@ public class ProductStatisticFragment extends BaseFragment {
 
             ButterKnife.bind(this, _rootView);
 
-            sgDayFilter.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
+//            sgDayFilter.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(RadioGroup group, int checkedId) {
+//
+//                }
+//            });
 
+            sgDayFilter.setOnClickedButtonPosition(new SegmentedButtonGroup.OnClickedButtonPosition() {
+                @Override
+                public void onClickedButtonPosition(int position) {
+                    Toast.makeText(getContext(), "Clicked: " + position, Toast.LENGTH_SHORT).show();
                 }
             });
+            sgDayFilter.setPosition(0, 0);
         }
 
         return _rootView;

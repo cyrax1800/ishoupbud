@@ -40,6 +40,7 @@ dependencies {
     compile 'com.github.arimorty:floatingsearchview:2.0.3'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'info.hoang8f:android-segmented:1.0.6'
+    compile 'com.github.ceryle:SegmentedButton:v1.2.2'
     compile 'com.android.support:appcompat-v7:25.3.0'
 
 
