@@ -1,6 +1,7 @@
 package com.project.ishoupbud.api.repositories;
 
 import com.project.ishoupbud.api.model.User;
+import com.project.michael.base.models.Response;
 
 import java.util.HashMap;
 
@@ -20,4 +21,10 @@ public interface UserRepo {
     @Headers("Accept: application/json")
     @GET("me")
     Call<User> getOwnData();
+
+    @Headers("Accept: application/json")
+    @POST("user/change_password")
+    Call<Response> changePassword(@Body HashMap map);
+
+
 }
