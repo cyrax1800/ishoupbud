@@ -10,14 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Category;
-import com.project.ishoupbud.api.model.Product;
-import com.project.ishoupbud.api.model.WishList;
 import com.project.ishoupbud.view.holders.CategoryHolder;
-import com.project.ishoupbud.view.holders.ProductHolder;
-import com.project.michael.base.models.RealmModel;
 import com.project.michael.base.views.adapters.RealmBaseAdapter;
 
 import java.util.ArrayList;

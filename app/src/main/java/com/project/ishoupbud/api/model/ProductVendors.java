@@ -1,8 +1,5 @@
 package com.project.ishoupbud.api.model;
 
-import com.project.michael.base.models.RealmModel;
-import com.project.michael.base.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -9,9 +9,7 @@ import android.view.ContextMenu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.project.michael.base.models.RealmModel;
 import com.project.michael.base.views.helpers.ClickListenerHelper;
-import com.project.michael.base.views.helpers.RealmClickListenerHelper;
 
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -27,19 +25,19 @@ import static java.util.Arrays.asList;
  * Created by michael on 5/1/17.
  */
 
-public class RealmBaseAdapter<Model extends RealmObject> extends RealmRecyclerViewAdapter<Model, RecyclerView.ViewHolder> {
+public class RealmBaseAdapter<Model extends RealmObject> extends RealmRecyclerViewAdapter<Model, RecyclerView.ViewHolder> implements IBaseAdapter{
 
     public static final String TAG = "tmp-realmBaseAdapter";
 
     protected List<Model> mModelList = new ArrayList<>();
 
-    private RealmClickListenerHelper<Model> mClickListenerHelper;
+    private ClickListenerHelper<Model> mClickListenerHelper;
     private BaseAdapter.OnClickListener<Model> mOnClickListener;
     private BaseAdapter.OnLongClickListener<Model> mOnLongClickListener;
 
     public RealmBaseAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Model> data, boolean autoUpdate) {
         super(context, data, autoUpdate);
-        mClickListenerHelper = new RealmClickListenerHelper<>(this);
+        mClickListenerHelper = new ClickListenerHelper<>(this);
     }
 
     public void setNew(List<Model> modelList){
@@ -98,10 +96,12 @@ public class RealmBaseAdapter<Model extends RealmObject> extends RealmRecyclerVi
         notifyItemRangeRemoved(0, countBefore);
     }
 
+    @Override
     public Model getItemAt(int index){
         return mModelList.get(index);
     }
 
+    @Override
     public int getViewHolderPosition(RecyclerView.ViewHolder viewHolder){
         return viewHolder.getAdapterPosition();
     }

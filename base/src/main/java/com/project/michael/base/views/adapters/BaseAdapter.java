@@ -19,7 +19,7 @@ import static java.util.Arrays.asList;
  * Created by michael on 2/2/17.
  */
 
-public class BaseAdapter<Model> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class BaseAdapter<Model> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IBaseAdapter{
 
     public static final String TAG = "tmp-baseAdapter";
 
@@ -89,10 +89,12 @@ public class BaseAdapter<Model> extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyItemRangeRemoved(0, countBefore);
     }
 
+    @Override
     public Model getItemAt(int index){
         return mModelList.get(index);
     }
 
+    @Override
     public int getViewHolderPosition(RecyclerView.ViewHolder viewHolder){
         return viewHolder.getAdapterPosition();
     }

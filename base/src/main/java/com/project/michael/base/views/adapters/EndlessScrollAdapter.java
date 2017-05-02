@@ -17,7 +17,7 @@ import static java.util.Arrays.asList;
  * Created by michael on 2/2/17.
  */
 
-public class EndlessScrollAdapter<Model> extends BaseAdapter<Model> {
+public class EndlessScrollAdapter<Model> extends FastAdapter<Model> {
 
     protected final int VIEW_TYPE_ITEM = 0;
     protected final int VIEW_TYPE_LOADING = -1;

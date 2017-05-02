@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.project.michael.base.views.adapters.BaseAdapter;
+import com.project.michael.base.views.adapters.IBaseAdapter;
 import com.project.michael.base.views.listeners.ClickEventListener;
 import com.project.michael.base.views.listeners.ClickListener;
 import com.project.michael.base.views.listeners.LongClickEventListener;
@@ -20,11 +21,11 @@ import java.util.Map;
 
 public class ClickListenerHelper<Model> {
 
-    private BaseAdapter<Model> mBaseAdapter;
+    private IBaseAdapter<Model> mBaseAdapter;
 
     private Map<Integer, EventListener> clickListenerMap = new HashMap<>();
 
-    public ClickListenerHelper(BaseAdapter<Model> baseAdapter){
+    public ClickListenerHelper(IBaseAdapter<Model> baseAdapter){
         this.mBaseAdapter = baseAdapter;
     }
 

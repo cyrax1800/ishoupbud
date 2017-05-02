@@ -1,7 +1,5 @@
 package com.project.ishoupbud.api.model;
 
-import com.project.michael.base.models.RealmModel;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
