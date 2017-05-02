@@ -174,7 +174,7 @@ public class LoginActivity extends BaseActivity {
             public void onSuccess(Call<Token> call, Response<Token> response) {
                 super.onSuccess(call, response);
                 Log.d(TAG, "onSuccess: " + response.body().access_token);
-                SharedPref.save(ConstClass.ACCESS_TOKEN,response.body().access_token);
+                SharedPref.save(SharedPref.ACCESS_TOKEN,response.body().access_token);
 
                 getOwnData();
             }

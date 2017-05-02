@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.project.michael.base.utils.Settings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,12 @@ public class APIManager {
 
     private static String TAG = "tmp-ApiManager";
 
+    public static String AUTHORIZATION_HEADER = "Authorization";
+
     private static Retrofit retrofit = null;
 
+    public static List<String> JSONKeyToGenericResponse = new ArrayList<>();
     private static HashMap<String,Object> repositories;
-
     private static List<Interceptor> interceptors = new ArrayList<>();
 
     public static void SetUpRetrofit(){
@@ -55,6 +58,10 @@ public class APIManager {
                 .build();
 
         repositories = new HashMap<>();
+    }
+
+    public static void addJSONKeyForGeneric(String... keys){
+        JSONKeyToGenericResponse.addAll(Arrays.asList(keys));
     }
 
     public static void addInterceptor(Interceptor interceptor){

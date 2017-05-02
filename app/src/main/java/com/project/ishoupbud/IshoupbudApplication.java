@@ -10,15 +10,14 @@ import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.api.repositories.UserRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.helper.TextImageCircleHelper;
-import com.project.ishoupbud.network.SessionInterceptor;
+import com.project.michael.base.api.GenericResponseInterceptor;
+import com.project.michael.base.api.SessionInterceptor;
 import com.project.michael.base.BaseApplication;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.database.RealmDb;
 import com.project.michael.base.database.RealmModule;
 import com.project.michael.base.utils.Settings;
 import com.squareup.leakcanary.LeakCanary;
-
-import io.realm.Realm;
 
 /**
  * Created by michael on 4/23/17.
@@ -28,8 +27,9 @@ public class IshoupbudApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
-
+        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist");
         APIManager.addInterceptor(new SessionInterceptor());
+        APIManager.addInterceptor(new GenericResponseInterceptor());
 
         super.onCreate();
 
@@ -47,8 +47,7 @@ public class IshoupbudApplication extends BaseApplication {
         APIManager.registerRepository(WishlistRepo.class);
         APIManager.registerRepository(ShoppingCartRepo.class);
 
-        if(Settings.isUsingRealmDatabase())
-            RealmDb.SetUpRealmDatabase(getApplicationContext(), new AppRealmModul(), new RealmModule());
+        RealmDb.SetUpRealmDatabase(getApplicationContext(), new AppRealmModul());
 
         RealmDb.migrate(new Migration());
 

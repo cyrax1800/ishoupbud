@@ -194,7 +194,7 @@ public class RegisterActivity extends BaseActivity implements View.OnFocusChange
                 super.onSuccess(call, response);
                 progressDialog.dismiss();
                 Log.d(TAG, "onSuccess: " + response.body().access_token);
-                SharedPref.save(ConstClass.ACCESS_TOKEN,response.body().access_token);
+                SharedPref.save(SharedPref.ACCESS_TOKEN,response.body().access_token);
                 getOwnData();
             }
 

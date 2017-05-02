@@ -9,7 +9,6 @@ import com.project.michael.base.database.SharedPref;
 public class ConstClass {
 
     // Shared Preference
-    public static String ACCESS_TOKEN = "access-token";
     public static String USER = "user";
 
     // Extra
@@ -18,6 +17,4 @@ public class ConstClass {
     public static String PRODUCT_EXTRA = "product";
     public static String CATEGORY_EXTRA = "category";
 
-    //API
-    public static String AUTHORIZATION_HEADER = "Authorization";
 }

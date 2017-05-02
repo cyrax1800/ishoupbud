@@ -89,7 +89,7 @@ public class ProfileFragment extends BaseFragment {
     }
 
     public void updateProfile(){
-        if(SharedPref.getValueString(ConstClass.ACCESS_TOKEN).isEmpty()){
+        if(SharedPref.getValueString(SharedPref.ACCESS_TOKEN).isEmpty()){
             llProfile.setVisibility(View.GONE);
             llNotLoggedIn.setVisibility(View.VISIBLE);
         }else{
@@ -154,7 +154,7 @@ public class ProfileFragment extends BaseFragment {
                 getActivity().startActivityForResult(i,REQUEST_LOGIN);
                 break;
             case R.id.btn_logout:
-                SharedPref.save(ConstClass.ACCESS_TOKEN,"");
+                SharedPref.save(SharedPref.ACCESS_TOKEN,"");
                 SharedPref.save(ConstClass.USER,"");
                 updateProfile();
                 break;

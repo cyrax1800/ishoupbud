@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class GenericResponse<T> extends Response{
-    @SerializedName(value="data", alternate={"product", "products", "user", "wishlist"})
+    @SerializedName("data")
     public T data;
 }

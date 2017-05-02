@@ -21,11 +21,13 @@ public class RealmDb {
     private static RealmConfiguration realmConfiguration;
 
     public static void SetUpRealmDatabase(Context context, Object... modules){
-        Realm.init(context);
+        if(!Settings.isUsingRealmDatabase())
+            throw new ExceptionInInitializerError("RealmDatabase must be set to \"true\" in Settings.json file");
 
         if(Settings.getRealmDatabaseName().isEmpty())
             throw new ExceptionInInitializerError("RealmDatabaseName must be define in Settings.json file");
 
+        Realm.init(context);
         RealmConfiguration.Builder builder = new RealmConfiguration.Builder()
                 .name(Settings.getRealmDatabaseName())
                 .modules(Realm.getDefaultModule(), modules)
@@ -39,6 +41,11 @@ public class RealmDb {
 //        Realm.deleteRealm(realmConfiguration);
 
         RealmLog.setLevel(Log.VERBOSE);
+    }
+
+    public static void deleteRealm(boolean AutoCreateNew){
+        Realm.deleteRealm(realmConfiguration);
+        Realm.setDefaultConfiguration(realmConfiguration);
     }
 
     public static void migrate(RealmMigration realmMigration){

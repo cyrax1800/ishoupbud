@@ -15,6 +15,8 @@ public class SharedPref {
 
     private static String TAG = "tmp-SharedPref";
 
+    public static String ACCESS_TOKEN = "access-token";
+
     private static SharedPref mInstance;
 
     private SharedPreferences sharedpreferences;
