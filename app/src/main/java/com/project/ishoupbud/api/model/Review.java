@@ -14,6 +14,6 @@ public class Review {
     public String description;
     public double rating;
     public Date date;
-    public String sentiment;
+    public Sentiment sentiment;
     public boolean status;
 }

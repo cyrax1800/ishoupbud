@@ -1,16 +1,25 @@
 package com.project.ishoupbud.view.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.nfc.Tag;
 import android.os.Build;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -25,20 +34,34 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.manager.GoogleAPIManager;
+import com.project.ishoupbud.service.FetchAddressService;
+import com.project.ishoupbud.utils.ConstClass;
 import com.project.michael.base.utils.PermissionsUtils;
+import com.project.michael.base.utils.StringUtils;
 import com.project.michael.base.views.BaseActivity;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SelectLocationActivity extends BaseActivity implements OnMapReadyCallback {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    Toolbar toolbar;
+    TextView tvAddress;
+    Button btn_submit;
 
     private GoogleMap mMap;
 
     public double longitude;
     public double latitude;
+    public boolean isRequestedLocation;
+
+    protected String mAddressOutput;
+    protected Location mLastLocation;
+    private AddressResultReceiver mResultReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +69,8 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
         setContentView(R.layout.activity_select_location);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        tvAddress = (TextView) findViewById(R.id.tv_address);
+        btn_submit = (Button) findViewById(R.id.btn_submit);
 
         toolbar.setTitle("Choose Position");
         setSupportActionBar(toolbar);
@@ -54,10 +79,13 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        mResultReceiver = new AddressResultReceiver(new Handler());
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        btn_submit.setOnClickListener(this);
     }
 
     @Override
@@ -89,9 +117,20 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
             @Override
             public void onCameraMove() {
                 CameraPosition cameraPosition = mMap.getCameraPosition();
-                Log.d(TAG,"latidude "+ String.valueOf(cameraPosition.target.latitude));
-
-                Log.d(TAG,"longitude "+ String.valueOf(cameraPosition.target.longitude));
+                longitude = cameraPosition.target.longitude;
+                latitude = cameraPosition.target.latitude;
+                mLastLocation.setLatitude(latitude);
+                mLastLocation.setLongitude(longitude);
+//                Log.d(TAG,"latidude "+ String.valueOf(latitude));
+//                Log.d(TAG,"longitude "+ String.valueOf(longitude));
+            }
+        });
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                if(isRequestedLocation) return;
+                isRequestedLocation = true;
+                startIntentService();
             }
         });
 
@@ -107,12 +146,15 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
         if (rc == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(status);
             if(status){
-                Location location = LocationServices.FusedLocationApi.getLastLocation(GoogleAPIManager.getGoogleApi().getGoogleApiClient());
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(GoogleAPIManager.getGoogleApi().getGoogleApiClient());
                 Log.d(TAG, "getCurrentLocation: ");
-                if (location != null) {
+                if (mLastLocation != null) {
                     //Getting longitude and latitude
-                    longitude = location.getLongitude();
-                    latitude = location.getLatitude();
+                    longitude = mLastLocation.getLongitude();
+                    latitude = mLastLocation.getLatitude();
+                    mLastLocation.setLatitude(latitude);
+                    mLastLocation.setLongitude(longitude);
+                    startIntentService();
 
                     //moving the map to location
                     moveMap();
@@ -136,7 +178,51 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
         mMap.moveCamera(yourLocation);
         setMycurrentPosition(false);
 
+    }
 
+    protected void startIntentService() {
+        Intent intent = new Intent(this, FetchAddressService.class);
+        intent.putExtra(FetchAddressService.RECEIVER, mResultReceiver);
+        intent.putExtra(FetchAddressService.LOCATION_DATA_EXTRA, mLastLocation);
+        startService(intent);
+    }
 
+    public void updateAddressText(){
+        if(StringUtils.isNullOrEmpty(mAddressOutput)) return;
+        tvAddress.setText(mAddressOutput);
+        isRequestedLocation = false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        if(mAddressOutput == null || mAddressOutput.equals("no address")) return;
+        Intent data = new Intent();
+        data.putExtra(ConstClass.ADDRESS_EXTRA, mAddressOutput);
+        data.putExtra(ConstClass.LATITUDE_EXTRA, latitude);
+        data.putExtra(ConstClass.LONGITUDE_EXTRA, longitude);
+        setResult(-1, data);//Success
+        finish();
+    }
+
+    class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            // Display the address string
+            // or an error message sent from the intent service.
+            mAddressOutput = resultData.getString(FetchAddressService.RESULT_DATA_KEY);
+            updateAddressText();
+
+            // Show a toast message if an address was found.
+            if (resultCode == FetchAddressService.SUCCESS_RESULT) {
+//                Toast.makeText(getApplicationContext(),"address found",Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 }

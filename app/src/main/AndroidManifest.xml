@@ -57,6 +57,10 @@
             android:label="@string/title_activity_select_location"/>
         <activity android:name="com.project.ishoupbud.view.activities.DetailTransactionActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <service
+            android:name="com.project.ishoupbud.service.FetchAddressService"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -15,6 +15,8 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 /**
@@ -137,6 +139,34 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return file.getAbsolutePath();
+    }
+
+    public static byte[] compressImage(File file){
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(file), null, o);
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=400;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            Bitmap bitmap =BitmapFactory.decodeStream(new FileInputStream(file), null, o2);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            return out.toByteArray();
+        } catch (FileNotFoundException e) {}
+        return null;
     }
 
 }

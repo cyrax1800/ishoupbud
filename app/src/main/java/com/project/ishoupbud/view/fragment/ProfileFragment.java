@@ -102,7 +102,7 @@ public class ProfileFragment extends BaseFragment {
             tvSaldo.setText("Saldo: " + Utils.indonesiaFormat(user.saldo));
 
             Glide.with(getContext())
-                    .load(user.picture_url)
+                    .load(user.getSmallImage())
                     .placeholder(TextImageCircleHelper.getInstance().getImage(user.name))
                     .centerCrop()
                     .crossFade()

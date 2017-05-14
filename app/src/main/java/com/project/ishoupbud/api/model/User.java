@@ -18,4 +18,12 @@ public class User {
     public Float saldo;
     public int role;
 
+    public String getSmallImage(){
+        return "https://shoupbud.xyz/image/medium/" + picture_url;
+    }
+
+    public String getMediumImage(){
+        return "https://shoupbud.xyz/image/small/" + picture_url;
+    }
+
 }

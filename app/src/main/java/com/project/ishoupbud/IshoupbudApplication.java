@@ -5,6 +5,7 @@ import com.project.ishoupbud.api.CategoryTransaction;
 import com.project.ishoupbud.api.Migration;
 import com.project.ishoupbud.api.repositories.AuthenticationRepo;
 import com.project.ishoupbud.api.repositories.ProductRepo;
+import com.project.ishoupbud.api.repositories.ReviewRepo;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.api.repositories.UserRepo;
@@ -27,7 +28,7 @@ public class IshoupbudApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
-        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist");
+        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review");
         APIManager.addInterceptor(new SessionInterceptor());
         APIManager.addInterceptor(new GenericResponseInterceptor());
 
@@ -46,6 +47,7 @@ public class IshoupbudApplication extends BaseApplication {
         APIManager.registerRepository(AuthenticationRepo.class);
         APIManager.registerRepository(WishlistRepo.class);
         APIManager.registerRepository(ShoppingCartRepo.class);
+        APIManager.registerRepository(ReviewRepo.class);
 
         RealmDb.SetUpRealmDatabase(getApplicationContext(), new AppRealmModul());
 

@@ -16,5 +16,9 @@ public class ConstClass {
     public static String LOGIN_EXTRA = "register";
     public static String PRODUCT_EXTRA = "product";
     public static String CATEGORY_EXTRA = "category";
+    public static String ADDRESS_EXTRA = "address";
+    public static String LOCATION_EXTRA = "location";
+    public static String LATITUDE_EXTRA = "latitude";
+    public static String LONGITUDE_EXTRA = "longitude";
 
 }

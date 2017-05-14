@@ -77,7 +77,6 @@
                     android:id="@+id/etl_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:errorEnabled="true"
                     >
 
                     <EditText
@@ -86,6 +85,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"
                         android:hint="Email"
+                        android:focusable="false"
+                        android:enabled="false"
                         />
 
                 </android.support.design.widget.TextInputLayout>
@@ -131,31 +132,6 @@
                     android:text="Pilih melalui Peta"
                     style="@style/btnBorder"
                     />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/bb_divider"
-                    android:layout_marginTop="@dimen/item_space"
-                    android:layout_marginBottom="@dimen/item_space"
-                    />
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/etl_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:errorEnabled="true"
-                    >
-
-                    <EditText
-                        android:id="@+id/et_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:hint="Password"
-                        />
-
-                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
