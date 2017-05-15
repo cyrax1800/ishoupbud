@@ -94,6 +94,9 @@ public class EndlessScrollAdapter<Model> extends FastAdapter<Model> {
 
     @Override
     public int getItemCount() {
+        if(mModelList == null){
+            return mFooter.size();
+        }
         return mModelList .size() + mFooter.size();
     }
 }

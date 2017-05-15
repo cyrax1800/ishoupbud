@@ -1,11 +1,23 @@
 package com.project.ishoupbud.api.repositories;
 
+import com.project.ishoupbud.api.model.ProductAllReviewResponse;
+import com.project.ishoupbud.api.model.Review;
 import com.project.ishoupbud.api.model.User;
+import com.project.michael.base.models.GenericResponse;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by michael on 5/13/17.
@@ -15,9 +27,14 @@ public interface ReviewRepo {
 
     @Headers("Accept: application/json")
     @GET("review")
-    Call<User> getReview();
+    Call<ProductAllReviewResponse> getReview(@QueryMap Map<String, Object> query);
 
     @Headers("Accept: application/json")
     @POST("review")
-    Call<User> submitReview();
+    Call<GenericResponse<Review>> submitReview(@Body HashMap<String, Object> map);
+
+    @FormUrlEncoded
+    @Headers("Accept: application/json")
+    @PUT("review")
+    Call<GenericResponse<Review>> updateReview(@FieldMap Map<String, Object> map);
 }

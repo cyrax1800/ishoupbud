@@ -1,5 +1,7 @@
 package com.project.ishoupbud.api.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 /**
@@ -11,6 +13,7 @@ public class Review {
     public int id;
     public User user;
     public Vendor vendor;
+    @SerializedName("body")
     public String description;
     public double rating;
     public Date date;

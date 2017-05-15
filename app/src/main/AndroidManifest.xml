@@ -61,6 +61,9 @@
         <service
             android:name="com.project.ishoupbud.service.FetchAddressService"
             android:exported="false"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="6ef69f2ccd60eb2393feda48a996218051512d00" />
     </application>
 
 </manifest>

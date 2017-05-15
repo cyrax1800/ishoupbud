@@ -1,6 +1,7 @@
 package com.project.ishoupbud.view.dialog;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,15 +11,29 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.Product;
+import com.project.ishoupbud.api.model.Review;
+import com.project.ishoupbud.api.repositories.ReviewRepo;
+import com.project.ishoupbud.view.activities.ProductActivity;
+import com.project.ishoupbud.view.fragment.ProductReviewFragment;
+import com.project.michael.base.api.APICallback;
+import com.project.michael.base.api.APIManager;
+import com.project.michael.base.models.GenericResponse;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by michael on 4/12/17.
@@ -31,6 +46,12 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
     EditText etReview;
     Button btnSubmit;
     Button btnCancel;
+    ProgressDialog progressDialog;
+    ProductReviewFragment productReviewFragment;
+
+    private Review review;
+    private ArrayAdapter<String> vendors;
+    public int selectedVendorIdx;
 
     @Nullable
     @Override
@@ -44,20 +65,138 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
         btnSubmit = (Button) rootView.findViewById(R.id.btn_submit);
         btnCancel = (Button) rootView.findViewById(R.id.btn_cancel);
 
+        spinnerVendor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedVendorIdx = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        if(vendors != null){
+            spinnerVendor.setAdapter(vendors);
+        }
+
+        if(review != null){
+            for(int i = 0;i < productReviewFragment.vendorList.size(); i++){
+                if(review.vendor.id == productReviewFragment.vendorList.get(i).id){
+                    spinnerVendor.setSelection(i);
+                    break;
+                }
+            }
+            ratingBar.setRating((float)review.rating);
+            etReview.setText(review.description);
+        }
+
+        progressDialog = new ProgressDialog(getContext());
+
         btnSubmit.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
 
         return rootView;
     }
 
+    public void setProductReviewFragment(ProductReviewFragment productReviewFragment){
+        this.productReviewFragment = productReviewFragment;
+    }
+
+    public void setVendors(ArrayAdapter<String> vendors){
+        this.vendors = vendors;
+        if(spinnerVendor != null) spinnerVendor.setAdapter(vendors);
+    }
+
+    public void setReview(Review review){
+        this.review = review;
+        if(spinnerVendor == null) return;
+        for(int i = 0;i < productReviewFragment.vendorList.size(); i++){
+            if(review.vendor.id == productReviewFragment.vendorList.get(i).id){
+                spinnerVendor.setSelection(i);
+                break;
+            }
+        }
+        ratingBar.setRating((float)review.rating);
+        etReview.setText(review.description);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        this.review = null;
+        spinnerVendor.setSelection(0);
+        ratingBar.setRating(0);
+        etReview.setText("");
+        super.onDismiss(dialog);
+    }
+
+    public void addOrEditReview(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("product_id", productReviewFragment.productId);
+        map.put("vendor_id", productReviewFragment.vendorList.get(selectedVendorIdx).id);
+        map.put("rating", ratingBar.getRating());
+        map.put("body", etReview.getText().toString());
+        if(review != null){
+            map.put("id_review", review.id);
+            progressDialog.setMessage("Updating review");
+            Call<GenericResponse<Review>> updateReview = APIManager.getRepository(ReviewRepo.class).updateReview(map);
+            updateReview.enqueue(new APICallback<GenericResponse<Review>>() {
+                @Override
+                public void onSuccess(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
+                    super.onSuccess(call, response);
+                    progressDialog.dismiss();
+                    dismiss();
+                }
+
+                @Override
+                public void onError(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
+                    super.onError(call, response);
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<GenericResponse<Review>> call, Throwable t) {
+                    super.onFailure(call, t);
+                    progressDialog.dismiss();
+                }
+            });
+        }else{
+            progressDialog.setMessage("Adding review");
+            Call<GenericResponse<Review>> addReivew = APIManager.getRepository(ReviewRepo.class).submitReview(map);
+            addReivew.enqueue(new APICallback<GenericResponse<Review>>() {
+                @Override
+                public void onSuccess(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
+                    super.onSuccess(call, response);
+                    progressDialog.dismiss();
+                    dismiss();
+                }
+
+                @Override
+                public void onError(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
+                    super.onError(call, response);
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<GenericResponse<Review>> call, Throwable t) {
+                    super.onFailure(call, t);
+                    progressDialog.dismiss();
+                }
+            });
+        }
+        progressDialog.show();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_submit:
+                addOrEditReview();
                 break;
             case R.id.btn_cancel:
+                dismiss();
                 break;
         }
-        dismiss();
     }
 }

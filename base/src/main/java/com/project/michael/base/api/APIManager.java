@@ -45,7 +45,7 @@ public class APIManager {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .create();
 
         if(Settings.getRetrofitAPIUrl().isEmpty())

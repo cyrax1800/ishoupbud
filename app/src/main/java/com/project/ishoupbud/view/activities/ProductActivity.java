@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.model.ProductVendors;
+import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.model.WishList;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.utils.ConstClass;
@@ -41,7 +42,9 @@ import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -55,25 +58,40 @@ import retrofit2.Response;
 
 public class ProductActivity extends BaseActivity {
 
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.appbar) AppBarLayout appBarLayout;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.appbar)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     TextView toolbar_title;
-    @BindView(R.id.iv_product) ImageView ivProduct;
+    @BindView(R.id.iv_product)
+    ImageView ivProduct;
 
-    @BindView(R.id.tv_product_name) TextView tvProductName;
-    @BindView(R.id.tv_rating_summary) TextView tvRatingSummary;
-    @BindView(R.id.tv_total_rater) TextView tvTotalRater;
-    @BindView(R.id.tv_sentiment) TextView tvSentiment;
-    @BindView(R.id.rating_bar_summary) RatingBar ratingBar;
-    @BindView(R.id.rv_vendor) RecyclerView rvVendor;
-    @BindView(R.id.btn_add_to_cart) Button btnAddToCart;
-    @BindView(R.id.btn_compare) Button btnCompare;
+    @BindView(R.id.tv_product_name)
+    TextView tvProductName;
+    @BindView(R.id.tv_rating_summary)
+    TextView tvRatingSummary;
+    @BindView(R.id.tv_total_rater)
+    TextView tvTotalRater;
+    @BindView(R.id.tv_sentiment)
+    TextView tvSentiment;
+    @BindView(R.id.rating_bar_summary)
+    RatingBar ratingBar;
+    @BindView(R.id.rv_vendor)
+    RecyclerView rvVendor;
+    @BindView(R.id.btn_add_to_cart)
+    Button btnAddToCart;
+    @BindView(R.id.btn_compare)
+    Button btnCompare;
 
-    @BindView(R.id.stepper) StepperView stepperView;
+    @BindView(R.id.stepper)
+    StepperView stepperView;
 
-    @BindView(R.id.tab_layout) TabLayout tabLayout;
-    @BindView(R.id.view_pager) ViewPager viewPager;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
 
     Menu menu;
 
@@ -100,7 +118,7 @@ public class ProductActivity extends BaseActivity {
         toolbar_title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         toolbar_title.setText(product.name);
         toolbar_title.setAlpha(0.0f);
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -117,7 +135,7 @@ public class ProductActivity extends BaseActivity {
                 if (scrollRange + verticalOffset == 0) {
                     toolbar_title.animate().alpha(1.0f).setDuration(250);
                     isShow = true;
-                } else if(isShow) {
+                } else if (isShow) {
                     toolbar_title.animate().alpha(0.0f).setDuration(250);
                     isShow = false;
                 }
@@ -125,21 +143,21 @@ public class ProductActivity extends BaseActivity {
         });
 
         Glide
-            .with(this)
-            .load(product.pictureUrl.medium)
-            .fitCenter()
-            .crossFade()
-            .into(ivProduct);
+                .with(this)
+                .load(product.pictureUrl.medium)
+                .fitCenter()
+                .crossFade()
+                .into(ivProduct);
 
         tvProductName.setText(product.name);
         tvRatingSummary.setText(String.valueOf(product.totalRating));
         tvTotalRater.setText("(" + product.totalReview + " Reviews)");
         tvSentiment.setText("OverAll: Very Positif");
-        ratingBar.setRating((float)product.totalRating);
+        ratingBar.setRating((float) product.totalRating);
 
         vendorAdapter = new VendorAdapter<>();
         vendorAdapter.setNew(product.vendors);
-        rvVendor.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        rvVendor.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvVendor.setAdapter(vendorAdapter);
 
         btnAddToCart.setOnClickListener(this);
@@ -149,6 +167,7 @@ public class ProductActivity extends BaseActivity {
 
         productPagerAdapter = new ProductPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(productPagerAdapter);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -158,7 +177,10 @@ public class ProductActivity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 if (position == 0) {
+                    productPagerAdapter.productDetailFragment.updateDetail(product.description);
                 } else if (position == 1) {
+                } else if (position == 2) {
+                    productPagerAdapter.productStatisticFragment.initialRequest();
                 }
             }
 
@@ -172,14 +194,22 @@ public class ProductActivity extends BaseActivity {
             public void run() {
                 tabLayout.setupWithViewPager(viewPager);
                 productPagerAdapter.productDetailFragment.updateDetail(product.description);
+                productPagerAdapter.productReviewFragment.setProductId(product.id);
+                List<Vendor> vendors = new ArrayList<>();
+                for (int i = 0; i < product.vendors.size(); i++) {
+                    vendors.add(product.vendors.get(i).vendor);
+                }
+                productPagerAdapter.productReviewFragment.setVendor(vendors);
+                productPagerAdapter.productStatisticFragment.setVendor(vendors);
+                productPagerAdapter.productStatisticFragment.setProductId(product.id);
             }
         });
 
     }
 
-    public void addToWishList(){
+    public void addToWishList() {
         Map<String, Object> map = new HashMap<>();
-        map.put("product_id",product.id);
+        map.put("product_id", product.id);
         Call<GenericResponse<WishList>> addWishlist = APIManager.getRepository(WishlistRepo.class).addWishlist(map);
         addWishlist.enqueue(new APICallback<GenericResponse<WishList>>() {
             @Override
@@ -205,7 +235,7 @@ public class ProductActivity extends BaseActivity {
         });
     }
 
-    public void removeFromWishList(){
+    public void removeFromWishList() {
         Call<com.project.michael.base.models.Response> removeWishlist = APIManager.getRepository(WishlistRepo.class).deleteWishlist(product.id);
         removeWishlist.enqueue(new APICallback<com.project.michael.base.models.Response>() {
             @Override
@@ -234,7 +264,7 @@ public class ProductActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_product,menu);
+        inflater.inflate(R.menu.menu_product, menu);
         this.menu = menu;
         return true;
     }
@@ -243,32 +273,32 @@ public class ProductActivity extends BaseActivity {
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
-            if ( v instanceof EditText) {
+            if (v instanceof EditText) {
                 Rect outRect = new Rect();
                 v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             }
         }
-        return super.dispatchTouchEvent( event );
+        return super.dispatchTouchEvent(event);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
-        }else if(item.getItemId() == R.id.action_shopping_cart){
+        } else if (item.getItemId() == R.id.action_shopping_cart) {
             Intent i = new Intent(this, ShoppingCartActivity.class);
             startActivity(i);
-        }else if(item.getItemId() == R.id.action_wishlist){
-            if(!isInWishlist){
+        } else if (item.getItemId() == R.id.action_wishlist) {
+            if (!isInWishlist) {
                 item.setIcon(getResources().getDrawable(R.drawable.ic_favorite));
                 isInWishlist = true;
                 addToWishList();
-            }else{
+            } else {
                 item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_border));
                 isInWishlist = false;
                 removeFromWishList();
@@ -279,11 +309,11 @@ public class ProductActivity extends BaseActivity {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_add_to_cart:
                 break;
             case R.id.btn_compare:
-                Intent compareIntent = new Intent(this,CompareActivity.class);
+                Intent compareIntent = new Intent(this, CompareActivity.class);
                 startActivity(compareIntent);
                 break;
             case R.id.btn_plus_stepper:

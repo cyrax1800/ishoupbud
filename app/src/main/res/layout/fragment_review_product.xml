@@ -31,7 +31,7 @@
             android:id="@+id/spinner_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight=".8"
             android:layout_marginEnd="8dp"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:entries="@array/review_sort_array"
@@ -40,9 +40,10 @@
         <Spinner
             android:id="@+id/spinner_vendor"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
-            android:layout_weight=".8"
+            android:layout_weight="1.2"
+            android:ellipsize="end"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             />
     </LinearLayout>

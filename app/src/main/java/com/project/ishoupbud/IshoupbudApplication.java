@@ -1,5 +1,6 @@
 package com.project.ishoupbud;
 
+import com.crashlytics.android.Crashlytics;
 import com.project.ishoupbud.api.AppRealmModul;
 import com.project.ishoupbud.api.CategoryTransaction;
 import com.project.ishoupbud.api.Migration;
@@ -19,6 +20,7 @@ import com.project.michael.base.database.RealmDb;
 import com.project.michael.base.database.RealmModule;
 import com.project.michael.base.utils.Settings;
 import com.squareup.leakcanary.LeakCanary;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by michael on 4/23/17.
@@ -28,11 +30,12 @@ public class IshoupbudApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
-        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review");
+        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review", "reviews","statistic");
         APIManager.addInterceptor(new SessionInterceptor());
         APIManager.addInterceptor(new GenericResponseInterceptor());
 
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
