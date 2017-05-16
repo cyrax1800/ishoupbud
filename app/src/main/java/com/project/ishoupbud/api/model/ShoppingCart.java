@@ -1,5 +1,6 @@
 package com.project.ishoupbud.api.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.project.michael.base.utils.Utils;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 public class ShoppingCart {
     public int id;
     public int quantity;
+    @SerializedName("items")
     public Product product;
     public ProductVendors vendor;
 

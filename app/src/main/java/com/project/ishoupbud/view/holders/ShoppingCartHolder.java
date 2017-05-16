@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.view.StepperView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,10 +24,7 @@ public class ShoppingCartHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tv_product_price) public TextView tvPrice;
     @BindView(R.id.tv_vendor) public TextView tvVendor;
     @BindView(R.id.ib_delete) public ImageButton iBtnDelete;
-
-    @BindView(R.id.btn_plus_stepper) public ImageButton ibtnPlusStepper;
-    @BindView(R.id.btn_minus_stepper) public ImageButton ibtnMinusStepper;
-    @BindView(R.id.et_stepper_count) public EditText etStepperCount;
+    @BindView(R.id.stepper) public StepperView stepperView;
 
     public ShoppingCartHolder(View itemView) {
         super(itemView);

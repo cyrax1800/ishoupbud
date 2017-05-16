@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
-import com.project.ishoupbud.api.model.ProductAllReviewResponse;
+import com.project.ishoupbud.api.response.ProductAllReviewResponse;
 import com.project.ishoupbud.api.model.Review;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.repositories.ReviewRepo;
@@ -30,11 +30,9 @@ import com.project.ishoupbud.view.adapters.ReviewAdapter;
 import com.project.ishoupbud.view.dialog.AddEditReviewDialogFragment;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
-import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.DateUtils;
 import com.project.michael.base.views.BaseFragment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

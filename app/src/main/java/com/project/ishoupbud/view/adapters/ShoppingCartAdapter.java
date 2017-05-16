@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.ShoppingCart;
+import com.project.ishoupbud.view.StepperView;
 import com.project.ishoupbud.view.holders.ShoppingCartHolder;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.adapters.FastAdapter;
 
 /**
@@ -16,6 +18,8 @@ import com.project.michael.base.views.adapters.FastAdapter;
  */
 
 public class ShoppingCartAdapter<Model> extends FastAdapter<Model> {
+
+    public StepperView.OnValueChangeListener onValueChangeListener;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -29,14 +33,14 @@ public class ShoppingCartAdapter<Model> extends FastAdapter<Model> {
         ShoppingCart shoppingCart = (ShoppingCart)mModelList.get(position);
 
         shoppingCartHolder.tvProductName.setText(shoppingCart.product.name);
-        shoppingCartHolder.tvPrice.setText("Rp. " + shoppingCart.vendor.price);
-        shoppingCartHolder.tvVendor.setText(shoppingCart.vendor.vendor.name);
-        shoppingCartHolder.etStepperCount.setText(String.valueOf(shoppingCart.quantity));
+        shoppingCartHolder.tvPrice.setText(Utils.indonesiaFormat(shoppingCart.product.price));
+        shoppingCartHolder.tvVendor.setText(shoppingCart.product.vendor.name);
+        shoppingCartHolder.stepperView.setValue(shoppingCart.quantity);
+        shoppingCartHolder.stepperView.setOnValueChangeListener(onValueChangeListener);
 
         Glide
                 .with(shoppingCartHolder.ivProduct.getContext())
-//                .load(product.picUrl)
-                .load("http://kingofwallpapers.com/aqua/aqua-001.jpg")
+                .load(shoppingCart.product.pictureUrl.small)
                 .centerCrop()
                 .crossFade()
                 .into(shoppingCartHolder.ivProduct);

@@ -35,36 +35,66 @@ public class ClickListenerHelper<Model> {
 
     public void attachToView(final RecyclerView.ViewHolder viewHolder){
         ViewGroup viewGroup = ((ViewGroup)viewHolder.itemView);
+//        int totalChild = viewGroup.getChildCount();
+//        View view;
+//        EventListener eventListener;
+        recursiveChild(viewHolder, viewGroup);
+//        for(int i = 0; i < totalChild; i++){
+//            view = viewGroup.getChildAt(i);
+//            eventListener = clickListenerMap.get(view.getId());
+//            ViewGroup nextChild = ((ViewGroup)view);
+//            if(eventListener == null && nextChild.getChildCount() > 0){
+//
+//            }
+//
+//        }
+    }
+
+    public void recursiveChild(final RecyclerView.ViewHolder viewHolder, final ViewGroup viewGroup){
+        View view;
+        EventListener eventListener;
         int totalChild = viewGroup.getChildCount();
+        ViewGroup nextChild;
         for(int i = 0; i < totalChild; i++){
-            final View view = viewGroup.getChildAt(i);
-            final EventListener eventListener = clickListenerMap.get(view.getId());
+            view = viewGroup.getChildAt(i);
+            eventListener = clickListenerMap.get(view.getId());
             if(eventListener != null){
-                if(eventListener instanceof ClickEventListener){
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            int position = mBaseAdapter.getViewHolderPosition(viewHolder);
-                            ((ClickEventListener)eventListener).onClick(
-                                    view,
-                                    mBaseAdapter.getItemAt(position),
-                                    position);
-                        }
-                    });
-                }else if(eventListener instanceof LongClickEventListener){
-                    view.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            int position = mBaseAdapter.getViewHolderPosition(viewHolder);
-                            ((LongClickEventListener)eventListener).onLongClick(
-                                    view,
-                                    mBaseAdapter.getItemAt(position),
-                                    position);
-                            return false;
-                        }
-                    });
+                attachEventListenerToView(viewHolder, view, eventListener);
+            }
+            if(view instanceof ViewGroup){
+                nextChild = (ViewGroup)view;
+                if(eventListener == null && nextChild.getChildCount() > 0){
+                    recursiveChild(viewHolder, nextChild);
                 }
             }
+
+        }
+    }
+
+    public void attachEventListenerToView(final RecyclerView.ViewHolder viewHolder, final View view, final EventListener eventListener){
+        if(eventListener instanceof ClickEventListener){
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = mBaseAdapter.getViewHolderPosition(viewHolder);
+                    ((ClickEventListener)eventListener).onClick(
+                            view,
+                            mBaseAdapter.getItemAt(position),
+                            position);
+                }
+            });
+        }else if(eventListener instanceof LongClickEventListener){
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = mBaseAdapter.getViewHolderPosition(viewHolder);
+                    ((LongClickEventListener)eventListener).onLongClick(
+                            view,
+                            mBaseAdapter.getItemAt(position),
+                            position);
+                    return false;
+                }
+            });
         }
     }
 }

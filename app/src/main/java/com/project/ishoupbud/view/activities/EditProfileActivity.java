@@ -58,6 +58,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 /**
  * Created by michael on 4/12/17.
  */
@@ -196,33 +198,34 @@ public class EditProfileActivity extends BaseActivity {
         return false;
     }
 
+    public RequestBody createRequestBodyFromObject(String obj){
+        return RequestBody.create(MediaType.parse("text/plain"), obj);
+    }
+
     public void editProfile(){
         progressDialog.show();
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        map.put("phone", phone);
-        map.put("address", address);
-        map.put("gender", 1);
-        map.put("latitude", latitude);
-        map.put("longitude", longitude);
+        Map<String, RequestBody> map = new HashMap<>();
+        map.put("name", createRequestBodyFromObject(name));
+        map.put("phone", createRequestBodyFromObject(phone));
+        map.put("address", createRequestBodyFromObject(address));
+        map.put("gender", createRequestBodyFromObject("1"));
+        map.put("latitude", createRequestBodyFromObject(String.valueOf(latitude)));
+        map.put("longitude", createRequestBodyFromObject(String.valueOf(longitude)));
         MultipartBody.Part body;
         if(isChangePicture){
             File tmpfile = new File(mCurrentPhotoPath);
             byte[] bytes = ImageUtils.compressImage(tmpfile);
             RequestBody requestFile;
             if (bytes != null){
-                Log.d(TAG, "editProfile: ahahhaha");
                 requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), bytes);
             }else{
                 requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), tmpfile);
             }
             body = MultipartBody.Part.createFormData("picture_url", tmpfile.getName(), requestFile);
-//            File file = new File(mCurrentPhotoPath);
-//            map.put("picture_url", file.toString());
         }else{
-            RequestBody requestFile = RequestBody .create(MediaType.parse("multipart/form-data"), "");
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), "");
             body = MultipartBody.Part.createFormData("pic", "", requestFile);
-            map.put("picture_url", user.picture_url);
+            map.put("picture_url", createRequestBodyFromObject(user.picture_url));
         }
         Call<GenericResponse<User>> editProfileCall = APIManager.getRepository(UserRepo.class).editProfile(map, body);
         editProfileCall.enqueue(new APICallback<GenericResponse<User>>() {

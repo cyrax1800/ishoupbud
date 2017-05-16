@@ -27,6 +27,7 @@ public class StepperView extends LinearLayout implements View.OnClickListener{
     private int value;
 
     private String beforeText;
+    public OnValueChangeListener onValueChangeListener;
 
     public StepperView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,16 +94,26 @@ public class StepperView extends LinearLayout implements View.OnClickListener{
         updateText();
     }
 
+    public void setOnValueChangeListener(OnValueChangeListener onValueChangeListener){
+        this.onValueChangeListener = onValueChangeListener;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_plus_stepper:
                 setValue(value + 1);
+                if(onValueChangeListener != null) onValueChangeListener.onValueChangeByButtonClick(getValue());
                 break;
             case R.id.btn_minus_stepper:
                 if(!canMinus && (value == 0)) return;
                 setValue(value - 1);
+                if(onValueChangeListener != null) onValueChangeListener.onValueChangeByButtonClick(getValue());
                 break;
         }
+    }
+
+    public interface OnValueChangeListener{
+        public void onValueChangeByButtonClick(int value);
     }
 }

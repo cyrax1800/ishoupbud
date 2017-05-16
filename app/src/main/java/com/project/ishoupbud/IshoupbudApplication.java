@@ -30,7 +30,7 @@ public class IshoupbudApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
-        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review", "reviews","statistic");
+        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review", "reviews","statistic", "carts","cart");
         APIManager.addInterceptor(new SessionInterceptor());
         APIManager.addInterceptor(new GenericResponseInterceptor());
 

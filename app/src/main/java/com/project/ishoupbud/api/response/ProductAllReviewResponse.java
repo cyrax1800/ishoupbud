@@ -1,6 +1,7 @@
-package com.project.ishoupbud.api.model;
+package com.project.ishoupbud.api.response;
 
 import com.google.gson.annotations.SerializedName;
+import com.project.ishoupbud.api.model.Review;
 import com.project.michael.base.models.Response;
 
 import java.util.List;

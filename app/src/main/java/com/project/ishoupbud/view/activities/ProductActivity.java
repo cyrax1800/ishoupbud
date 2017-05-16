@@ -29,8 +29,10 @@ import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.model.ProductVendors;
+import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.model.WishList;
+import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.StepperView;
@@ -205,6 +207,8 @@ public class ProductActivity extends BaseActivity {
             }
         });
 
+        initProgressDialog("Adding to cart...");
+
     }
 
     public void addToWishList() {
@@ -261,6 +265,44 @@ public class ProductActivity extends BaseActivity {
         });
     }
 
+    public void addItemToCart(){
+        if(vendorAdapter.getCheckedIdx() == -1){
+            Toast.makeText(getApplicationContext(), "No vendor selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(stepperView.getValue() == 0){
+            Toast.makeText(getApplicationContext(), "Quantity can't be zero", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        progressDialog.show();
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("product_id", product.id);
+        map.put("vendor_id",vendorAdapter.getItemAt(vendorAdapter.getCheckedIdx()).vendor.id);
+        map.put("quantity", Integer.valueOf(stepperView.getValue()));
+        Call<ShoppingCart> addItemToCart = APIManager.getRepository(ShoppingCartRepo.class).addCart(map);
+        addItemToCart.enqueue(new APICallback<ShoppingCart>() {
+            @Override
+            public void onCreated(Call<ShoppingCart> call, Response<ShoppingCart> response) {
+                super.onCreated(call, response);
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Success Added", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Call<ShoppingCart> call, Response<ShoppingCart> response) {
+                super.onError(call, response);
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Harus dipesan melalui vendor yang sama yang berada pada keranjang belanja saat ini", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ShoppingCart> call, Throwable t) {
+                super.onFailure(call, t);
+                progressDialog.dismiss();
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -311,14 +353,11 @@ public class ProductActivity extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_to_cart:
+                addItemToCart();
                 break;
             case R.id.btn_compare:
                 Intent compareIntent = new Intent(this, CompareActivity.class);
                 startActivity(compareIntent);
-                break;
-            case R.id.btn_plus_stepper:
-                break;
-            case R.id.btn_minus_stepper:
                 break;
         }
     }

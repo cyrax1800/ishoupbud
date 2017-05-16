@@ -39,7 +39,7 @@ public interface UserRepo {
     @Headers("Accept: application/json")
     @POST("user")
 //    Call<GenericResponse<User>> editProfile(@FieldMap(encoded = true) Map<String, String> map);
-    Call<GenericResponse<User>> editProfile(@PartMap Map<String, Object> map, @Part MultipartBody.Part picture_url);
+    Call<GenericResponse<User>> editProfile(@PartMap Map<String, RequestBody> map, @Part MultipartBody.Part picture_url);
 
 
 }

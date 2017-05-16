@@ -23,7 +23,7 @@ public class Product extends RealmObject implements SearchSuggestion {
     public int id;
     public String barcode;
     public String name;
-    @SerializedName("minimum_price")
+    @SerializedName(value="minimum_price", alternate={"price"})
     public int price;
     @SerializedName("total_rating")
     public double totalRating;
@@ -32,6 +32,7 @@ public class Product extends RealmObject implements SearchSuggestion {
     public String description;
     @SerializedName("picture_url")
     public PictureSize pictureUrl;
+    public Vendor vendor;
     public RealmList<ProductVendors> vendors;
 
     public Product(){

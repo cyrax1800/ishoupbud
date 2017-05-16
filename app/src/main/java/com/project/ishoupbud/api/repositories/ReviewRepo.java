@@ -1,12 +1,10 @@
 package com.project.ishoupbud.api.repositories;
 
-import com.project.ishoupbud.api.model.ProductAllReviewResponse;
+import com.project.ishoupbud.api.response.ProductAllReviewResponse;
 import com.project.ishoupbud.api.model.Review;
-import com.project.ishoupbud.api.model.User;
 import com.project.michael.base.models.GenericResponse;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
