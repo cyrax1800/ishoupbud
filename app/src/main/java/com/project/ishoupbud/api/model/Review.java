@@ -17,6 +17,7 @@ public class Review {
     public String description;
     public double rating;
     public Date date;
+    @SerializedName("sentimen")
     public Sentiment sentiment;
     public boolean status;
 }

@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Review;
+import com.project.ishoupbud.helper.TextImageCircleHelper;
 import com.project.ishoupbud.view.holders.ReviewHolder;
 import com.project.michael.base.utils.DateUtils;
+import com.project.michael.base.utils.StringUtils;
 import com.project.michael.base.views.adapters.EndlessScrollAdapter;
 
 /**
@@ -35,17 +37,25 @@ public class ReviewAdapter<Model> extends EndlessScrollAdapter<Model> {
 
             Glide
                     .with(reviewHolder.ivUserProfilePic.getContext())
-//                .load(product.picUrl)
-                    .load("http://kingofwallpapers.com/aqua/aqua-001.jpg")
+                    .load(review.user.getSmallImage())
+                    .placeholder(TextImageCircleHelper.getInstance().getImage(review.user.name))
                     .centerCrop()
                     .crossFade()
                     .into(reviewHolder.ivUserProfilePic);
 
             reviewHolder.tvUserName.setText(review.user.name);
-            reviewHolder.tvReviewDate.setText(DateUtils.getDate(review.date.getTime()));
+//            reviewHolder.tvReviewDate.setText(DateUtils.getDate(review.date.getTime()));
             reviewHolder.tvReviewDesc.setText(review.description);
             reviewHolder.ratingBar.setRating((float)review.rating);
-            reviewHolder.tvSentiment.setText("ahahah");
+            if(review.sentiment.neu > review.sentiment.pos && review.sentiment.neu > review.sentiment.neg){
+                reviewHolder.tvSentiment.setText("");
+            }else if(review.sentiment.pos > review.sentiment.neg && review.sentiment.pos > review.sentiment.neu){
+                reviewHolder.tvSentiment.setText("recommended");
+            }else if(review.sentiment.neg > review.sentiment.pos && review.sentiment.neg > review.sentiment.neu){
+                reviewHolder.tvSentiment.setText("not recommended");
+            }else{
+                reviewHolder.tvSentiment.setText("");
+            }
         }else{
             super.onBindViewHolder(holder,position);
         }

@@ -5,7 +5,6 @@ package com.project.ishoupbud.api.model;
  */
 
 public class Sentiment {
-    SentimentDetail detail;
     public double pos;
     public double neu;
     public double neg;
