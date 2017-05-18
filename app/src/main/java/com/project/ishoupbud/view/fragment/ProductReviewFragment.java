@@ -1,5 +1,6 @@
 package com.project.ishoupbud.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import com.project.ishoupbud.api.model.Review;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.repositories.ReviewRepo;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
+import com.project.ishoupbud.helper.TextImageCircleHelper;
 import com.project.ishoupbud.view.adapters.ReviewAdapter;
 import com.project.ishoupbud.view.dialog.AddEditReviewDialogFragment;
 import com.project.michael.base.api.APICallback;
@@ -77,9 +79,10 @@ public class ProductReviewFragment extends BaseFragment {
     ReviewAdapter<Review> reviewAdapter;
     AddEditReviewDialogFragment addEditReviewDialogFragment;
     AlertDialog deleteReviewDialog;
+    ProgressDialog progressDialog;
 
-    boolean hasOwnReview;
-    Review ownReivew;
+    public boolean hasOwnReview;
+    public Review ownReivew;
 
     public int productId;
     public List<Vendor> vendorList;
@@ -93,28 +96,7 @@ public class ProductReviewFragment extends BaseFragment {
 
             ButterKnife.bind(this, _rootView);
 
-            if (hasOwnReview) {
-                llOwnReview.setVisibility(View.VISIBLE);
-                btnWriteReview.setVisibility(View.GONE);
-
-                Glide
-                        .with(this)
-//                .load(product.picUrl)
-                        .load("http://kingofwallpapers.com/aqua/aqua-001.jpg")
-                        .centerCrop()
-                        .crossFade()
-                        .into(ivOwnProfilePic);
-
-                tvUserName.setText(ownReivew.user.name);
-                tvReviewDate.setText(DateUtils.getDate(ownReivew.date.getTime()));
-                tvReviewDesc.setText(ownReivew.description);
-                ratingBar.setRating((float) ownReivew.rating);
-                iBtnDelete.setOnClickListener(this);
-                iBtnEdit.setOnClickListener(this);
-            } else {
-                llOwnReview.setVisibility(View.GONE);
-                btnWriteReview.setVisibility(View.VISIBLE);
-            }
+            updateOwnReviewView();
 
             btnWriteReview.setOnClickListener(this);
 
@@ -160,7 +142,7 @@ public class ProductReviewFragment extends BaseFragment {
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-
+                            deleteOwnReview();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -172,9 +154,36 @@ public class ProductReviewFragment extends BaseFragment {
 
             deleteReviewDialog = builder.create();
 
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setMessage("deleting Review");
         }
 
         return _rootView;
+    }
+
+    public void updateOwnReviewView(){
+        if (hasOwnReview) {
+            llOwnReview.setVisibility(View.VISIBLE);
+            btnWriteReview.setVisibility(View.GONE);
+
+            Glide
+                    .with(this)
+                    .load(ownReivew.user.getSmallImage())
+                    .placeholder(TextImageCircleHelper.getInstance().getImage(ownReivew.user.name))
+                    .centerCrop()
+                    .crossFade()
+                    .into(ivOwnProfilePic);
+
+            tvUserName.setText(ownReivew.user.name);
+            tvReviewDate.setText(DateUtils.getDate(ownReivew.date.getTime()));
+            tvReviewDesc.setText(ownReivew.description);
+            ratingBar.setRating((float) ownReivew.rating);
+            iBtnDelete.setOnClickListener(this);
+            iBtnEdit.setOnClickListener(this);
+        } else {
+            llOwnReview.setVisibility(View.GONE);
+            btnWriteReview.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setProductId(int id) {
@@ -203,6 +212,7 @@ public class ProductReviewFragment extends BaseFragment {
                 reviewAdapter.setNew(response.body().reviews);
                 ownReivew = response.body().youReview;
                 hasOwnReview = ownReivew.user != null;
+                updateOwnReviewView();
             }
 
             @Override
@@ -211,6 +221,27 @@ public class ProductReviewFragment extends BaseFragment {
             }
         });
 
+    }
+
+    public void deleteOwnReview(){
+        progressDialog.show();
+        Call<com.project.michael.base.models.Response> deleteReview = APIManager.getRepository(ReviewRepo.class).deleteReview(ownReivew.id);
+        deleteReview.enqueue(new APICallback<com.project.michael.base.models.Response>() {
+            @Override
+            public void onNoContent(Call<com.project.michael.base.models.Response> call, Response<com.project.michael.base.models.Response> response) {
+                super.onNoContent(call, response);
+                hasOwnReview = false;
+                ownReivew = null;
+                updateOwnReviewView();
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<com.project.michael.base.models.Response> call, Throwable t) {
+                super.onFailure(call, t);
+                progressDialog.dismiss();
+            }
+        });
     }
 
     @Override

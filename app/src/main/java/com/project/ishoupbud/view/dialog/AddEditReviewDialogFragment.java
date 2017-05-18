@@ -138,13 +138,15 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
         map.put("rating", ratingBar.getRating());
         map.put("body", etReview.getText().toString());
         if(review != null){
-            map.put("id_review", review.id);
             progressDialog.setMessage("Updating review");
-            Call<GenericResponse<Review>> updateReview = APIManager.getRepository(ReviewRepo.class).updateReview(map);
+            Call<GenericResponse<Review>> updateReview = APIManager.getRepository(ReviewRepo.class).updateReview(map, review.id);
             updateReview.enqueue(new APICallback<GenericResponse<Review>>() {
                 @Override
                 public void onSuccess(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
                     super.onSuccess(call, response);
+                    productReviewFragment.ownReivew = response.body().data;
+                    productReviewFragment.hasOwnReview = true;
+                    productReviewFragment.updateOwnReviewView();
                     progressDialog.dismiss();
                     dismiss();
                 }
@@ -168,6 +170,9 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
                 @Override
                 public void onSuccess(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
                     super.onSuccess(call, response);
+                    productReviewFragment.ownReivew = response.body().data;
+                    productReviewFragment.hasOwnReview = true;
+                    productReviewFragment.updateOwnReviewView();
                     progressDialog.dismiss();
                     dismiss();
                 }
