@@ -27,6 +27,7 @@ import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.models.GenericResponse;
+import com.project.michael.base.utils.DateUtils;
 import com.project.michael.base.views.BaseFragment;
 
 import java.util.ArrayList;
@@ -153,8 +154,8 @@ public class ProductStatisticFragment extends BaseFragment {
                 List<Entry> statisticData = new ArrayList<>();
                 List<String> dateList = new ArrayList<>();
                 for (int i = 0; i < response.body().data.size(); i++) {
-                    dateList.add(response.body().data.get(0).date.toString());
-                    statisticData.add(new Entry(i, response.body().data.get(0).value));
+                    dateList.add(DateUtils.getDate(response.body().data.get(i).date.getTime()));
+                    statisticData.add(new Entry(i, response.body().data.get(i).value));
                 }
                 LineDataSet lineDataSet = new LineDataSet(statisticData, "harga");
                 LineData lineData = new LineData(lineDataSet);
@@ -179,10 +180,11 @@ public class ProductStatisticFragment extends BaseFragment {
         IAxisValueFormatter formatter = new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
+                Log.d(TAG, "getFormattedValue: "+value);
                 return statisticDateMapData
                         .get(vendorList.get(selectedVendorIdx).id)
                         .get(selectedDayIdx)
-                        .get((int) value);
+                        .get(0);
             }
         };
         XAxis xAxis = lineChart.getXAxis();

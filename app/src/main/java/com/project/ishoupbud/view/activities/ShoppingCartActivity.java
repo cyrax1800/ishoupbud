@@ -14,7 +14,10 @@ import android.widget.Toast;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.ShoppingCart;
+import com.project.ishoupbud.api.model.Transaction;
+import com.project.ishoupbud.api.model.User;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
+import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.api.response.ShoppingCartResponse;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
 import com.project.ishoupbud.view.StepperView;
@@ -27,6 +30,8 @@ import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 import com.project.michael.base.views.listeners.ClickEventListener;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,8 +51,11 @@ public class ShoppingCartActivity extends BaseActivity {
 
     ShoppingCartAdapter<ShoppingCart> shoppingCartAdapter;
 
+    ConfirmationTransactionDialogFragment confirmationTransactionDialogFragment;
+
     int selectedIdx;
     float totalPrice = 0;
+    User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +120,7 @@ public class ShoppingCartActivity extends BaseActivity {
     }
 
     public void deleteItem(int cart_id){
+        progressDialog.setMessage("Deleting Items...");
         progressDialog.show();
         Call<com.project.michael.base.models.Response> deleteCart = APIManager.getRepository(ShoppingCartRepo.class).deleteCart(cart_id);
         deleteCart.enqueue(new APICallback<com.project.michael.base.models.Response>() {
@@ -137,6 +146,36 @@ public class ShoppingCartActivity extends BaseActivity {
         });
     }
 
+    public void doCheckOut(){
+        progressDialog.setMessage("Check out...");
+        progressDialog.show();
+        APIManager.getRepository(TransactionRepo.class).checkout()
+            .enqueue(new APICallback<GenericResponse<List<Transaction>>>() {
+                @Override
+                public void onSuccess(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
+                    super.onSuccess(call, response);
+                    confirmationTransactionDialogFragment.dismiss();
+                    progressDialog.cancel();
+                    progressDialog.dismiss();
+                    confirmationTransactionDialogFragment.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<GenericResponse<List<Transaction>>> call, Throwable t) {
+                    super.onFailure(call, t);
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onError(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
+                    super.onError(call, response);
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(),"Saldo tidak cukup", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    }
+
     public void validateList(){
         totalPrice = 0;
         StepperView stepperView;
@@ -159,7 +198,8 @@ public class ShoppingCartActivity extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_continue:
-                new ConfirmationTransactionDialogFragment().show(getSupportFragmentManager(),"Confirmation Transaction");
+                confirmationTransactionDialogFragment = new ConfirmationTransactionDialogFragment();
+                confirmationTransactionDialogFragment.show(getSupportFragmentManager(),"Confirmation Transaction");
                 break;
         }
     }

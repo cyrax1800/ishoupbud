@@ -89,6 +89,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                         break;
                     case R.id.tab_transaction:
                         mNavController.switchTab(TRANSACTION);
+                        if(mNavController.getCurrentFrag() != null)
+                            ((TransactionFragment)mNavController.getCurrentFrag()).fetchTransaction();
                         break;
                     case R.id.tab_profile:
                         mNavController.switchTab(PROFILE);

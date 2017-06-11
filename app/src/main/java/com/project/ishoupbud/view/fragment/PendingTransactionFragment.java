@@ -1,5 +1,6 @@
 package com.project.ishoupbud.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +13,15 @@ import android.view.ViewGroup;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Transaction;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
+import com.project.ishoupbud.utils.ConstClass;
+import com.project.ishoupbud.view.activities.DetailTransactionActivity;
 import com.project.ishoupbud.view.adapters.TransactionAdapter;
+import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseFragment;
+import com.project.michael.base.views.adapters.BaseAdapter;
+
+import java.security.cert.TrustAnchor;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +45,16 @@ public class PendingTransactionFragment extends BaseFragment {
             ButterKnife.bind(this, _rootView);
 
             transactionAdapter = new TransactionAdapter<>();
-            transactionAdapter.setNew(Transaction.getDummy(10));
+            transactionAdapter.setOnClickListener(new BaseAdapter.OnClickListener<Transaction>() {
+                @Override
+                public boolean onClick(View v, List<Transaction> transactions, Transaction transaction, int position) {
+                    Intent i = new Intent(getContext(), DetailTransactionActivity.class);
+                    i.putExtra(ConstClass.TRANSACTION_EXTRA, GsonUtils.getJsonFromObject(transaction,Transaction.class));
+                    startActivity(i);
+                    return false;
+                }
+            });
+//            transactionAdapter.setNew(Transaction.getDummy(10));
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
 
@@ -47,6 +64,10 @@ public class PendingTransactionFragment extends BaseFragment {
         }
 
         return _rootView;
+    }
+
+    public void addTranscation(Transaction transaction){
+        transactionAdapter.add(transaction);
     }
 
     public static PendingTransactionFragment newInstance() {

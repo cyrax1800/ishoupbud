@@ -1,5 +1,6 @@
 package com.project.ishoupbud.api.repositories;
 
+import com.project.ishoupbud.api.model.Saldo;
 import com.project.ishoupbud.api.model.User;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.models.Response;
@@ -38,8 +39,11 @@ public interface UserRepo {
     @Multipart
     @Headers("Accept: application/json")
     @POST("user")
-//    Call<GenericResponse<User>> editProfile(@FieldMap(encoded = true) Map<String, String> map);
     Call<GenericResponse<User>> editProfile(@PartMap Map<String, RequestBody> map, @Part MultipartBody.Part picture_url);
+
+    @Headers("Accept: application/json")
+    @POST("saldo")
+    Call<GenericResponse<Saldo>> addSaldo(@Body HashMap map);
 
 
 }

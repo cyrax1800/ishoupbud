@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Transaction;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
+import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.activities.DetailTransactionActivity;
 import com.project.ishoupbud.view.adapters.TransactionAdapter;
+import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseFragment;
 import com.project.michael.base.views.adapters.BaseAdapter;
 
@@ -46,11 +48,12 @@ public class CompleteTransactionFragment extends BaseFragment {
                 @Override
                 public boolean onClick(View v, List<Transaction> transactions, Transaction transaction, int position) {
                     Intent i = new Intent(getContext(), DetailTransactionActivity.class);
+                    i.putExtra(ConstClass.TRANSACTION_EXTRA, GsonUtils.getJsonFromObject(transaction,Transaction.class));
                     startActivity(i);
                     return false;
                 }
             });
-            transactionAdapter.setNew(Transaction.getDummy(10));
+//            transactionAdapter.setNew(Transaction.getDummy(10));
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
 
@@ -60,6 +63,10 @@ public class CompleteTransactionFragment extends BaseFragment {
         }
 
         return _rootView;
+    }
+
+    public void addTranscation(Transaction transaction){
+        transactionAdapter.add(transaction);
     }
     
     public static CompleteTransactionFragment newInstance() {

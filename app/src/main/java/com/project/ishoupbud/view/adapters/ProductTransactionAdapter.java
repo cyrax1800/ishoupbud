@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.view.holders.ProductTransactionHolder;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.adapters.FastAdapter;
 
 /**
@@ -29,15 +30,14 @@ public class ProductTransactionAdapter<Model> extends FastAdapter<Model> {
         ShoppingCart shoppingCart = (ShoppingCart)mModelList.get(position);
 
         shoppingCartHolder.tvProductName.setText(shoppingCart.product.name);
-        shoppingCartHolder.tvPrice.setText("Rp. " + shoppingCart.vendor.price);
-        shoppingCartHolder.tvVendor.setText(shoppingCart.vendor.vendor.name);
+        shoppingCartHolder.tvPrice.setText(Utils.indonesiaFormat(shoppingCart.harga));
+        shoppingCartHolder.tvVendor.setText(shoppingCart.product.vendor.name);
         shoppingCartHolder.tvQuantity.setText("Quantity: " + shoppingCart.quantity);
-        shoppingCartHolder.tvSummary.setText("Summary: Rp. " + shoppingCart.quantity * shoppingCart.vendor.price);
+        shoppingCartHolder.tvSummary.setText("Summary: " + Utils.indonesiaFormat(shoppingCart.quantity * shoppingCart.harga));
 
         Glide
                 .with(shoppingCartHolder.ivProduct.getContext())
-//                .load(product.picUrl)
-                .load("http://kingofwallpapers.com/aqua/aqua-001.jpg")
+                .load(shoppingCart.product.pictureUrl.small)
                 .centerCrop()
                 .crossFade()
                 .into(shoppingCartHolder.ivProduct);

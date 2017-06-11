@@ -25,7 +25,7 @@ public class Product extends RealmObject implements SearchSuggestion {
     public String name;
     @SerializedName(value="minimum_price", alternate={"price"})
     public int price;
-    @SerializedName("total_rating")
+    @SerializedName("avg_rating")
     public double totalRating;
     @SerializedName("total_review")
     public int totalReview;

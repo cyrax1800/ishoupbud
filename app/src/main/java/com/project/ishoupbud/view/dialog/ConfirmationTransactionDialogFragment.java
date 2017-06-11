@@ -21,7 +21,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.view.activities.SelectLocationActivity;
+import com.project.ishoupbud.view.activities.ShoppingCartActivity;
 
 /**
  * Created by michael on 4/12/17.
@@ -77,7 +79,7 @@ public class ConfirmationTransactionDialogFragment extends DialogFragment implem
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_submit:
-                dismiss();
+                ((ShoppingCartActivity)getActivity()).doCheckOut();
                 break;
             case R.id.btn_cancel:
                 dismiss();

@@ -20,5 +20,6 @@ public class ConstClass {
     public static String LOCATION_EXTRA = "location";
     public static String LATITUDE_EXTRA = "latitude";
     public static String LONGITUDE_EXTRA = "longitude";
+    public static String TRANSACTION_EXTRA = "transaction";
 
 }

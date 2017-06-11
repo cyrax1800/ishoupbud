@@ -10,11 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.Transaction;
+import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.view.adapters.TransactionPagerAdapter;
+import com.project.michael.base.api.APICallback;
+import com.project.michael.base.api.APIManager;
+import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.views.BaseFragment;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by michael on 4/4/17.
@@ -47,7 +56,9 @@ public class TransactionFragment extends BaseFragment {
                 @Override
                 public void onPageSelected(int position) {
                     if (position == 0) {
+
                     } else if (position == 1) {
+
                     }
                 }
 
@@ -64,6 +75,29 @@ public class TransactionFragment extends BaseFragment {
             });
         }
         return _rootView;
+    }
+
+    public void fetchTransaction() {
+        Call<GenericResponse<List<Transaction>>> getTransactionCall = APIManager.getRepository(TransactionRepo.class).getTransaction("d");
+        getTransactionCall.enqueue(new APICallback<GenericResponse<List<Transaction>>>() {
+            @Override
+            public void onSuccess(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
+                super.onSuccess(call, response);
+                List<Transaction> tmpTransactions = response.body().data;
+                for(int i = 0; i< tmpTransactions.size(); i++){
+                    if(tmpTransactions.get(i).status == 0){
+                        transactionAdapter.pendingTransactionFragment.addTranscation(tmpTransactions.get(i));
+                    }else{
+                        transactionAdapter.completeTransactionFragment.addTranscation(tmpTransactions.get(i));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse<List<Transaction>>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
     }
 
     public static TransactionFragment newInstance() {

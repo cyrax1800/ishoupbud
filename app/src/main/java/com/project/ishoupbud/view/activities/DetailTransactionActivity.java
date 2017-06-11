@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.arlib.floatingsearchview.util.Util;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,8 +18,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.ShoppingCart;
+import com.project.ishoupbud.api.model.Transaction;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
+import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.adapters.ProductTransactionAdapter;
+import com.project.michael.base.utils.GsonUtils;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 
 import butterknife.BindView;
@@ -41,6 +46,7 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
     private GoogleMap mMap;
 
     ProductTransactionAdapter<ShoppingCart> productTransactionAdapter;
+    Transaction transaction;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,14 +67,19 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        transaction = GsonUtils.getObjectFromJson(getIntent().getStringExtra(ConstClass.TRANSACTION_EXTRA),Transaction.class);
+
         productTransactionAdapter = new ProductTransactionAdapter<>();
-        productTransactionAdapter.setNew(ShoppingCart.getDummy(10));
+        productTransactionAdapter.setNew(transaction.detail);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
 
         rvProduct.addItemDecoration(new InsetDividerItemDecoration(this));
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(productTransactionAdapter);
+
+        tvNoTransaction.setText("No. Transaction: " + transaction.id);
+        tvPrice.setText("Total Price: " + Utils.indonesiaFormat(transaction.nominal));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.project.ishoupbud.api.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.project.michael.base.utils.Utils;
 
 import java.util.ArrayList;
@@ -14,9 +15,13 @@ public class Transaction {
 
     public int id;
     public String noTransaction;
+    @SerializedName("updated_at")
     public Date date;
-    public int type;
+    public String type;
+    public int nominal;
+    public int status;
     public int totalPrice;
+    public List<ShoppingCart> detail;
     public String vendor;
 
     public Transaction(){
@@ -26,7 +31,6 @@ public class Transaction {
     public Transaction(int id, String noTransaction, int type, int totalPrice, Date date, String vendor){
         this.id = id;
         this.noTransaction = noTransaction;
-        this.type = type;
         this.totalPrice = totalPrice;
         this.date = date;
         this.vendor = vendor;
