@@ -1,5 +1,6 @@
 package com.project.ishoupbud.api.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.project.michael.base.utils.Utils;
 
 import java.util.ArrayList;
@@ -16,7 +17,9 @@ public class Vendor extends RealmObject {
     public int id;
     public String name;
     public String address;
+    @SerializedName("lng")
     public Double longitude;
+    @SerializedName("lat")
     public Double latitude;
     public String picture_url;
 

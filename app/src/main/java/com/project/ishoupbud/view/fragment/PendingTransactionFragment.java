@@ -70,6 +70,10 @@ public class PendingTransactionFragment extends BaseFragment {
         transactionAdapter.add(transaction);
     }
 
+    public void clearAdapter(){
+        transactionAdapter.clear();
+    }
+
     public static PendingTransactionFragment newInstance() {
         
         Bundle args = new Bundle();

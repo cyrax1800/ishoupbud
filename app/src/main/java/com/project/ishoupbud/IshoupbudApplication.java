@@ -4,7 +4,11 @@ import com.crashlytics.android.Crashlytics;
 import com.project.ishoupbud.api.AppRealmModul;
 import com.project.ishoupbud.api.CategoryTransaction;
 import com.project.ishoupbud.api.Migration;
+import com.project.ishoupbud.api.Uber.UberAPI;
+import com.project.ishoupbud.api.Uber.repositories.UberRepo;
+import com.project.ishoupbud.api.interceptor.UberInterceptor;
 import com.project.ishoupbud.api.repositories.AuthenticationRepo;
+import com.project.ishoupbud.api.repositories.GoogleMapRepo;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.api.repositories.ReviewRepo;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
@@ -17,8 +21,6 @@ import com.project.michael.base.api.SessionInterceptor;
 import com.project.michael.base.BaseApplication;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.database.RealmDb;
-import com.project.michael.base.database.RealmModule;
-import com.project.michael.base.utils.Settings;
 import com.squareup.leakcanary.LeakCanary;
 import io.fabric.sdk.android.Fabric;
 
@@ -34,6 +36,8 @@ public class IshoupbudApplication extends BaseApplication {
         APIManager.addInterceptor(new SessionInterceptor());
         APIManager.addInterceptor(new GenericResponseInterceptor());
 
+        UberAPI.addInterceptor(new UberInterceptor());
+
         super.onCreate();
         Fabric.with(this, new Crashlytics());
 
@@ -44,6 +48,9 @@ public class IshoupbudApplication extends BaseApplication {
         }
         LeakCanary.install(this);
 
+        UberAPI.SetUpRetrofit();
+        UberAPI.registerRepository(UberRepo.class);
+
         APIManager.registerRepository(UserRepo.class);
         APIManager.registerRepository(ProductRepo.class);
         APIManager.registerRepository(TransactionRepo.class);
@@ -51,6 +58,7 @@ public class IshoupbudApplication extends BaseApplication {
         APIManager.registerRepository(WishlistRepo.class);
         APIManager.registerRepository(ShoppingCartRepo.class);
         APIManager.registerRepository(ReviewRepo.class);
+        APIManager.registerRepository(GoogleMapRepo.class);
 
         RealmDb.SetUpRealmDatabase(getApplicationContext(), new AppRealmModul());
 

@@ -68,6 +68,10 @@ public class CompleteTransactionFragment extends BaseFragment {
     public void addTranscation(Transaction transaction){
         transactionAdapter.add(transaction);
     }
+
+    public void clearAdapter(){
+        transactionAdapter.clear();
+    }
     
     public static CompleteTransactionFragment newInstance() {
 

@@ -78,6 +78,8 @@ public class TransactionFragment extends BaseFragment {
     }
 
     public void fetchTransaction() {
+        if(transactionAdapter.pendingTransactionFragment != null) transactionAdapter.pendingTransactionFragment.clearAdapter();
+        if(transactionAdapter.completeTransactionFragment != null) transactionAdapter.completeTransactionFragment.clearAdapter();
         Call<GenericResponse<List<Transaction>>> getTransactionCall = APIManager.getRepository(TransactionRepo.class).getTransaction("d");
         getTransactionCall.enqueue(new APICallback<GenericResponse<List<Transaction>>>() {
             @Override

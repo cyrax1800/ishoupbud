@@ -16,17 +16,21 @@ import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.api.model.Transaction;
 import com.project.ishoupbud.api.model.User;
+import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.api.response.ShoppingCartResponse;
 import com.project.ishoupbud.helper.InsetDividerItemDecoration;
+import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.StepperView;
 import com.project.ishoupbud.view.adapters.ShoppingCartAdapter;
 import com.project.ishoupbud.view.dialog.ConfirmationTransactionDialogFragment;
 import com.project.ishoupbud.view.holders.ShoppingCartHolder;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
+import com.project.michael.base.database.SharedPref;
 import com.project.michael.base.models.GenericResponse;
+import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 import com.project.michael.base.views.listeners.ClickEventListener;
@@ -56,6 +60,7 @@ public class ShoppingCartActivity extends BaseActivity {
     int selectedIdx;
     float totalPrice = 0;
     User user;
+    Vendor vendor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +104,8 @@ public class ShoppingCartActivity extends BaseActivity {
 
         initProgressDialog("Deleting Items...");
 
+        user = GsonUtils.getObjectFromJson(SharedPref.getValueString(ConstClass.USER),User.class);
+
         getCart();
     }
 
@@ -109,6 +116,9 @@ public class ShoppingCartActivity extends BaseActivity {
             public void onSuccess(Call<GenericResponse<ShoppingCartResponse>> call, Response<GenericResponse<ShoppingCartResponse>> response) {
                 super.onSuccess(call, response);
                 shoppingCartAdapter.setNew(response.body().data.shoppingCarts);
+                if(shoppingCartAdapter.getItemCount() > 0){
+                    vendor = shoppingCartAdapter.getItemAt(0).product.vendor;
+                }
                 tvTotalPrice.setText("Total: " + Utils.indonesiaFormat(response.body().data.total));
             }
 
@@ -199,7 +209,7 @@ public class ShoppingCartActivity extends BaseActivity {
         switch (v.getId()){
             case R.id.btn_continue:
                 confirmationTransactionDialogFragment = new ConfirmationTransactionDialogFragment();
-                confirmationTransactionDialogFragment.show(getSupportFragmentManager(),"Confirmation Transaction");
+                confirmationTransactionDialogFragment.show(getSupportFragmentManager(),"Confirmation Transaction",user, vendor);
                 break;
         }
     }

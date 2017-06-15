@@ -199,12 +199,13 @@ public class EditProfileActivity extends BaseActivity {
     }
 
     public RequestBody createRequestBodyFromObject(String obj){
+//        if(obj == null) obj = "";
         return RequestBody.create(MediaType.parse("text/plain"), obj);
     }
 
     public void editProfile(){
         progressDialog.show();
-        Map<String, RequestBody> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("name", createRequestBodyFromObject(name));
         map.put("phone", createRequestBodyFromObject(phone));
         map.put("address", createRequestBodyFromObject(address));
@@ -225,7 +226,11 @@ public class EditProfileActivity extends BaseActivity {
         }else{
             RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), "");
             body = MultipartBody.Part.createFormData("pic", "", requestFile);
-            map.put("picture_url", createRequestBodyFromObject(user.picture_url));
+            if(user.picture_url == null){
+                map.put("picture_url", "");
+            }else{
+                map.put("picture_url", createRequestBodyFromObject(user.picture_url));
+            }
         }
         Call<GenericResponse<User>> editProfileCall = APIManager.getRepository(UserRepo.class).editProfile(map, body);
         editProfileCall.enqueue(new APICallback<GenericResponse<User>>() {
