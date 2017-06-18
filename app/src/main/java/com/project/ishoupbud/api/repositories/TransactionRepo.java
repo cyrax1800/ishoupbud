@@ -24,6 +24,10 @@ public interface TransactionRepo {
     Call<GenericResponse<List<Transaction>>> getTransaction(@Query("with") String withDetail);
 
     @Headers("Accept: application/json")
+    @GET("saldo")
+    Call<GenericResponse<List<Transaction>>> getSaldoTransaction();
+
+    @Headers("Accept: application/json")
     @POST("transaction")
     Call<GenericResponse<List<Transaction>>> checkout();
 }

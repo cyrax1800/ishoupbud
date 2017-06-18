@@ -47,6 +47,7 @@ public class TransactionFragment extends BaseFragment {
             transactionAdapter = new TransactionPagerAdapter(getChildFragmentManager());
 
             viewPager.setAdapter(transactionAdapter);
+            viewPager.setOffscreenPageLimit(2);
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -58,6 +59,8 @@ public class TransactionFragment extends BaseFragment {
                     if (position == 0) {
 
                     } else if (position == 1) {
+
+                    } else if (position == 2) {
 
                     }
                 }
@@ -80,6 +83,7 @@ public class TransactionFragment extends BaseFragment {
     public void fetchTransaction() {
         if(transactionAdapter.pendingTransactionFragment != null) transactionAdapter.pendingTransactionFragment.clearAdapter();
         if(transactionAdapter.completeTransactionFragment != null) transactionAdapter.completeTransactionFragment.clearAdapter();
+        if(transactionAdapter.saldoTransactionFragment != null) transactionAdapter.saldoTransactionFragment.clearAdapter();
         Call<GenericResponse<List<Transaction>>> getTransactionCall = APIManager.getRepository(TransactionRepo.class).getTransaction("d");
         getTransactionCall.enqueue(new APICallback<GenericResponse<List<Transaction>>>() {
             @Override
@@ -92,6 +96,23 @@ public class TransactionFragment extends BaseFragment {
                     }else{
                         transactionAdapter.completeTransactionFragment.addTranscation(tmpTransactions.get(i));
                     }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse<List<Transaction>>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
+
+        Call<GenericResponse<List<Transaction>>> getSaldoTransaction = APIManager.getRepository(TransactionRepo.class).getSaldoTransaction();
+        getSaldoTransaction.enqueue(new APICallback<GenericResponse<List<Transaction>>>() {
+            @Override
+            public void onSuccess(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
+                super.onSuccess(call, response);
+                List<Transaction> tmpTransactions = response.body().data;
+                for(int i = 0; i< tmpTransactions.size(); i++){
+                    transactionAdapter.saldoTransactionFragment.addTranscation(tmpTransactions.get(i));
                 }
             }
 

@@ -11,6 +11,7 @@ import com.project.ishoupbud.api.model.Transaction;
 import com.project.ishoupbud.view.holders.TransactionHolder;
 import com.project.michael.base.utils.DateUtils;
 import com.project.michael.base.utils.StringUtils;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.adapters.FastAdapter;
 
 /**
@@ -30,8 +31,8 @@ public class TransactionAdapter<Model> extends FastAdapter<Model> {
         TransactionHolder transactionHolder = (TransactionHolder) holder;
         Transaction transaction = (Transaction)mModelList.get(position);
 
-        transactionHolder.tvNoTransaction.setText(String.valueOf(transaction.id));
-        transactionHolder.tvPrice.setText("Rp. " + transaction.nominal);
+        transactionHolder.tvNoTransaction.setText("No.Transaction: " + String.valueOf(transaction.id));
+        transactionHolder.tvPrice.setText(Utils.indonesiaFormat(transaction.nominal));
         transactionHolder.tvDate.setText(DateUtils.getDate(transaction.date.getTime()));
         if(transaction.type.equals("User"))
             transactionHolder.tvType.setText(transaction.vendor);
