@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
@@ -122,6 +123,18 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
         etReview.setText(review.description);
     }
 
+    public boolean validate(){
+        if(ratingBar.getRating() == 0){
+            Toast.makeText(getContext(), "Rating cannot be 0", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(etReview.getText().toString().isEmpty()){
+            Toast.makeText(getContext(), "Review cannot be black", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onDismiss(DialogInterface dialog) {
         this.review = null;
@@ -197,7 +210,9 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_submit:
-                addOrEditReview();
+                if(validate()){
+                    addOrEditReview();
+                }
                 break;
             case R.id.btn_cancel:
                 dismiss();
