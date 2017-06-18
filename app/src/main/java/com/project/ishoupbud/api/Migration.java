@@ -47,6 +47,7 @@ public class Migration implements RealmMigration {
                         .addField("totalReview", int.class)
                         .addField("description", String.class)
                         .addField("pictureUrl", PictureSize.class, FieldAttribute.REQUIRED)
+                        .addField("liked", Boolean.class)
                         .addField("vendors", RealmList.class);
             }
         }

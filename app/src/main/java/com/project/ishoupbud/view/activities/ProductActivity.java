@@ -308,6 +308,12 @@ public class ProductActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_product, menu);
         this.menu = menu;
+        isInWishlist = product.liked;
+        if(product.liked){
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite));
+        }else{
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border));
+        }
         return true;
     }
 

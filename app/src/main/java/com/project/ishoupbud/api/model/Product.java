@@ -32,6 +32,7 @@ public class Product extends RealmObject implements SearchSuggestion {
     public String description;
     @SerializedName("picture_url")
     public PictureSize pictureUrl;
+    public Boolean liked;
     public Vendor vendor;
     public RealmList<ProductVendors> vendors;
 
