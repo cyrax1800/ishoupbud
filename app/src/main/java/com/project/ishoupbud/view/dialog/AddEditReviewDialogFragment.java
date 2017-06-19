@@ -181,8 +181,8 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
             Call<GenericResponse<Review>> addReivew = APIManager.getRepository(ReviewRepo.class).submitReview(map);
             addReivew.enqueue(new APICallback<GenericResponse<Review>>() {
                 @Override
-                public void onSuccess(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
-                    super.onSuccess(call, response);
+                public void onCreated(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
+                    super.onCreated(call, response);
                     productReviewFragment.ownReivew = response.body().data;
                     productReviewFragment.hasOwnReview = true;
                     productReviewFragment.updateOwnReviewView();
