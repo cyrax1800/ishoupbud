@@ -1,8 +1,11 @@
 package com.project.ishoupbud.api.Uber.repositories;
 
+import com.project.ishoupbud.api.Uber.model.UberPrice;
+import com.project.ishoupbud.api.Uber.model.UberPrices;
 import com.project.michael.base.models.Response;
 
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,5 +18,5 @@ import retrofit2.http.QueryMap;
 public interface UberRepo {
 
     @GET("estimates/price")
-    Call<Response> getEstimatePrice(@QueryMap HashMap<String, Object> query);
+    Call<UberPrices> getEstimatePrice(@QueryMap HashMap<String, Object> query);
 }

@@ -1,6 +1,7 @@
 package com.project.ishoupbud.api.repositories;
 
 import com.google.maps.model.DirectionsResult;
+import com.project.ishoupbud.api.model.map.Direction;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.models.Response;
 
@@ -19,5 +20,5 @@ public interface GoogleMapRepo {
 
     @Headers("Accept: application/json")
     @POST("geo")
-    Call<GenericResponse<DirectionsResult>> getDirection(@Body HashMap map);
+    Call<Direction> getDirection(@Body HashMap map);
 }

@@ -1,5 +1,6 @@
 package com.project.ishoupbud.view.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +49,8 @@ import retrofit2.Response;
 
 public class ShoppingCartActivity extends BaseActivity {
 
+    public static final int REQUEST_MAP = 0;
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rv_wishlist) RecyclerView rvShoppingCart;
     @BindView(R.id.tv_total_price) TextView tvTotalPrice;
@@ -58,7 +61,7 @@ public class ShoppingCartActivity extends BaseActivity {
     ConfirmationTransactionDialogFragment confirmationTransactionDialogFragment;
 
     int selectedIdx;
-    float totalPrice = 0;
+    public float totalPrice = 0;
     User user;
     Vendor vendor;
 
@@ -109,6 +112,20 @@ public class ShoppingCartActivity extends BaseActivity {
         getCart();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_MAP){
+            if(resultCode == -1){
+                confirmationTransactionDialogFragment.location = data.getStringExtra(ConstClass.ADDRESS_EXTRA);
+                confirmationTransactionDialogFragment.latitude = data.getDoubleExtra(ConstClass.LATITUDE_EXTRA, 0);
+                confirmationTransactionDialogFragment.longitude = data.getDoubleExtra(ConstClass.LONGITUDE_EXTRA, 0);
+                confirmationTransactionDialogFragment.getEstimatePrice();
+                confirmationTransactionDialogFragment.getPath();
+            }
+        }
+    }
+
     public void getCart(){
         Call<GenericResponse<ShoppingCartResponse>> getCartRequest = APIManager.getRepository(ShoppingCartRepo.class).getCart();
         getCartRequest.enqueue(new APICallback<GenericResponse<ShoppingCartResponse>>() {
@@ -120,6 +137,7 @@ public class ShoppingCartActivity extends BaseActivity {
                     vendor = shoppingCartAdapter.getItemAt(0).product.vendor;
                 }
                 tvTotalPrice.setText("Total: " + Utils.indonesiaFormat(response.body().data.total));
+                totalPrice = response.body().data.total;
             }
 
             @Override

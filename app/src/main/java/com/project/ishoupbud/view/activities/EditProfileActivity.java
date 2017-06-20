@@ -54,6 +54,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -191,7 +192,7 @@ public class EditProfileActivity extends BaseActivity {
 
         isChangeName = !name.equals(user.name);
         isChangePhone = !phone.equals(user.phone);
-        isChangeAddress = !StringUtils.isNullOrEmpty(user.address) && !address.equals(user.address);
+        isChangeAddress = !address.equals(user.address);
 
         if(isChangePicture || isChangeAddress || isChangeName || isChangePhone )
             return true;
@@ -205,13 +206,15 @@ public class EditProfileActivity extends BaseActivity {
 
     public void editProfile(){
         progressDialog.show();
-        Map<String, Object> map = new HashMap<>();
+        Map<String, RequestBody> map = new HashMap<>();
         map.put("name", createRequestBodyFromObject(name));
         map.put("phone", createRequestBodyFromObject(phone));
         map.put("address", createRequestBodyFromObject(address));
         map.put("gender", createRequestBodyFromObject("1"));
-        map.put("latitude", createRequestBodyFromObject(String.valueOf(latitude)));
-        map.put("longitude", createRequestBodyFromObject(String.valueOf(longitude)));
+        if(latitude != null)
+            map.put("latitude", createRequestBodyFromObject(String.valueOf(latitude)));
+        if(longitude != null)
+            map.put("longitude", createRequestBodyFromObject(String.valueOf(longitude)));
         MultipartBody.Part body;
         if(isChangePicture){
             File tmpfile = new File(mCurrentPhotoPath);
@@ -226,9 +229,7 @@ public class EditProfileActivity extends BaseActivity {
         }else{
             RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), "");
             body = MultipartBody.Part.createFormData("pic", "", requestFile);
-            if(user.picture_url == null){
-                map.put("picture_url", "");
-            }else{
+            if(user.picture_url != null){
                 map.put("picture_url", createRequestBodyFromObject(user.picture_url));
             }
         }

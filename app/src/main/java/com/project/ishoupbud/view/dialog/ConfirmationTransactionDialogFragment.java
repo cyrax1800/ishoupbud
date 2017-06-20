@@ -3,6 +3,7 @@ package com.project.ishoupbud.view.dialog;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -25,14 +27,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.model.DirectionsResult;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.Uber.UberAPI;
+import com.project.ishoupbud.api.Uber.model.UberPrice;
+import com.project.ishoupbud.api.Uber.model.UberPrices;
 import com.project.ishoupbud.api.Uber.repositories.UberRepo;
 import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.api.model.User;
 import com.project.ishoupbud.api.model.Vendor;
+import com.project.ishoupbud.api.model.map.Direction;
+import com.project.ishoupbud.api.model.map.DirectionsStep;
 import com.project.ishoupbud.api.repositories.GoogleMapRepo;
 import com.project.ishoupbud.manager.GoogleAPIManager;
 import com.project.ishoupbud.utils.ConstClass;
@@ -45,8 +54,11 @@ import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.models.Response;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.PermissionsUtils;
+import com.project.michael.base.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 
@@ -70,6 +82,15 @@ public class ConfirmationTransactionDialogFragment extends DialogFragment implem
     protected Location mLastLocation;
     public User user;
     public Vendor vendor;
+    Polyline line;
+    Marker marker;
+    Marker vendorMarker;
+    LatLngBounds latLngBounds;
+
+    public String location;
+    public String distance;
+    public int priceValue;
+    public String duration;
 
     @Nullable
     @Override
@@ -111,24 +132,63 @@ public class ConfirmationTransactionDialogFragment extends DialogFragment implem
         map.put("origin_lng", vendor.longitude);
         map.put("dest_lat", latitude);
         map.put("dest_lng", longitude);
-        Call<GenericResponse<DirectionsResult>> getPathCall = APIManager.getRepository(GoogleMapRepo.class).getDirection(map);
-        getPathCall.enqueue(new APICallback<GenericResponse<DirectionsResult>>() {
+        Call<Direction> getPathCall = APIManager.getRepository(GoogleMapRepo.class).getDirection(map);
+        getPathCall.enqueue(new APICallback<Direction>() {
             @Override
-            public void onSuccess(Call<GenericResponse<DirectionsResult>> call, retrofit2.Response<GenericResponse<DirectionsResult>> response) {
+            public void onSuccess(Call<Direction> call, retrofit2.Response<Direction> response) {
                 super.onSuccess(call, response);
+                List<LatLng> listLatLang = new ArrayList<>();
+                DirectionsStep[] steps = response.body().routes[0].legs[0].steps.clone();
+                for(int i = 0; i < steps.length; i++){
+                    List<com.google.maps.model.LatLng> modelLatLng = steps[i].polyline.decodePath();
+                    for(int j = 0; j < modelLatLng.size(); j++){
+                        listLatLang.add(new LatLng(modelLatLng.get(j).lat,modelLatLng.get(j).lng));
+                    }
+                }
+                if(line != null){
+                    line.remove();
+                }
+                line = mMap.addPolyline(new PolylineOptions()
+                .addAll(listLatLang).width(2).color(Color.RED)
+                );
+                latLngBounds = new LatLngBounds(new LatLng(response.body().routes[0].bounds.southwest.lat,response.body().routes[0].bounds.southwest.lng),
+                        new LatLng(response.body().routes[0].bounds.northeast.lat,response.body().routes[0].bounds.northeast.lng));
+                distance = response.body().routes[0].legs[0].distance.text;
+                duration = response.body().routes[0].legs[0].durationInTraffic.text;
+                location = response.body().routes[0].legs[0].startAddress;
+                updateText();
+                moveMap();
             }
 
             @Override
-            public void onError(Call<GenericResponse<DirectionsResult>> call, retrofit2.Response<GenericResponse<DirectionsResult>> response) {
+            public void onError(Call<Direction> call, retrofit2.Response<Direction> response) {
                 super.onError(call, response);
             }
 
             @Override
-            public void onFailure(Call<GenericResponse<DirectionsResult>> call, Throwable t) {
+            public void onFailure(Call<Direction> call, Throwable t) {
                 super.onFailure(call, t);
             }
         });
 
+    }
+
+    public boolean validate(){
+        location = etAddress.getText().toString();
+        if(location.isEmpty()){
+            Toast.makeText(getContext(),"Lokasi gk boleh kosong",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public void updateText(){
+        tvDetail.setText("ETA: " + duration +
+                "\nCourier Service: " + Utils.indonesiaFormat(priceValue) +
+                "\nTotal: " + Utils.indonesiaFormat((((ShoppingCartActivity)getActivity()).totalPrice + priceValue))
+                + "\nCurrent Balance: " + user.saldo);
+
+        etAddress.setText(location);
     }
 
     public void getEstimatePrice(){
@@ -137,20 +197,26 @@ public class ConfirmationTransactionDialogFragment extends DialogFragment implem
         map.put("start_longitude", vendor.longitude);
         map.put("end_latitude", latitude);
         map.put("end_longitude", longitude);
-        Call<Response> getPrice = UberAPI.getRepository(UberRepo.class).getEstimatePrice(map);
-        getPrice.enqueue(new APICallback<Response>() {
+        Call<UberPrices> getPrice = UberAPI.getRepository(UberRepo.class).getEstimatePrice(map);
+        getPrice.enqueue(new APICallback<UberPrices>() {
             @Override
-            public void onSuccess(Call<Response> call, retrofit2.Response<Response> response) {
+            public void onSuccess(Call<UberPrices> call, retrofit2.Response<UberPrices> response) {
                 super.onSuccess(call, response);
+                UberPrices data = response.body();
+                priceValue = Integer.MAX_VALUE;
+                for(int i = 0; i< data.prices.size();i++){
+                    priceValue = Math.min(data.prices.get(0).lowEstimate, priceValue);
+                }
+                updateText();
             }
 
             @Override
-            public void onFailure(Call<Response> call, Throwable t) {
+            public void onFailure(Call<UberPrices> call, Throwable t) {
                 super.onFailure(call, t);
             }
 
             @Override
-            public void onError(Call<Response> call, retrofit2.Response<Response> response) {
+            public void onError(Call<UberPrices> call, retrofit2.Response<UberPrices> response) {
                 super.onError(call, response);
             }
         });
@@ -168,14 +234,17 @@ public class ConfirmationTransactionDialogFragment extends DialogFragment implem
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_submit:
-                ((ShoppingCartActivity)getActivity()).doCheckOut();
+                location = etAddress.getText().toString();
+                if(validate()){
+                    ((ShoppingCartActivity)getActivity()).doCheckOut();
+                }
                 break;
             case R.id.btn_cancel:
                 dismiss();
                 break;
             case R.id.btn_change_location:
                 Intent i = new Intent(getContext(),SelectLocationActivity.class);
-                startActivity(i);
+                getActivity().startActivityForResult(i, ShoppingCartActivity.REQUEST_MAP);
                 break;
         }
     }
@@ -186,11 +255,11 @@ public class ConfirmationTransactionDialogFragment extends DialogFragment implem
         mMap.getUiSettings().setAllGesturesEnabled(false);
 
         LatLng sydney = new LatLng(3.637795, 98.687459);
-        mMap.addMarker(new MarkerOptions().position(sydney));
+        marker = mMap.addMarker(new MarkerOptions().position(sydney));
         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(sydney, 15);
         mMap.moveCamera(yourLocation);
 
-        if(user.latitude == null){
+        if(user.latitude == null || user.longitude == null){
             getCurrentLocation();
         }else{
             latitude = user.latitude;
@@ -235,8 +304,23 @@ public class ConfirmationTransactionDialogFragment extends DialogFragment implem
 
     private void moveMap() {
         Log.d(TAG, "moveMap: " + latitude + " " + longitude);
-        LatLng latLng = new LatLng(latitude, longitude);
-        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+        if(marker != null) marker.remove();
+        LatLng position = new LatLng(latitude, longitude);
+        marker = mMap.addMarker(new MarkerOptions().position(position));
+
+        if(vendorMarker != null) vendorMarker.remove();
+        LatLng vendorPosition = new LatLng(vendor.latitude, vendor.longitude);
+        vendorMarker = mMap.addMarker(new MarkerOptions().position(vendorPosition));
+
+        CameraUpdate yourLocation;
+
+        if(latLngBounds != null){
+            yourLocation = CameraUpdateFactory.newLatLngBounds(latLngBounds, 100);
+        }else{
+            LatLng latLng = new LatLng(latitude, longitude);
+            yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+        }
+
         mMap.moveCamera(yourLocation);
         setMycurrentPosition(false);
 
