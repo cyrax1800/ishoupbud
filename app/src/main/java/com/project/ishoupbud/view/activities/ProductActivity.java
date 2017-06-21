@@ -6,11 +6,15 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +36,7 @@ import com.project.ishoupbud.api.model.ProductVendors;
 import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.model.WishList;
+import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.utils.ConstClass;
@@ -95,6 +100,9 @@ public class ProductActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     Menu menu;
 
     Product product;
@@ -125,12 +133,27 @@ public class ProductActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestProduct();
+            }
+        });
+
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                Log.d(TAG, "onOffsetChanged: " + verticalOffset);
+                if(!swipeRefreshLayout.isRefreshing()){
+                    if(verticalOffset > -10){
+                        swipeRefreshLayout.setEnabled(true);
+                    }else{
+                        swipeRefreshLayout.setEnabled(false);
+                    }
+                }
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
@@ -154,7 +177,11 @@ public class ProductActivity extends BaseActivity {
         tvProductName.setText(product.name);
         tvRatingSummary.setText(String.valueOf(product.totalRating));
         tvTotalRater.setText("(" + product.totalReview + " Reviews)");
-        tvSentiment.setText("OverAll: Very Positif");
+        if(product.productSummary == null){
+            tvSentiment.setText("OverAll: Netral");
+        }else{
+            calculateSummary();
+        }
         ratingBar.setRating((float) product.totalRating);
 
         vendorAdapter = new VendorAdapter<>();
@@ -209,6 +236,82 @@ public class ProductActivity extends BaseActivity {
 
         initProgressDialog("Adding to cart...");
 
+    }
+
+    private void requestProduct() {
+        productPagerAdapter.productReviewFragment.requestReview();
+        Call<GenericResponse<Product>> getProduct = APIManager.getRepository(ProductRepo.class).getProductById(product.id);
+        getProduct.enqueue(new APICallback<GenericResponse<Product>>() {
+            @Override
+            public void onSuccess(Call<GenericResponse<Product>> call, Response<GenericResponse<Product>> response) {
+                super.onSuccess(call, response);
+                product = response.body().data;
+                updateView();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<GenericResponse<Product>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
+    }
+
+    public void updateView(){
+        tvProductName.setText(product.name);
+        tvRatingSummary.setText(String.valueOf(product.totalRating));
+        tvTotalRater.setText("(" + product.totalReview + " Reviews)");
+        tvSentiment.setText("OverAll: Very Positif");
+        ratingBar.setRating((float) product.totalRating);
+
+        Glide
+                .with(this)
+                .load(product.pictureUrl.medium)
+                .fitCenter()
+                .crossFade()
+                .into(ivProduct);
+        productPagerAdapter.productDetailFragment.updateDetail(product.description);
+        List<Vendor> vendors = new ArrayList<>();
+        for (int i = 0; i < product.vendors.size(); i++) {
+            vendors.add(product.vendors.get(i).vendor);
+        }
+        productPagerAdapter.productReviewFragment.setVendor(vendors);
+        stepperView.setValue(productQuantity);
+        toolbar_title.setText(product.name);
+        calculateSummary();
+    }
+
+    public void calculateSummary(){
+        if(product.productSummary == null){
+            tvSentiment.setText("OverAll: Netral");
+        }else{
+            double maxMean = Math.max(product.productSummary.mean.pos, product.productSummary.mean.neg);
+            maxMean = Math.max(maxMean, product.productSummary.mean.neu);
+            boolean isPos = maxMean == product.productSummary.mean.pos;
+            boolean isNeu = maxMean == product.productSummary.mean.neu;
+            boolean isNeg = maxMean == product.productSummary.mean.neg;
+
+            double totalReview = product.productSummary.count.pos + product.productSummary.count.neu + product.productSummary.count.neg;
+            double posPercent = product.productSummary.count.pos/totalReview;
+            double neuPercent = product.productSummary.count.neu/totalReview;
+            double negPercent = product.productSummary.count.neg/totalReview;
+
+            if(isPos && posPercent >= 0.8){
+                tvSentiment.setText("OverAll: Overwhelming Positif");
+            }else if(isPos && posPercent >= 0.65){
+                tvSentiment.setText("OverAll: Very Positif");
+            }else if(isPos || isNeu && posPercent >= 0.5){
+                tvSentiment.setText("OverAll: Positif");
+            }else if(isNeg && isNeu && negPercent >= 0.8){
+                tvSentiment.setText("OverAll: Negatif");
+            }else if(isNeg && negPercent >= 0.65){
+                tvSentiment.setText("OverAll: Very Negatif");
+            }else if(isNeg || negPercent >= 0.5){
+                tvSentiment.setText("OverAll: Overwhelming Negatif");
+            }else{
+                tvSentiment.setText("OverAll: Netral");
+            }
+        }
     }
 
     public void addToWishList() {

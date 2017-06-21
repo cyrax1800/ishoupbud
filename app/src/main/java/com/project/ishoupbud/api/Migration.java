@@ -3,6 +3,7 @@ package com.project.ishoupbud.api;
 import android.util.Log;
 
 import com.project.ishoupbud.api.model.PictureSize;
+import com.project.ishoupbud.api.model.ProductSummary;
 import com.project.ishoupbud.api.model.ProductVendors;
 
 import java.util.List;
@@ -49,6 +50,7 @@ public class Migration implements RealmMigration {
                         .addField("pictureUrl", PictureSize.class, FieldAttribute.REQUIRED)
                         .addField("liked", Boolean.class)
                         .addField("vendors", RealmList.class);
+//                        .addField("productSummary", ProductSummary.class);
             }
         }
     }

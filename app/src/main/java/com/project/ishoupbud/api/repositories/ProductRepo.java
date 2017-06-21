@@ -24,6 +24,10 @@ public interface ProductRepo {
     @Headers("Accept: application/json")
     Call<GenericResponse<Product>> getProductByBarcode(@Path("product_barcode") String barcode);
 
+    @GET("product/{product_id}")
+    @Headers("Accept: application/json")
+    Call<GenericResponse<Product>> getProductById(@Path("product_id") int id);
+
     @GET("product")
     @Headers("Accept: application/json")
     Call<GenericResponse<List<Product>>> getProductFilter(@Query("category") int categoryId, @Query("keyword") String keyword);

@@ -35,6 +35,8 @@ public class Product extends RealmObject implements SearchSuggestion {
     public Boolean liked;
     public Vendor vendor;
     public RealmList<ProductVendors> vendors;
+    @SerializedName("summary")
+    public ProductSummary productSummary;
 
     public Product(){
 
