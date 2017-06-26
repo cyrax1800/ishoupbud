@@ -180,7 +180,7 @@ public class ProductStatisticFragment extends BaseFragment {
         IAxisValueFormatter formatter = new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                Log.d(TAG, "getFormattedValue: "+value);
+//                Log.d(TAG, "getFormattedValue: "+value);
                 if((int)value > statisticDateMapData.get(vendorList.get(selectedVendorIdx).id)
                         .get(selectedDayIdx).size() - 1){
                     value = statisticDateMapData.get(vendorList.get(selectedVendorIdx).id)

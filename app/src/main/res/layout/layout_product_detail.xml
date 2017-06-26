@@ -73,7 +73,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_vendor"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        />
 
     <LinearLayout
         android:layout_marginTop="@dimen/item_space"

@@ -41,8 +41,10 @@ import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.StepperView;
+import com.project.ishoupbud.view.adapters.ProductDetailAdapter;
 import com.project.ishoupbud.view.adapters.ProductPagerAdapter;
 import com.project.ishoupbud.view.adapters.VendorAdapter;
+import com.project.ishoupbud.view.holders.ProductDetailHolder;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.models.GenericResponse;
@@ -75,30 +77,9 @@ public class ProductActivity extends BaseActivity {
     @BindView(R.id.iv_product)
     ImageView ivProduct;
 
-    @BindView(R.id.tv_product_name)
-    TextView tvProductName;
-    @BindView(R.id.tv_rating_summary)
-    TextView tvRatingSummary;
-    @BindView(R.id.tv_total_rater)
-    TextView tvTotalRater;
-    @BindView(R.id.tv_sentiment)
-    TextView tvSentiment;
-    @BindView(R.id.rating_bar_summary)
-    RatingBar ratingBar;
-    @BindView(R.id.rv_vendor)
-    RecyclerView rvVendor;
-    @BindView(R.id.btn_add_to_cart)
-    Button btnAddToCart;
-    @BindView(R.id.btn_compare)
-    Button btnCompare;
-
-    @BindView(R.id.stepper)
-    StepperView stepperView;
-
-    @BindView(R.id.tab_layout)
-    TabLayout tabLayout;
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
+    @BindView(R.id.rv_product_detail)
+    RecyclerView rvProductDetail;
+    ProductDetailAdapter productDetailAdapter;
 
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -106,11 +87,11 @@ public class ProductActivity extends BaseActivity {
     Menu menu;
 
     Product product;
-    int productQuantity;
+    public int productQuantity;
     boolean isInWishlist = false;
 
-    VendorAdapter<ProductVendors> vendorAdapter;
-    ProductPagerAdapter productPagerAdapter;
+    public VendorAdapter<ProductVendors> vendorAdapter;
+    public ProductPagerAdapter productPagerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -146,7 +127,7 @@ public class ProductActivity extends BaseActivity {
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                Log.d(TAG, "onOffsetChanged: " + verticalOffset);
+//                Log.d(TAG, "onOffsetChanged: " + scrollRange + " " + verticalOffset + " " + toolbar.getHeight());
                 if(!swipeRefreshLayout.isRefreshing()){
                     if(verticalOffset > -10){
                         swipeRefreshLayout.setEnabled(true);
@@ -157,15 +138,19 @@ public class ProductActivity extends BaseActivity {
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                if (scrollRange + verticalOffset == 0) {
+                if (scrollRange + verticalOffset - toolbar.getHeight() <= 0) {
+                    if(isShow) return;
+                    collapsingToolbarLayout.setScrimVisibleHeightTrigger(toolbar.getHeight() + 1);
                     toolbar_title.animate().alpha(1.0f).setDuration(250);
                     isShow = true;
                 } else if (isShow) {
-                    toolbar_title.animate().alpha(0.0f).setDuration(250);
+                    collapsingToolbarLayout.setScrimVisibleHeightTrigger(toolbar.getHeight());
+                    toolbar_title.animate().alpha(0.0f).setDuration(200);
                     isShow = false;
                 }
             }
         });
+
 
         Glide
                 .with(this)
@@ -174,65 +159,14 @@ public class ProductActivity extends BaseActivity {
                 .crossFade()
                 .into(ivProduct);
 
-        tvProductName.setText(product.name);
-        tvRatingSummary.setText(String.valueOf(product.totalRating));
-        tvTotalRater.setText("(" + product.totalReview + " Reviews)");
-        if(product.productSummary == null){
-            tvSentiment.setText("OverAll: Netral");
-        }else{
-            calculateSummary();
-        }
-        ratingBar.setRating((float) product.totalRating);
-
         vendorAdapter = new VendorAdapter<>();
         vendorAdapter.setNew(product.vendors);
-        rvVendor.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvVendor.setAdapter(vendorAdapter);
 
-        btnAddToCart.setOnClickListener(this);
-        btnCompare.setOnClickListener(this);
-
-        stepperView.setValue(productQuantity);
-
+        productDetailAdapter = new ProductDetailAdapter(product, this);
+        rvProductDetail.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvProductDetail.setAdapter(productDetailAdapter);
+//
         productPagerAdapter = new ProductPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(productPagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    productPagerAdapter.productDetailFragment.updateDetail(product.description);
-                } else if (position == 1) {
-                } else if (position == 2) {
-                    productPagerAdapter.productStatisticFragment.initialRequest();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(viewPager);
-                productPagerAdapter.productDetailFragment.updateDetail(product.description);
-                productPagerAdapter.productReviewFragment.setProductId(product.id);
-                List<Vendor> vendors = new ArrayList<>();
-                for (int i = 0; i < product.vendors.size(); i++) {
-                    vendors.add(product.vendors.get(i).vendor);
-                }
-                productPagerAdapter.productReviewFragment.setVendor(vendors);
-                productPagerAdapter.productStatisticFragment.setVendor(vendors);
-                productPagerAdapter.productStatisticFragment.setProductId(product.id);
-            }
-        });
 
         initProgressDialog("Adding to cart...");
 
@@ -258,32 +192,31 @@ public class ProductActivity extends BaseActivity {
     }
 
     public void updateView(){
-        tvProductName.setText(product.name);
-        tvRatingSummary.setText(String.valueOf(product.totalRating));
-        tvTotalRater.setText("(" + product.totalReview + " Reviews)");
-        tvSentiment.setText("OverAll: Very Positif");
-        ratingBar.setRating((float) product.totalRating);
+        productDetailAdapter.product = product;
+        productDetailAdapter.notifyItemChanged(0);
 
         Glide
                 .with(this)
                 .load(product.pictureUrl.medium)
+                .placeholder(R.drawable.comingsoon)
                 .fitCenter()
                 .crossFade()
                 .into(ivProduct);
         productPagerAdapter.productDetailFragment.updateDetail(product.description);
+        productPagerAdapter.productReviewFragment.requestReview();
+        productPagerAdapter.productStatisticFragment.getStatistic();
         List<Vendor> vendors = new ArrayList<>();
         for (int i = 0; i < product.vendors.size(); i++) {
             vendors.add(product.vendors.get(i).vendor);
         }
         productPagerAdapter.productReviewFragment.setVendor(vendors);
-        stepperView.setValue(productQuantity);
         toolbar_title.setText(product.name);
-        calculateSummary();
     }
 
-    public void calculateSummary(){
+    public String calculateSummary(){
+        String text;
         if(product.productSummary == null){
-            tvSentiment.setText("OverAll: Netral");
+            text = "OverAll: Netral";
         }else{
             double maxMean = Math.max(product.productSummary.mean.pos, product.productSummary.mean.neg);
             maxMean = Math.max(maxMean, product.productSummary.mean.neu);
@@ -297,21 +230,22 @@ public class ProductActivity extends BaseActivity {
             double negPercent = product.productSummary.count.neg/totalReview;
 
             if(isPos && posPercent >= 0.8){
-                tvSentiment.setText("OverAll: Overwhelming Positif");
+                text = "OverAll: Overwhelming Positif";
             }else if(isPos && posPercent >= 0.65){
-                tvSentiment.setText("OverAll: Very Positif");
+                text = "OverAll: Very Positif";
             }else if(isPos || isNeu && posPercent >= 0.5){
-                tvSentiment.setText("OverAll: Positif");
+                text = "OverAll: Positif";
             }else if(isNeg && isNeu && negPercent >= 0.8){
-                tvSentiment.setText("OverAll: Negatif");
+                text = "OverAll: Negatif";
             }else if(isNeg && negPercent >= 0.65){
-                tvSentiment.setText("OverAll: Very Negatif");
+                text = "OverAll: Very Negatif";
             }else if(isNeg || negPercent >= 0.5){
-                tvSentiment.setText("OverAll: Overwhelming Negatif");
+                text = "OverAll: Overwhelming Negatif";
             }else{
-                tvSentiment.setText("OverAll: Netral");
+                text = "OverAll: Netral";
             }
         }
+        return text;
     }
 
     public void addToWishList() {
@@ -373,7 +307,8 @@ public class ProductActivity extends BaseActivity {
             Toast.makeText(getApplicationContext(), "No vendor selected", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(stepperView.getValue() == 0){
+        int value = ((ProductDetailHolder)rvProductDetail.getChildViewHolder(rvProductDetail.getChildAt(0))).stepperView.getValue();
+        if(value == 0){
             Toast.makeText(getApplicationContext(), "Quantity can't be zero", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -381,7 +316,7 @@ public class ProductActivity extends BaseActivity {
         HashMap<String,Object> map = new HashMap<>();
         map.put("product_id", product.id);
         map.put("vendor_id",vendorAdapter.getItemAt(vendorAdapter.getCheckedIdx()).vendor.id);
-        map.put("quantity", Integer.valueOf(stepperView.getValue()));
+        map.put("quantity", Integer.valueOf(value));
         Call<ShoppingCart> addItemToCart = APIManager.getRepository(ShoppingCartRepo.class).addCart(map);
         addItemToCart.enqueue(new APICallback<ShoppingCart>() {
             @Override

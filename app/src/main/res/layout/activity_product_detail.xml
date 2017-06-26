@@ -6,13 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-<android.support.design.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
-    <include layout="@layout/collapsing_app_bar"/>
-        <android.support.v4.widget.NestedScrollView
+        <include layout="@layout/collapsing_app_bar"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_product_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:nestedScrollingEnabled="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+        <!--<android.support.v4.widget.NestedScrollView
             android:id="@+id/nestedScroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,6 +39,7 @@
                 android:layout_height="wrap_content"
                 >
 
+                <include layout="@layout/layout_product_detail" />
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tab_layout"
@@ -44,11 +57,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>-->
 
-
-
-</android.support.design.widget.CoordinatorLayout>
+    </android.support.design.widget.CoordinatorLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
