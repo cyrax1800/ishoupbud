@@ -181,10 +181,18 @@ public class ProductStatisticFragment extends BaseFragment {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 Log.d(TAG, "getFormattedValue: "+value);
+                if((int)value > statisticDateMapData.get(vendorList.get(selectedVendorIdx).id)
+                        .get(selectedDayIdx).size() - 1){
+                    value = statisticDateMapData.get(vendorList.get(selectedVendorIdx).id)
+                            .get(selectedDayIdx).size() - 1;
+                }
+                if(value == -1){
+                    value = 0;
+                }
                 return statisticDateMapData
                         .get(vendorList.get(selectedVendorIdx).id)
                         .get(selectedDayIdx)
-                        .get(0);
+                        .get((int)value);
             }
         };
         XAxis xAxis = lineChart.getXAxis();
