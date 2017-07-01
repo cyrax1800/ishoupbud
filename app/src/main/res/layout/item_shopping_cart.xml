@@ -3,54 +3,77 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/item_space"
-    android:paddingBottom="@dimen/item_space"
     style="@style/product_card"
     android:clickable="true"
     >
 
-    <ImageView
-        android:id="@+id/iv_product"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/comingsoon"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        />
-
-    <RelativeLayout
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/item_space"
+        >
+
+        <ImageView
+            android:id="@+id/iv_product"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/comingsoon"
+            android:layout_gravity="center"
+            />
+
+        <com.project.ishoupbud.view.StepperView
+            android:id="@+id/stepper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
+        android:layout_marginTop="@dimen/item_space"
+        android:layout_marginBottom="@dimen/item_space"
+        android:layout_marginRight="@dimen/item_space"
         android:orientation="vertical"
         >
         <TextView
             android:id="@+id/tv_product_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:text="Aqua"
             android:layout_marginBottom="@dimen/item_space"
-            style="@style/review_name"
+            android:maxLines="2"
+            android:ellipsize="end"
+            style="@style/ishoupbud_text_black"
             />
 
         <TextView
             android:id="@+id/tv_product_price"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_product_name"
+            android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/item_space"
             android:text="Rp. 12312312"
-            style="@style/product_card_price"
+            style="@style/ishoupbud_text_black"
+            android:textStyle="bold"
+            android:gravity="center"
             />
 
-        <TextView
-            android:id="@+id/tv_vendor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hypermart"
-            android:layout_below="@+id/tv_product_price"
-            style="@style/review_desc"
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/background_holo_light"
+        android:orientation="horizontal"
+        >
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/shadow_black"
             />
 
         <ImageButton
@@ -58,23 +81,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_delete"
-            android:layout_alignParentEnd="true"
-            android:paddingRight="@dimen/item_space"
-            android:paddingLeft="@dimen/item_space"
-            android:paddingBottom="@dimen/item_space"
-            android:background="@color/white"
+            android:padding="16dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/background_holo_light"
             />
 
-        <com.project.ishoupbud.view.StepperView
-            android:id="@+id/stepper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ib_delete"
-            android:layout_gravity="center"
-            android:layout_alignParentEnd="true"
-            />
-
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

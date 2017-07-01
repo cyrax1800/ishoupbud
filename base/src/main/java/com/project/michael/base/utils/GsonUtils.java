@@ -3,7 +3,6 @@ package com.project.michael.base.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonNull;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.Primitives;
 
@@ -42,7 +41,8 @@ public class GsonUtils {
         return gson.fromJson(json, type);
     }
 
-    public static <T> T getObjectFromJson(String json, Class<T> classOfT)throws JsonSyntaxException {
+    public static <T> T getObjectFromJson(String json, Class<T> classOfT) throws
+            JsonSyntaxException {
         Gson gson = new Gson();
         Object object = gson.fromJson(json, (Type) classOfT);
         return Primitives.wrap(classOfT).cast(object);

@@ -5,6 +5,7 @@ import com.project.michael.base.models.GenericResponse;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -29,5 +30,5 @@ public interface TransactionRepo {
 
     @Headers("Accept: application/json")
     @POST("transaction")
-    Call<GenericResponse<List<Transaction>>> checkout();
+    Call<List<Transaction>> checkout(@Body Map map);
 }

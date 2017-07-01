@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/product_card"
+    android:clickable="true"
+    android:layout_marginBottom="16dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/item_space"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        >
+
+        <TextView
+            android:id="@+id/tv_vendor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vendor"
+            android:paddingStart="@dimen/item_space"
+            android:clickable="false"
+            style="@style/ishoupbud_text_black"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/shadow_black"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/shadow_black"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/item_space"
+        android:orientation="horizontal"
+        >
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Biaya pengiriman"
+                style="@style/ishoupbud_text_black"
+                android:paddingBottom="@dimen/item_space"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jarak"
+                style="@style/ishoupbud_text_black"
+                android:paddingBottom="@dimen/item_space"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Estimasi waktu kirim"
+                style="@style/ishoupbud_text_black"
+                />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/total_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:id="@+id/ll_detail_shipment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:id="@+id/tv_biaya_kirim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 123.3123"
+                style="@style/ishoupbud_text_black"
+                android:paddingBottom="@dimen/item_space"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:id="@+id/tv_jarak"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2 km"
+                style="@style/ishoupbud_text_black"
+                android:paddingBottom="@dimen/item_space"
+                android:textAlignment="textEnd"
+                />
+            <TextView
+                android:id="@+id/tv_estimasi_waktu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2 Jam"
+                style="@style/ishoupbud_text_black"
+                android:textAlignment="textEnd"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

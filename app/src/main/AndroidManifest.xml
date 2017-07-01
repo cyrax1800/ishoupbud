@@ -25,7 +25,7 @@
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/googleMapKey" />
 
-        <activity android:name=".view.activities.MainActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".view.activities.MainActivity" android:theme="@style/AppTheme.NoActionBar" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -56,6 +56,8 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/title_activity_select_location"/>
         <activity android:name="com.project.ishoupbud.view.activities.DetailTransactionActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.project.ishoupbud.view.activities.BayarActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <service

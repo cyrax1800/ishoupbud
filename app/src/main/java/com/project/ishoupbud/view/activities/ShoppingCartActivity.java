@@ -1,6 +1,7 @@
 package com.project.ishoupbud.view.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,33 +10,30 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.project.ishoupbud.R;
-import com.project.ishoupbud.api.model.ShoppingCart;
-import com.project.ishoupbud.api.model.Transaction;
-import com.project.ishoupbud.api.model.User;
+import com.project.ishoupbud.api.model.ShoppingCartContainer;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
-import com.project.ishoupbud.api.repositories.TransactionRepo;
-import com.project.ishoupbud.api.response.ShoppingCartResponse;
-import com.project.ishoupbud.helper.InsetDividerItemDecoration;
 import com.project.ishoupbud.utils.ConstClass;
-import com.project.ishoupbud.view.StepperView;
-import com.project.ishoupbud.view.adapters.ShoppingCartAdapter;
-import com.project.ishoupbud.view.dialog.ConfirmationTransactionDialogFragment;
-import com.project.ishoupbud.view.holders.ShoppingCartHolder;
+import com.project.ishoupbud.view.adapters.ShoppingCartContainerAdapter;
+import com.project.ishoupbud.view.holders.ShoppingCartContainerHolder;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
-import com.project.michael.base.database.SharedPref;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 import com.project.michael.base.views.listeners.ClickEventListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -50,20 +48,20 @@ import retrofit2.Response;
 public class ShoppingCartActivity extends BaseActivity {
 
     public static final int REQUEST_MAP = 0;
-
+    @BindView(R.id.bottom_container) public LinearLayout llBtnContainer;
+    @BindView(R.id.chk_select_all_transaction) public CheckBox chkAllTransaction;
+    public float totalPrice = 0;
+    public boolean isAllNotChecked = true;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.rv_wishlist) RecyclerView rvShoppingCart;
+    @BindView(R.id.ll_chk_all_transaction) LinearLayout llChkAllTransaction;
+    @BindView(R.id.rv_cart_container) RecyclerView rvShoppingCart;
     @BindView(R.id.tv_total_price) TextView tvTotalPrice;
     @BindView(R.id.btn_continue) Button btnContinue;
-
-    ShoppingCartAdapter<ShoppingCart> shoppingCartAdapter;
-
-    ConfirmationTransactionDialogFragment confirmationTransactionDialogFragment;
+    ShoppingCartContainerAdapter<ShoppingCartContainer> shoppingCartContainerAdapter;
 
     int selectedIdx;
-    public float totalPrice = 0;
-    User user;
     Vendor vendor;
+    int bottomContainerHeight;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,149 +72,174 @@ public class ShoppingCartActivity extends BaseActivity {
 
         toolbar.setTitle("Shopping Cart");
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         btnContinue.setOnClickListener(this);
-        //TODO make adapter
+        llChkAllTransaction.setOnClickListener(this);
 
-        shoppingCartAdapter = new ShoppingCartAdapter<>();
-        shoppingCartAdapter.onValueChangeListener = new StepperView.OnValueChangeListener() {
+        llBtnContainer.post(new Runnable() {
             @Override
-            public void onValueChangeByButtonClick(int value) {
-                validateList();
-            }
-        };
-        shoppingCartAdapter.setItemListener(R.id.ib_delete, new ClickEventListener<ShoppingCart>() {
-            @Override
-            public void onClick(View v, ShoppingCart shoppingCart, int position) {
-                deleteItem(shoppingCart.id);
-                selectedIdx = position;
+            public void run() {
+                bottomContainerHeight = llBtnContainer.getHeight();
+                llBtnContainer.setVisibility(View.GONE);
             }
         });
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+        chkAllTransaction.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    chkAllTransaction.setTypeface(Typeface.DEFAULT_BOLD);
+                } else {
+                    chkAllTransaction.setTypeface(Typeface.DEFAULT);
+                }
+            }
+        });
 
-        rvShoppingCart.addItemDecoration(new InsetDividerItemDecoration(this));
+        //TODO make adapter
+
+        shoppingCartContainerAdapter = new ShoppingCartContainerAdapter<>(this);
+        shoppingCartContainerAdapter.setItemListener(R.id.ll_chk_vendor, new
+                ClickEventListener<ShoppingCartContainer>() {
+            @Override
+            public void onClick(View v, ShoppingCartContainer shoppingCartContainer, int position) {
+                Log.d(TAG, "onClick: asdasdasd");
+                shoppingCartContainerAdapter.toggleChecked((ShoppingCartContainerHolder)
+                        rvShoppingCart.findViewHolderForAdapterPosition(position), position);
+            }
+        }).setItemListener(R.id.btn_bayar, new ClickEventListener<ShoppingCartContainer>() {
+            @Override
+            public void onClick(View v, final ShoppingCartContainer shoppingCartContainer, int
+                    position) {
+                konfirmasiPembayaran(Collections.singletonList(shoppingCartContainer));
+            }
+        });
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+
         rvShoppingCart.setLayoutManager(layoutManager);
-        rvShoppingCart.setAdapter(shoppingCartAdapter);
+        rvShoppingCart.setAdapter(shoppingCartContainerAdapter);
 
         tvTotalPrice.setText("Total: Rp. 0");
 
         initProgressDialog("Deleting Items...");
 
-        user = GsonUtils.getObjectFromJson(SharedPref.getValueString(ConstClass.USER),User.class);
-
         getCart();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_MAP){
-            if(resultCode == -1){
-                confirmationTransactionDialogFragment.location = data.getStringExtra(ConstClass.ADDRESS_EXTRA);
-                confirmationTransactionDialogFragment.latitude = data.getDoubleExtra(ConstClass.LATITUDE_EXTRA, 0);
-                confirmationTransactionDialogFragment.longitude = data.getDoubleExtra(ConstClass.LONGITUDE_EXTRA, 0);
-                confirmationTransactionDialogFragment.getEstimatePrice();
-                confirmationTransactionDialogFragment.getPath();
-            }
-        }
-    }
-
-    public void getCart(){
-        Call<GenericResponse<ShoppingCartResponse>> getCartRequest = APIManager.getRepository(ShoppingCartRepo.class).getCart();
-        getCartRequest.enqueue(new APICallback<GenericResponse<ShoppingCartResponse>>() {
+    public void getCart() {
+        Call<GenericResponse<List<ShoppingCartContainer>>> getCartRequest = APIManager
+                .getRepository(ShoppingCartRepo.class).getCart();
+        getCartRequest.enqueue(new APICallback<GenericResponse<List<ShoppingCartContainer>>>() {
             @Override
-            public void onSuccess(Call<GenericResponse<ShoppingCartResponse>> call, Response<GenericResponse<ShoppingCartResponse>> response) {
+            public void onSuccess(Call<GenericResponse<List<ShoppingCartContainer>>> call,
+                                  Response<GenericResponse<List<ShoppingCartContainer>>> response) {
                 super.onSuccess(call, response);
-                shoppingCartAdapter.setNew(response.body().data.shoppingCarts);
-                if(shoppingCartAdapter.getItemCount() > 0){
-                    vendor = shoppingCartAdapter.getItemAt(0).product.vendor;
-                }
-                tvTotalPrice.setText("Total: " + Utils.indonesiaFormat(response.body().data.total));
-                totalPrice = response.body().data.total;
+                List<ShoppingCartContainer> shoppingCartContainers = response.body().data;
+                shoppingCartContainerAdapter.setNew(shoppingCartContainers);
             }
 
             @Override
-            public void onFailure(Call<GenericResponse<ShoppingCartResponse>> call, Throwable t) {
+            public void onFailure(Call<GenericResponse<List<ShoppingCartContainer>>> call,
+                                  Throwable t) {
                 super.onFailure(call, t);
             }
         });
     }
 
-    public void deleteItem(int cart_id){
-        progressDialog.setMessage("Deleting Items...");
-        progressDialog.show();
-        Call<com.project.michael.base.models.Response> deleteCart = APIManager.getRepository(ShoppingCartRepo.class).deleteCart(cart_id);
-        deleteCart.enqueue(new APICallback<com.project.michael.base.models.Response>() {
-            @Override
-            public void onNoContent(Call<com.project.michael.base.models.Response> call, Response<com.project.michael.base.models.Response> response) {
-                super.onNoContent(call, response);
-                shoppingCartAdapter.remove(selectedIdx);
-                progressDialog.dismiss();
-                validateList();
-            }
-
-            @Override
-            public void onFailure(Call<com.project.michael.base.models.Response> call, Throwable t) {
-                super.onFailure(call, t);
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onError(Call<com.project.michael.base.models.Response> call, Response<com.project.michael.base.models.Response> response) {
-                super.onError(call, response);
-                progressDialog.dismiss();
-            }
-        });
-    }
-
-    public void doCheckOut(){
-        progressDialog.setMessage("Check out...");
-        progressDialog.show();
-        APIManager.getRepository(TransactionRepo.class).checkout()
-            .enqueue(new APICallback<GenericResponse<List<Transaction>>>() {
-                @Override
-                public void onSuccess(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
-                    super.onSuccess(call, response);
-                    confirmationTransactionDialogFragment.dismiss();
-                    progressDialog.cancel();
-                    progressDialog.dismiss();
-                    confirmationTransactionDialogFragment.dismiss();
-                }
-
-                @Override
-                public void onFailure(Call<GenericResponse<List<Transaction>>> call, Throwable t) {
-                    super.onFailure(call, t);
-                    progressDialog.dismiss();
-                }
-
-                @Override
-                public void onError(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
-                    super.onError(call, response);
-                    progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(),"Saldo tidak cukup", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-    }
-
-    public void validateList(){
-        totalPrice = 0;
-        StepperView stepperView;
-        for(int i = 0; i< shoppingCartAdapter.getItemCount(); i++){
-            stepperView = ((ShoppingCartHolder)rvShoppingCart.findViewHolderForAdapterPosition(i)).stepperView;
-            totalPrice += stepperView.getValue() * shoppingCartAdapter.getItemAt(i).product.price;
+    public void toggleCheckFromClick() {
+        boolean isChecked = chkAllTransaction.isChecked();
+        isChecked = !isChecked;
+        chkAllTransaction.setChecked(isChecked);
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams)
+                rvShoppingCart.getLayoutParams();
+        marginLayoutParams.setMargins(0, 0, 0, 0);
+        llBtnContainer.setVisibility(View.GONE);
+        if (isChecked) {
+            llBtnContainer.setVisibility(View.VISIBLE);
+            marginLayoutParams.setMargins(0, 0, 0, bottomContainerHeight);
         }
-        tvTotalPrice.setText("Total: " + Utils.indonesiaFormat(totalPrice));
+        rvShoppingCart.setLayoutParams(marginLayoutParams);
+        for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
+            shoppingCartContainerAdapter.setCheck((ShoppingCartContainerHolder) rvShoppingCart
+                    .findViewHolderForAdapterPosition(i), i, isChecked);
+        }
+        calculateTotal();
+    }
+
+    public void validateChecklist() {
+        boolean isAllChecked = true;
+        boolean isAllNotChecked = true;
+        boolean hasItemIsChecked = false;
+        totalPrice = 0;
+        for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
+            if (shoppingCartContainerAdapter.checkedIdx.get(i)) {
+                hasItemIsChecked = true;
+                isAllNotChecked = false;
+                totalPrice += shoppingCartContainerAdapter.getItemAt(i).subTotal;
+            } else {
+                isAllChecked = false;
+            }
+        }
+
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams)
+                rvShoppingCart.getLayoutParams();
+        marginLayoutParams.setMargins(0, 0, 0, 0);
+        llBtnContainer.setVisibility(View.GONE);
+        if (isAllChecked) {
+            chkAllTransaction.setChecked(true);
+        } else {
+            if (hasItemIsChecked) {
+                chkAllTransaction.setChecked(false);
+            }
+        }
+        if (isAllNotChecked) {
+            chkAllTransaction.setChecked(false);
+        }
+        if (hasItemIsChecked) {
+            llBtnContainer.setVisibility(View.VISIBLE);
+            marginLayoutParams.setMargins(0, 0, 0, bottomContainerHeight);
+            for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
+                ShoppingCartContainerHolder shoppingCartContainerHolder =
+                        (ShoppingCartContainerHolder) rvShoppingCart
+                                .findViewHolderForAdapterPosition(i);
+                shoppingCartContainerHolder.btmContainer.setVisibility(View.GONE);
+            }
+        } else {
+            for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
+                ShoppingCartContainerHolder shoppingCartContainerHolder =
+                        (ShoppingCartContainerHolder) rvShoppingCart
+                                .findViewHolderForAdapterPosition(i);
+                shoppingCartContainerHolder.btmContainer.setVisibility(View.VISIBLE);
+            }
+        }
+        rvShoppingCart.setLayoutParams(marginLayoutParams);
+        calculateTotal();
+    }
+
+    public void calculateTotal() {
+        totalPrice = 0;
+        for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
+            if (shoppingCartContainerAdapter.checkedIdx.get(i)) {
+                totalPrice += shoppingCartContainerAdapter.getItemAt(i).subTotal;
+            }
+        }
+        tvTotalPrice.setText(Utils.indonesiaFormat(totalPrice));
+    }
+
+    public void konfirmasiPembayaran(List<ShoppingCartContainer> list){
+        Intent intent = new Intent(this, BayarActivity.class);
+        intent.putExtra(ConstClass.CART_EXTRA, GsonUtils.getJsonFromObject(list));
+        startActivity(intent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -224,10 +247,18 @@ public class ShoppingCartActivity extends BaseActivity {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_continue:
-                confirmationTransactionDialogFragment = new ConfirmationTransactionDialogFragment();
-                confirmationTransactionDialogFragment.show(getSupportFragmentManager(),"Confirmation Transaction",user, vendor);
+                List<ShoppingCartContainer> tmpList = new ArrayList<>();
+                for (int i = 0; i < shoppingCartContainerAdapter.checkedIdx.size(); i++) {
+                    if (shoppingCartContainerAdapter.checkedIdx.get(i))
+                        tmpList.add(shoppingCartContainerAdapter.getItemAt(i));
+                }
+                konfirmasiPembayaran(tmpList);
+                break;
+            case R.id.ll_chk_all_transaction:
+                if(shoppingCartContainerAdapter.getItemCount() == 0) return;
+                toggleCheckFromClick();
                 break;
         }
     }

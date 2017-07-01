@@ -16,12 +16,13 @@ import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.api.repositories.UserRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.helper.TextImageCircleHelper;
-import com.project.michael.base.api.GenericResponseInterceptor;
-import com.project.michael.base.api.SessionInterceptor;
 import com.project.michael.base.BaseApplication;
 import com.project.michael.base.api.APIManager;
+import com.project.michael.base.api.GenericResponseInterceptor;
+import com.project.michael.base.api.SessionInterceptor;
 import com.project.michael.base.database.RealmDb;
 import com.squareup.leakcanary.LeakCanary;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -32,7 +33,9 @@ public class IshoupbudApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
-        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review", "reviews","statistic", "carts","cart", "transactions","history");
+        APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review",
+                                        "reviews", "statistic", "carts", "cart", "transactions",
+                                        "history");
         APIManager.addInterceptor(new SessionInterceptor());
         APIManager.addInterceptor(new GenericResponseInterceptor());
 
@@ -64,7 +67,7 @@ public class IshoupbudApplication extends BaseApplication {
 
         RealmDb.migrate(new Migration());
 
-        if(RealmDb.getRealm().isEmpty()){
+        if (RealmDb.getRealm().isEmpty()) {
             RealmDb.initiateData(new CategoryTransaction());
         }
 

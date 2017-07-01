@@ -18,16 +18,15 @@ import com.project.ishoupbud.R;
  * Created by michael on 4/30/17.
  */
 
-public class StepperView extends LinearLayout implements View.OnClickListener{
+public class StepperView extends LinearLayout implements View.OnClickListener {
 
+    public OnValueChangeListener onValueChangeListener;
     ImageButton ibtnPlusStepper, ibtnMinusStepper;
     EditText etStepperCount;
-
     private boolean canMinus;
     private int value;
-
+    private int position;
     private String beforeText;
-    public OnValueChangeListener onValueChangeListener;
 
     public StepperView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,7 +34,7 @@ public class StepperView extends LinearLayout implements View.OnClickListener{
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.StepperView, 0, 0);
         canMinus = a.getBoolean(R.styleable.StepperView_canMinus, false);
-        value = a.getInt(R.styleable.StepperView_value, 0);
+        value = a.getInt(R.styleable.StepperView_value, 1);
         a.recycle();
 
         setOrientation(LinearLayout.HORIZONTAL);
@@ -48,6 +47,7 @@ public class StepperView extends LinearLayout implements View.OnClickListener{
         ibtnPlusStepper = (ImageButton) getChildAt(0);
         etStepperCount = (EditText) getChildAt(1);
         ibtnMinusStepper = (ImageButton) getChildAt(2);
+        position = -1;
 
         ibtnPlusStepper.setOnClickListener(this);
         ibtnMinusStepper.setOnClickListener(this);
@@ -60,16 +60,36 @@ public class StepperView extends LinearLayout implements View.OnClickListener{
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().equals(beforeText)) return;
-                if(s.length() == 0) value = 0;
-                else{
+                if (s.toString().equals(beforeText)) return;
+                if (s.length() == 0) {
+                    value = 1;
+                    updateText();
+                    etStepperCount.setSelection(1);
+                } else {
                     value = Integer.valueOf(s.toString());
+                    if (value == 0) {
+                        value = 1;
+                        updateText();
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+//                if (onValueChangeListener != null) {
+//                    onValueChangeListener.onValueChangeByButtonClick(getValue(), position);
+//                }
+            }
+        });
 
+        etStepperCount.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    if (onValueChangeListener != null) {
+                        onValueChangeListener.onValueChangeByButtonClick(getValue(), position);
+                    }
+                }
             }
         });
 
@@ -81,7 +101,7 @@ public class StepperView extends LinearLayout implements View.OnClickListener{
         this(context, null);
     }
 
-    private void updateText(){
+    private void updateText() {
         etStepperCount.setText(String.valueOf(value));
     }
 
@@ -94,26 +114,34 @@ public class StepperView extends LinearLayout implements View.OnClickListener{
         updateText();
     }
 
-    public void setOnValueChangeListener(OnValueChangeListener onValueChangeListener){
+    public void setOnValueChangeListener(OnValueChangeListener onValueChangeListener) {
+        setOnValueChangeListener(onValueChangeListener, -1);
+    }
+
+    public void setOnValueChangeListener(OnValueChangeListener onValueChangeListener, int
+            position) {
         this.onValueChangeListener = onValueChangeListener;
+        this.position = position;
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_plus_stepper:
                 setValue(value + 1);
-                if(onValueChangeListener != null) onValueChangeListener.onValueChangeByButtonClick(getValue());
+                if (onValueChangeListener != null) onValueChangeListener
+                        .onValueChangeByButtonClick(getValue(), position);
                 break;
             case R.id.btn_minus_stepper:
-                if(!canMinus && (value == 0)) return;
+                if (!canMinus && (value == 1)) return;
                 setValue(value - 1);
-                if(onValueChangeListener != null) onValueChangeListener.onValueChangeByButtonClick(getValue());
+                if (onValueChangeListener != null)
+                    onValueChangeListener.onValueChangeByButtonClick(getValue(), position);
                 break;
         }
     }
 
-    public interface OnValueChangeListener{
-        public void onValueChangeByButtonClick(int value);
+    public interface OnValueChangeListener {
+        public void onValueChangeByButtonClick(int value, int position);
     }
 }

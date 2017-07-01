@@ -18,8 +18,6 @@ public class ProductTransactionHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.iv_product) public ImageView ivProduct;
     @BindView(R.id.tv_product_name) public TextView tvProductName;
-    @BindView(R.id.tv_product_price) public TextView tvPrice;
-    @BindView(R.id.tv_vendor) public TextView tvVendor;
     @BindView(R.id.tv_quantity) public TextView tvQuantity;
     @BindView(R.id.tv_summary) public TextView tvSummary;
 

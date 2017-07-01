@@ -31,6 +31,8 @@ import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
+import com.project.michael.base.utils.StringUtils;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
@@ -172,6 +174,25 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
             ((HomeFragment)mNavController.getCurrentFrag()).fetchAllNew();
             ((HomeFragment)mNavController.getCurrentFrag()).fetchAllPopular();
             ((HomeFragment)mNavController.getCurrentFrag()).fetchAllPromo();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String isCheckout = intent.getStringExtra(ConstClass.FROM_CHECKOUT_EXTRA);
+        if(StringUtils.isNullOrEmpty(isCheckout)){
+
+        }else{
+            mNavController.switchTab(TRANSACTION);
+            if(mNavController.getCurrentFrag() != null)
+                ((TransactionFragment)mNavController.getCurrentFrag()).fetchTransaction();
         }
     }
 

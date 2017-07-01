@@ -59,6 +59,7 @@ dependencies {
     compile 'info.hoang8f:android-segmented:1.0.6'
     compile 'com.github.ceryle:SegmentedButton:v1.2.2'
     compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.pusher:pusher-java-client:1.4.0'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'

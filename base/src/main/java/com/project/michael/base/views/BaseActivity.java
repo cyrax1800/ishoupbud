@@ -58,6 +58,38 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog.setMessage(message);
     }
 
+    public void dismissDialog(){
+        if(progressDialog.isShowing()){
+            progressDialog.dismiss();
+            progressDialog.setCanceledOnTouchOutside(true);
+        }
+    }
+
+    public void showDialog(){
+        if(progressDialog == null){
+            throw new NullPointerException("Progress dialog has not initialize");
+        }else{
+            progressDialog.show();
+        }
+    }
+
+    public void showDialog(String message){
+        if(progressDialog == null){
+            initProgressDialog(message);
+        }else{
+            progressDialog.setMessage(message);
+        }
+        showDialog();
+    }
+
+    public void showDialog(String message, Boolean onTouchCancel){
+        if(progressDialog == null){
+            initProgressDialog(message);
+        }
+        progressDialog.setCanceledOnTouchOutside(onTouchCancel);
+        showDialog(message);
+    }
+
     @Override
     public void onClick(View v) {
 

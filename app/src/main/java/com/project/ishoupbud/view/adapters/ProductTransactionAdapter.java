@@ -30,10 +30,9 @@ public class ProductTransactionAdapter<Model> extends FastAdapter<Model> {
         ShoppingCart shoppingCart = (ShoppingCart)mModelList.get(position);
 
         shoppingCartHolder.tvProductName.setText(shoppingCart.product.name);
-        shoppingCartHolder.tvPrice.setText(Utils.indonesiaFormat(shoppingCart.harga));
-        shoppingCartHolder.tvVendor.setText(shoppingCart.product.vendor.name);
-        shoppingCartHolder.tvQuantity.setText("Quantity: " + shoppingCart.quantity);
-        shoppingCartHolder.tvSummary.setText("Summary: " + Utils.indonesiaFormat(shoppingCart.quantity * shoppingCart.harga));
+        shoppingCartHolder.tvQuantity.setText(String.valueOf(shoppingCart.quantity));
+        shoppingCartHolder.tvSummary.setText(Utils.indonesiaFormat(shoppingCart.quantity *
+                shoppingCart.product.price));
 
         Glide
                 .with(shoppingCartHolder.ivProduct.getContext())

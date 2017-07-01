@@ -314,8 +314,8 @@ public class ProductActivity extends BaseActivity {
         }
         progressDialog.show();
         HashMap<String,Object> map = new HashMap<>();
-        map.put("product_id", product.id);
-        map.put("vendor_id",vendorAdapter.getItemAt(vendorAdapter.getCheckedIdx()).vendor.id);
+//        map.put("product_id", product.id);
+        map.put("product_vendor_id",vendorAdapter.getItemAt(vendorAdapter.getCheckedIdx()).id);
         map.put("quantity", Integer.valueOf(value));
         Call<ShoppingCart> addItemToCart = APIManager.getRepository(ShoppingCartRepo.class).addCart(map);
         addItemToCart.enqueue(new APICallback<ShoppingCart>() {
