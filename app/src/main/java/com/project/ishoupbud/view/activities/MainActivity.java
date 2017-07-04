@@ -22,6 +22,7 @@ import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.manager.GoogleAPIManager;
+import com.project.ishoupbud.manager.PusherManager;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.fragment.HomeFragment;
 import com.project.ishoupbud.view.fragment.ProfileFragment;
@@ -96,6 +97,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                         break;
                     case R.id.tab_profile:
                         mNavController.switchTab(PROFILE);
+                        if(mNavController.getCurrentFrag() != null)
+                            ((ProfileFragment)mNavController.getCurrentFrag()).updateProfile();
                         break;
                 }
             }
@@ -169,6 +172,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
         });
 
         GoogleAPIManager.getGoogleApi().initGoogleAPI(this);
+        PusherManager.getInstance().listenToSaldoChannel();
 
         if(mNavController.getCurrentFrag() != null && mNavController.getCurrentFrag() instanceof HomeFragment){
             ((HomeFragment)mNavController.getCurrentFrag()).fetchAllNew();

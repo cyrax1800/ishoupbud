@@ -50,8 +50,8 @@ import retrofit2.Response;
  * Created by michael on 6/28/17.
  */
 
-public class BayarActivity extends BaseActivity implements FetchingShipmentDataHelper
-        .onFetchingListener {
+public class BayarActivity extends BaseActivity implements
+        FetchingShipmentDataHelper.onFetchingListener {
 
     public static final int POSITION_REQUEST = 0;
 

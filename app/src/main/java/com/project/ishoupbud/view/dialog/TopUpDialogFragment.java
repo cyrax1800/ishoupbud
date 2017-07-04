@@ -85,6 +85,13 @@ public class TopUpDialogFragment extends DialogFragment implements View.OnClickL
                 }
 
                 @Override
+                public void onUnprocessableEntity(Call<GenericResponse<Saldo>> call, Response<GenericResponse<Saldo>> response) {
+                    super.onUnprocessableEntity(call, response);
+                    progressDialog.dismiss();
+                    Toast.makeText(getContext(), "Harus diatas 10000", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
                 public void onFailure(Call<GenericResponse<Saldo>> call, Throwable t) {
                     super.onFailure(call, t);
                     progressDialog.dismiss();

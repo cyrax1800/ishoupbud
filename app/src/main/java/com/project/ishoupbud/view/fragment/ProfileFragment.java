@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.User;
 import com.project.ishoupbud.helper.TextImageCircleHelper;
+import com.project.ishoupbud.manager.PusherManager;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.activities.EditPasswordActivity;
 import com.project.ishoupbud.view.activities.EditProfileActivity;
@@ -119,6 +120,7 @@ public class ProfileFragment extends BaseFragment {
                 user = GsonUtils.getObjectFromJson(data.getStringExtra(ConstClass.USER), User.class);
                 SharedPref.save(ConstClass.USER,data.getStringExtra(ConstClass.USER));
                 updateProfile();
+                PusherManager.getInstance().listenToSaldoChannel();
             }else if(resultCode == RESULT_FOR_LOGIN){
                 Intent i = new Intent(getContext(), LoginActivity.class);
                 i.putExtra(ConstClass.LOGIN_EXTRA,true);

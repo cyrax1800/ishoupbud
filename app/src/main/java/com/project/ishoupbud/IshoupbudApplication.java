@@ -16,6 +16,7 @@ import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.api.repositories.UserRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
 import com.project.ishoupbud.helper.TextImageCircleHelper;
+import com.project.ishoupbud.manager.PusherManager;
 import com.project.michael.base.BaseApplication;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.api.GenericResponseInterceptor;
@@ -62,6 +63,7 @@ public class IshoupbudApplication extends BaseApplication {
         APIManager.registerRepository(ShoppingCartRepo.class);
         APIManager.registerRepository(ReviewRepo.class);
         APIManager.registerRepository(GoogleMapRepo.class);
+        PusherManager.getInstance().init();
 
         RealmDb.SetUpRealmDatabase(getApplicationContext(), new AppRealmModul());
 

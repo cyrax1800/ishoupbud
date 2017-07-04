@@ -20,4 +20,5 @@ public class Review {
     @SerializedName("sentimen")
     public Sentiment sentiment;
     public boolean status;
+    public Product product;
 }

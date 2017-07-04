@@ -36,9 +36,11 @@ import com.project.ishoupbud.api.model.ProductVendors;
 import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.model.WishList;
+import com.project.ishoupbud.api.model.pusher.ProductPusher;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
+import com.project.ishoupbud.manager.PusherManager;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.StepperView;
 import com.project.ishoupbud.view.adapters.ProductDetailAdapter;
@@ -50,6 +52,7 @@ import com.project.michael.base.api.APIManager;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseActivity;
+import com.pusher.client.channel.ChannelEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,6 +172,27 @@ public class ProductActivity extends BaseActivity {
         productPagerAdapter = new ProductPagerAdapter(getSupportFragmentManager());
 
         initProgressDialog("Adding to cart...");
+
+        PusherManager.getInstance().listenToProduct(product.id, new ChannelEventListener() {
+            @Override
+            public void onSubscriptionSucceeded(String s) {
+
+            }
+
+            @Override
+            public void onEvent(String channel, String event, String data) {
+                Log.d(TAG, "onEvent: Product " + data);
+                ProductPusher productPusher = GsonUtils.getObjectFromJson(data,
+                        ProductPusher.class);
+                product = productPusher.review.product;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateView();
+                    }
+                });
+            }
+        });
 
     }
 
@@ -404,5 +428,11 @@ public class ProductActivity extends BaseActivity {
                 startActivity(compareIntent);
                 break;
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        PusherManager.getInstance().disconnectListenToProduct();
     }
 }
