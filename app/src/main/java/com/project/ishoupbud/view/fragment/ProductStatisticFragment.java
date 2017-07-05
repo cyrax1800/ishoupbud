@@ -1,5 +1,6 @@
 package com.project.ishoupbud.view.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -14,7 +15,11 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -31,6 +36,7 @@ import com.project.michael.base.utils.DateUtils;
 import com.project.michael.base.views.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -127,6 +133,7 @@ public class ProductStatisticFragment extends BaseFragment {
                 }
             });
         }
+        lineChart.setScaleEnabled(false);
 
         return _rootView;
     }
@@ -153,11 +160,51 @@ public class ProductStatisticFragment extends BaseFragment {
                 else if (range == 90) rangeIdx = 2;
                 List<Entry> statisticData = new ArrayList<>();
                 List<String> dateList = new ArrayList<>();
-                for (int i = 0; i < response.body().data.size(); i++) {
-                    dateList.add(DateUtils.getDate(response.body().data.get(i).date.getTime()));
-                    statisticData.add(new Entry(i, response.body().data.get(i).value));
+                if(rangeIdx == 0){
+                    for (int i = 0; i < response.body().data.size(); i++) {
+                        dateList.add(DateUtils.getDate(response.body().data.get(i).date.getTime()));
+                        statisticData.add(new Entry(i, response.body().data.get(i).value));
+                    }
+                }else if(rangeIdx == 1){
+                    int count = response.body().data.size();
+                    int start = 0;
+                    dateList.add(DateUtils.getDate(response.body().data.get(start).date.getTime()));
+                    statisticData.add(new Entry(0, response.body().data.get(start).value));
+                    if(start + 7 < count){
+                        start = start +7;
+                        dateList.add(DateUtils.getDate(response.body().data.get(start).date.getTime()));
+                        statisticData.add(new Entry(1, response.body().data.get(start).value));
+                    }
+                    if(start + 7 < count){
+                        start = start + 7;
+                        dateList.add(DateUtils.getDate(response.body().data.get(start).date.getTime()));
+                        statisticData.add(new Entry(2, response.body().data.get(start).value));
+                    }
+                    if(start + 7 < count){
+                        start = start + 7;
+                        dateList.add(DateUtils.getDate(response.body().data.get(start).date.getTime()));
+                        statisticData.add(new Entry(3, response.body().data.get(start).value));
+                    }
+                }else if(rangeIdx == 2){
+                    for (int i = 0; i < response.body().data.size(); i++) {
+                        if(dateList.indexOf(DateUtils.getMonth(
+                                response.body().data.get(i).date.getMonth())) > -1) continue;
+                        dateList.add(DateUtils.getMonth(response.body().data.get(i).date.getMonth()));
+                        statisticData.add(new Entry(i, response.body().data.get(i).value));
+                    }
+                    if(dateList.size() > 3){
+                        while (dateList.size() > 3){
+                            dateList.remove(dateList.size()-1);
+                            statisticData.remove(statisticData.size()-1);
+                        }
+                    }
                 }
                 LineDataSet lineDataSet = new LineDataSet(statisticData, "harga");
+                lineDataSet.setCircleRadius(5f);
+                lineDataSet.setCircleColor(Color.RED);
+                lineDataSet.setLineWidth(2f);
+                lineDataSet.setValueTextSize(10f);
+                lineDataSet.setColor(Color.RED);
                 LineData lineData = new LineData(lineDataSet);
                 statisticMapData.get(vendorId).set(rangeIdx, lineData);
                 statisticDateMapData.get(vendorId).set(rangeIdx, dateList);
@@ -189,15 +236,33 @@ public class ProductStatisticFragment extends BaseFragment {
                 if(value == -1){
                     value = 0;
                 }
+                if(selectedDayIdx == 0){
+                    if(value % 3 != 0){
+                        return "";
+                    }
+                }
                 return statisticDateMapData
                         .get(vendorList.get(selectedVendorIdx).id)
                         .get(selectedDayIdx)
                         .get((int)value);
             }
         };
+//        Legend legend = lineChart.getLegend();
+//        legend.setFormSize(10f);
+//        legend.setExtra(new int[]{Color.RED}, new String[]{"harga"});
+//        List<LegendEntry> legendEntries = new ArrayList<>();
+//        legendEntries.add(new LegendEntry("harga",));
+//        legendEntries.get(0).label = "Harga";
+//        legend.setCustom();
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         xAxis.setValueFormatter(formatter);
+        Description description = lineChart.getDescription();
+        description.setText(vendorList.get(selectedVendorIdx).name);
+        description.setTextSize(10f);
+        lineChart.setDescription(description);
+        lineChart.invalidate();
+        lineChart.notifyDataSetChanged();
     }
 
     public void createBlankData() {
