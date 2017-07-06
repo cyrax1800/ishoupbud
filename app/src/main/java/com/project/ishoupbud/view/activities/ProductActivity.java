@@ -254,17 +254,17 @@ public class ProductActivity extends BaseActivity {
             double negPercent = product.productSummary.count.neg/totalReview;
 
             if(isPos && posPercent >= 0.8){
-                text = "OverAll: Overwhelming Positif";
+                text = "Keseluruhan: Luar biasa positif";
             }else if(isPos && posPercent >= 0.65){
-                text = "OverAll: Very Positif";
+                text = "Keseluruhan: Sangat positif";
             }else if(isPos || isNeu && posPercent >= 0.5){
-                text = "OverAll: Positif";
+                text = "Keseluruhan: positif";
             }else if(isNeg && isNeu && negPercent >= 0.8){
-                text = "OverAll: Negatif";
+                text = "Keseluruhan: negatif";
             }else if(isNeg && negPercent >= 0.65){
-                text = "OverAll: Very Negatif";
+                text = "OverAll: Sangat Negatif";
             }else if(isNeg || negPercent >= 0.5){
-                text = "OverAll: Overwhelming Negatif";
+                text = "OverAll: Luar biasa negatif";
             }else{
                 text = "OverAll: Netral";
             }

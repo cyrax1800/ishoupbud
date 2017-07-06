@@ -50,11 +50,11 @@ public class ReviewAdapter<Model> extends EndlessScrollAdapter<Model> {
             if(review.sentiment.neu > review.sentiment.pos && review.sentiment.neu > review.sentiment.neg){
                 reviewHolder.tvSentiment.setText("");
             }else if(review.sentiment.pos > review.sentiment.neg && review.sentiment.pos >= review.sentiment.neu){
-                reviewHolder.tvSentiment.setText("recommended");
+                reviewHolder.tvSentiment.setText("Positif");
             }else if(review.sentiment.neg > review.sentiment.pos && review.sentiment.neg >= review.sentiment.neu){
-                reviewHolder.tvSentiment.setText("not recommended");
+                reviewHolder.tvSentiment.setText("Negatif");
             }else{
-                reviewHolder.tvSentiment.setText("");
+                reviewHolder.tvSentiment.setText("Netral");
             }
         }else{
             super.onBindViewHolder(holder,position);
