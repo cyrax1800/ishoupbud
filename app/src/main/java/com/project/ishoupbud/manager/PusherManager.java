@@ -82,7 +82,7 @@ public class PusherManager {
                 Log.d(TAG, "onEvent: Saldo " + data);
                 SaldoPusher saldoPusher = GsonUtils.getObjectFromJson(data,
                         SaldoPusher.class);
-                user.saldo = saldoPusher.saldo;
+                user.saldo = saldoPusher.saldo.nominal;
                 SharedPref.save(ConstClass.USER, GsonUtils.getJsonFromObject
                         (user, User.class));
             }

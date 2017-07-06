@@ -1,5 +1,7 @@
 package com.project.ishoupbud.api.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 /**
@@ -9,6 +11,7 @@ import java.util.Date;
 public class Saldo {
     public int id;
     public boolean status;
-    public int nominal;
+    @SerializedName(value="nominal", alternate={"saldo"})
+    public float nominal;
     public Date issueDate;
 }
