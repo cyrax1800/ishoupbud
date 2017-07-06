@@ -190,7 +190,8 @@ public class ProductStatisticFragment extends BaseFragment {
                         if(dateList.indexOf(DateUtils.getMonth(
                                 response.body().data.get(i).date.getMonth())) > -1) continue;
                         dateList.add(DateUtils.getMonth(response.body().data.get(i).date.getMonth()));
-                        statisticData.add(new Entry(i, response.body().data.get(i).value));
+                        statisticData.add(new Entry(dateList.size() - 1, response.body().data.get(i)
+                                .value));
                     }
                     if(dateList.size() > 3){
                         while (dateList.size() > 3){
