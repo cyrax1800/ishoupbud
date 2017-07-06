@@ -92,9 +92,11 @@ public class TransactionFragment extends BaseFragment {
                 List<Transaction> tmpTransactions = response.body().data;
                 for(int i = 0; i< tmpTransactions.size(); i++){
                     if(tmpTransactions.get(i).status == 0){
-                        transactionAdapter.pendingTransactionFragment.addTranscation(tmpTransactions.get(i));
+                        if(transactionAdapter.pendingTransactionFragment != null)
+                            transactionAdapter.pendingTransactionFragment.addTranscation(tmpTransactions.get(i));
                     }else{
-                        transactionAdapter.completeTransactionFragment.addTranscation(tmpTransactions.get(i));
+                        if(transactionAdapter.completeTransactionFragment != null)
+                            transactionAdapter.completeTransactionFragment.addTranscation(tmpTransactions.get(i));
                     }
                 }
             }
@@ -113,7 +115,8 @@ public class TransactionFragment extends BaseFragment {
                 List<Transaction> tmpTransactions = response.body().data;
                 for(int i = 0; i< tmpTransactions.size(); i++){
                     if(tmpTransactions.get(i).debitCredit == 0)
-                        transactionAdapter.saldoTransactionFragment.addTranscation(tmpTransactions.get(i));
+                        if(transactionAdapter.saldoTransactionFragment != null)
+                            transactionAdapter.saldoTransactionFragment.addTranscation(tmpTransactions.get(i));
                 }
             }
 

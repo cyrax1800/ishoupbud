@@ -17,6 +17,7 @@ public class ShoppingCart {
     public double harga;
     @SerializedName(value="items", alternate={"item", "product"})
     public Product product;
+    @SerializedName(value="vendor", alternate="product_vendor")
     public ProductVendors vendor;
 
     public ShoppingCart(){

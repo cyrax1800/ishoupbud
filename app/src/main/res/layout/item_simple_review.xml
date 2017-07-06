@@ -7,14 +7,6 @@
     style="@style/product_card"
     >
 
-    <ImageView
-        android:id="@+id/iv_review"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_person"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        />
-
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -30,7 +30,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.Compare;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.model.ProductVendors;
 import com.project.ishoupbud.api.model.ShoppingCart;
@@ -335,7 +337,7 @@ public class ProductActivity extends BaseActivity {
             Toast.makeText(getApplicationContext(), "Quantity can't be zero", Toast.LENGTH_SHORT).show();
             return;
         }
-        progressDialog.show();
+        showDialog("Adding to cart..");
         HashMap<String,Object> map = new HashMap<>();
 //        map.put("product_id", product.id);
         map.put("product_vendor_id",vendorAdapter.getItemAt(vendorAdapter.getCheckedIdx()).id);
@@ -360,6 +362,29 @@ public class ProductActivity extends BaseActivity {
             public void onFailure(Call<ShoppingCart> call, Throwable t) {
                 super.onFailure(call, t);
                 progressDialog.dismiss();
+            }
+        });
+    }
+
+    public void compare(){
+        showDialog("Get product for compare...");
+        Call<Compare> getCompareProduct = APIManager.getRepository(ProductRepo.class)
+                .compareProduct(product.id);
+        getCompareProduct.enqueue(new APICallback<Compare>() {
+            @Override
+            public void onSuccess(Call<Compare> call, Response<Compare> response) {
+                super.onSuccess(call, response);
+                Intent compareIntent = new Intent(ProductActivity.this, CompareActivity.class);
+                compareIntent.putExtra(ConstClass.COMPARE_EXTRA,
+                        GsonUtils.getJsonFromObject(response.body(), Compare.class));
+                startActivity(compareIntent);
+                dismissDialog();
+            }
+
+            @Override
+            public void onFailure(Call<Compare> call, Throwable t) {
+                super.onFailure(call, t);
+                dismissDialog();
             }
         });
     }
@@ -423,8 +448,7 @@ public class ProductActivity extends BaseActivity {
                 addItemToCart();
                 break;
             case R.id.btn_compare:
-                Intent compareIntent = new Intent(this, CompareActivity.class);
-                startActivity(compareIntent);
+                compare();
                 break;
         }
     }

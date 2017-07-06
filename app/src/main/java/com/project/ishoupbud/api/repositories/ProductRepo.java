@@ -1,5 +1,6 @@
 package com.project.ishoupbud.api.repositories;
 
+import com.project.ishoupbud.api.model.Compare;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.model.Statistic;
 import com.project.michael.base.models.GenericResponse;
@@ -39,4 +40,8 @@ public interface ProductRepo {
     @GET("statistic")
     @Headers("Accept: application/json")
     Call<GenericResponse<List<Statistic>>> getStatistic(@Query("product_id") int productId, @Query("vendor_id") int vendorId, @Query("range") int range);
+
+    @GET("compare")
+    @Headers("Accept: application/json")
+    Call<Compare> compareProduct(@Query("product_id") int productId);
 }
