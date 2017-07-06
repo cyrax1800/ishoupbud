@@ -196,7 +196,7 @@ public class ProductActivity extends BaseActivity {
 
     }
 
-    private void requestProduct() {
+    public void requestProduct() {
         productPagerAdapter.productReviewFragment.requestReview();
         Call<GenericResponse<Product>> getProduct = APIManager.getRepository(ProductRepo.class).getProductById(product.id);
         getProduct.enqueue(new APICallback<GenericResponse<Product>>() {
@@ -227,7 +227,6 @@ public class ProductActivity extends BaseActivity {
                 .crossFade()
                 .into(ivProduct);
         productPagerAdapter.productDetailFragment.updateDetail(product.description);
-        productPagerAdapter.productReviewFragment.requestReview();
         productPagerAdapter.productStatisticFragment.getStatistic();
         List<Vendor> vendors = new ArrayList<>();
         for (int i = 0; i < product.vendors.size(); i++) {
