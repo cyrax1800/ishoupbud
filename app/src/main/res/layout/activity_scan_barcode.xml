@@ -3,55 +3,70 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/scan_container"
     >
 
-    <SurfaceView
+    <com.project.ishoupbud.helper.googleCamera.ui.camera.CameraSourcePreview
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/camera_view"
-        />
+        >
 
-    <LinearLayout
+    </com.project.ishoupbud.helper.googleCamera.ui.camera.CameraSourcePreview>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_below="@id/camera_view"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/item_space"
-            android:layout_gravity="center"
-            android:text="Flash:"
-            style="@style/ishoupbud_text_black"
-            />
-
-        <RadioGroup
-            android:id="@+id/rg_flash"
+        android:background="@color/white"
+        android:id="@+id/scan_container"
+        android:layout_alignParentBottom="true">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
             >
-            <RadioButton
-                android:id="@+id/rb_flash_on"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/item_space"
-                android:text="On"
+                android:layout_gravity="center"
+                android:text="Flash:"
+                style="@style/ishoupbud_text_black"
                 />
 
-            <RadioButton
-                android:id="@+id/rb_flash_off"
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/rg_flash"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Off"
-                android:checked="true"
-                />
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rb_flash_on"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/item_space"
+                    android:text="On"
+                    />
 
-        </RadioGroup>
-    </LinearLayout>
+                <RadioButton
+                    android:id="@+id/rb_flash_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Off"
+                    android:checked="true"
+                    />
+
+            </RadioGroup>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--<SurfaceView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/camera_view"-->
+        <!--/>-->
+
+
 
     <TextView
         android:layout_width="wrap_content"

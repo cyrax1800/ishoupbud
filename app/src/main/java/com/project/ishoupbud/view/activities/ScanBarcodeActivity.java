@@ -2,9 +2,13 @@ package com.project.ishoupbud.view.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -18,7 +22,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
-import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
@@ -26,6 +29,8 @@ import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.helper.DialogMessageHelper;
+import com.project.ishoupbud.helper.googleCamera.ui.camera.CameraSource;
+import com.project.ishoupbud.helper.googleCamera.ui.camera.CameraSourcePreview;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
@@ -34,10 +39,13 @@ import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.PermissionsUtils;
 import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
+
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,14 +58,15 @@ import retrofit2.Response;
 
 public class ScanBarcodeActivity extends BaseActivity {
 
-    @BindView(R.id.camera_view) SurfaceView surfaceView;
+//    @BindView(R.id.camera_view) SurfaceView surfaceView;
+    @BindView(R.id.scan_container) RelativeLayout overlay;
+    @BindView(R.id.camera_view) CameraSourcePreview mPreview;
     @BindView(R.id.rg_flash) RadioGroup rgFlash;
     @BindView(R.id.btn_submit_barcode) Button btnSubmit;
     @BindView(R.id.et_barcode) EditText etBarcode;
 
     BarcodeDetector barcodeDetector;
     CameraSource cameraSource;
-    Camera camera;
 
     Boolean foundedBarcode;
 
@@ -76,48 +85,15 @@ public class ScanBarcodeActivity extends BaseActivity {
                         .setBarcodeFormats(Barcode.ALL_FORMATS)
                         .build();
 
-        DisplayMetrics metrics = new DisplayMetrics();
+        final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        surfaceView.getHolder().setFixedSize(metrics.widthPixels, metrics.widthPixels);
-
-        cameraSource = new CameraSource
-                .Builder(this, barcodeDetector)
-                .setRequestedPreviewSize(metrics.widthPixels, metrics.widthPixels)
-                .setAutoFocusEnabled(true)
-                .build();
-
-        final Activity activity= this;
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                Log.d("tmp", "surfaceCreated:  asdsahbdasibfi");
-                try {
-                    int rc = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
-                    if (rc == PackageManager.PERMISSION_GRANTED) {
-                        if (!Utils.hasLollipop()) {
-                            camera=getCamera(cameraSource);
-                        }
-                        cameraSource.start(surfaceView.getHolder());
-                        camera=getCamera(cameraSource);
-                    } else {
-                        PermissionsUtils.shouldShowRequestPermission(activity,PermissionsUtils.PERMISSION_CAMERA);
-//                        requestCameraPermission();
-                    }
-                } catch (IOException ie) {
-                    Log.e("tmp", ie.getMessage());
-                }
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                cameraSource.stop();
-            }
-        });
+        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (rc == PackageManager.PERMISSION_GRANTED) {
+            createCameraSource(true, false);
+        } else {
+            PermissionsUtils.shouldShowRequestPermission(this,PermissionsUtils.PERMISSION_CAMERA);
+        }
 
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
@@ -146,9 +122,9 @@ public class ScanBarcodeActivity extends BaseActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(checkedId == R.id.rb_flash_on || checkedId == R.id.rb_flash_off){
                     try {
-                        Camera.Parameters param = camera.getParameters();
-                        param.setFlashMode((checkedId == R.id.rb_flash_off)?Camera.Parameters.FLASH_MODE_OFF:Camera.Parameters.FLASH_MODE_TORCH);
-                        camera.setParameters(param);
+                        cameraSource.setFlashMode((checkedId == R.id.rb_flash_on)?
+                                Camera.Parameters.FLASH_MODE_TORCH:
+                                Camera.Parameters.FLASH_MODE_OFF);
                     } catch (Exception e) {
                         Log.d(TAG, "onCheckedChanged: " + e.toString());
                     }
@@ -156,29 +132,55 @@ public class ScanBarcodeActivity extends BaseActivity {
             }
         });
 
+        startCameraSource();
+
         btnSubmit.setOnClickListener(this);
         initProgressDialog("Searching Product..");
     }
 
-    private static Camera getCamera(@NonNull CameraSource cameraSource) {
-        Field[] declaredFields = CameraSource.class.getDeclaredFields();
+    private void startCameraSource() throws SecurityException {
 
-        for (Field field : declaredFields) {
-            if (field.getType() == Camera.class) {
-                field.setAccessible(true);
-                try {
-                    Camera camera = (Camera) field.get(cameraSource);
-                    if (camera != null) {
-                        return camera;
-                    }
-                    return null;
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                break;
+        if (cameraSource != null) {
+            try {
+                mPreview.start(cameraSource);
+            } catch (IOException e) {
+                Log.e(TAG, "Unable to start camera source.", e);
+                cameraSource.release();
+                cameraSource = null;
             }
         }
-        return null;
+    }
+
+    private void createCameraSource(boolean autoFocus, boolean useFlash) {
+        Context context = getApplicationContext();
+
+        barcodeDetector = new BarcodeDetector.Builder(context)
+                .setBarcodeFormats(Barcode.UPC_A|Barcode.UPC_E|Barcode.EAN_8|Barcode.EAN_13|Barcode.CODE_128|Barcode.CODE_39)
+                /*.setBarcodeFormats(Barcode.ALL_FORMATS)*/.build();
+
+        CameraSource.Builder builder = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setRequestedPreviewSize(1600, 1024)
+                .setRequestedFps(60f);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            builder = builder.setFocusMode(
+                    autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null);
+        }
+        cameraSource = builder.build();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        int previewWidth = mPreview.getMeasuredWidth(),
+                previewHeight = mPreview.getMeasuredHeight();
+
+        // Set the height of the overlay so that it makes the preview a square
+        RelativeLayout.LayoutParams overlayParams = (RelativeLayout.LayoutParams) overlay.getLayoutParams();
+        overlayParams.height = previewHeight - previewWidth;
+        overlay.setLayoutParams(overlayParams);
     }
 
     //TODO Cek if found then go to Product detail, if not then go to not found page
@@ -200,13 +202,17 @@ public class ScanBarcodeActivity extends BaseActivity {
             @Override
             public void onNotFound(Call<GenericResponse<Product>> call, Response<GenericResponse<Product>> response) {
                 super.onNotFound(call, response);
-                foundedBarcode = false;
                 progressDialog.dismiss();
                 DialogMessageHelper.getInstance().show(
                         ScanBarcodeActivity.this,
                         "Not Found",
                         "Product with barcode " + barcode + " is not found. please try another product or contect developer for adding the product",
-                        "Ok", null);
+                        "Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                foundedBarcode = false;
+                            }
+                        });
             }
         });
     }
@@ -221,17 +227,9 @@ public class ScanBarcodeActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == PermissionsUtils.REQUEST_CAMERA){
-            try {
-                if(PermissionsUtils.checkSelfPermission(this,PermissionsUtils.PERMISSION_CAMERA)) {
-                    Log.d(TAG, "onRequestPermissionsResult: ");
-                    if (!Utils.hasLollipop()) {
-                        camera=getCamera(cameraSource);
-                    }
-                    cameraSource.start(surfaceView.getHolder());
-                    camera=getCamera(cameraSource);
-                }
-            } catch (IOException ie) {
-                Log.e("tmp", ie.getMessage());
+            if(PermissionsUtils.checkSelfPermission(this,PermissionsUtils.PERMISSION_CAMERA)) {
+                Log.d(TAG, "onRequestPermissionsResult: ");
+                createCameraSource(true, false);
             }
         }
     }
