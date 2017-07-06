@@ -116,11 +116,17 @@
 
                 </android.support.v7.widget.RecyclerView>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/shadow_black"
+                    />
+
                 <Button
                     android:id="@+id/btn_terima_barang"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Barang telah diterima"
+                    android:text="Konfirmasi barang telah diterima"
                     style="@style/btnFlat"
                     />
 
