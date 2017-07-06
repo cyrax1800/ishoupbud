@@ -2,6 +2,7 @@ package com.project.ishoupbud.view.holders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class ProductTransactionHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.tv_product_name) public TextView tvProductName;
     @BindView(R.id.tv_quantity) public TextView tvQuantity;
     @BindView(R.id.tv_summary) public TextView tvSummary;
+    @BindView(R.id.btn_ulas_barang) public Button btnUlasBarang;
 
     public ProductTransactionHolder(View itemView) {
         super(itemView);

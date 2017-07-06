@@ -50,25 +50,25 @@ import retrofit2.Response;
 
 public class ProductReviewFragment extends BaseFragment {
 
-    @BindView(R.id.ll_own_review)
-    LinearLayout llOwnReview;
-    @BindView(R.id.iv_review)
-    ImageView ivOwnProfilePic;
-    @BindView(R.id.tv_review_name)
-    TextView tvUserName;
-    @BindView(R.id.tv_review_date)
-    TextView tvReviewDate;
-    @BindView(R.id.tv_review_description)
-    TextView tvReviewDesc;
-    @BindView(R.id.rating_bar_review)
-    RatingBar ratingBar;
-    @BindView(R.id.btn_delete)
-    ImageButton iBtnDelete;
-    @BindView(R.id.btn_edit)
-    ImageButton iBtnEdit;
-
-    @BindView(R.id.btn_write_review)
-    Button btnWriteReview;
+//    @BindView(R.id.ll_own_review)
+//    LinearLayout llOwnReview;
+//    @BindView(R.id.iv_review)
+//    ImageView ivOwnProfilePic;
+//    @BindView(R.id.tv_review_name)
+//    TextView tvUserName;
+//    @BindView(R.id.tv_review_date)
+//    TextView tvReviewDate;
+//    @BindView(R.id.tv_review_description)
+//    TextView tvReviewDesc;
+//    @BindView(R.id.rating_bar_review)
+//    RatingBar ratingBar;
+//    @BindView(R.id.btn_delete)
+//    ImageButton iBtnDelete;
+//    @BindView(R.id.btn_edit)
+//    ImageButton iBtnEdit;
+//
+//    @BindView(R.id.btn_write_review)
+//    Button btnWriteReview;
     @BindView(R.id.spinner_time)
     Spinner spinnerTimeFilter;
     @BindView(R.id.spinner_vendor)
@@ -77,7 +77,7 @@ public class ProductReviewFragment extends BaseFragment {
     RecyclerView rvReview;
 
     ReviewAdapter<Review> reviewAdapter;
-    AddEditReviewDialogFragment addEditReviewDialogFragment;
+//    AddEditReviewDialogFragment addEditReviewDialogFragment;
     AlertDialog deleteReviewDialog;
     ProgressDialog progressDialog;
 
@@ -96,9 +96,9 @@ public class ProductReviewFragment extends BaseFragment {
 
             ButterKnife.bind(this, _rootView);
 
-            updateOwnReviewView();
+//            updateOwnReviewView();
 
-            btnWriteReview.setOnClickListener(this);
+//            btnWriteReview.setOnClickListener(this);
 
             vendorNameList = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
             spinnerVendorFilter.setAdapter(vendorNameList);
@@ -133,8 +133,8 @@ public class ProductReviewFragment extends BaseFragment {
             rvReview.setLayoutManager(layoutManager);
             rvReview.setAdapter(reviewAdapter);
 
-            addEditReviewDialogFragment = new AddEditReviewDialogFragment();
-            addEditReviewDialogFragment.setProductReviewFragment(this);
+//            addEditReviewDialogFragment = new AddEditReviewDialogFragment();
+//            addEditReviewDialogFragment.setProductReviewFragment(this);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Detele Review")
@@ -161,30 +161,30 @@ public class ProductReviewFragment extends BaseFragment {
         return _rootView;
     }
 
-    public void updateOwnReviewView(){
-        if (hasOwnReview) {
-            llOwnReview.setVisibility(View.VISIBLE);
-            btnWriteReview.setVisibility(View.GONE);
-
-            Glide
-                    .with(this)
-                    .load(ownReivew.user.getSmallImage())
-                    .placeholder(TextImageCircleHelper.getInstance().getImage(ownReivew.user.name))
-                    .centerCrop()
-                    .crossFade()
-                    .into(ivOwnProfilePic);
-
-            tvUserName.setText(ownReivew.user.name);
-            tvReviewDate.setText(DateUtils.getDate(ownReivew.date.getTime()));
-            tvReviewDesc.setText(ownReivew.description);
-            ratingBar.setRating((float) ownReivew.rating);
-            iBtnDelete.setOnClickListener(this);
-            iBtnEdit.setOnClickListener(this);
-        } else {
-            llOwnReview.setVisibility(View.GONE);
-            btnWriteReview.setVisibility(View.VISIBLE);
-        }
-    }
+//    public void updateOwnReviewView(){
+//        if (hasOwnReview) {
+//            llOwnReview.setVisibility(View.VISIBLE);
+//            btnWriteReview.setVisibility(View.GONE);
+//
+//            Glide
+//                    .with(this)
+//                    .load(ownReivew.user.getSmallImage())
+//                    .placeholder(TextImageCircleHelper.getInstance().getImage(ownReivew.user.name))
+//                    .centerCrop()
+//                    .crossFade()
+//                    .into(ivOwnProfilePic);
+//
+//            tvUserName.setText(ownReivew.user.name);
+//            tvReviewDate.setText(DateUtils.getDate(ownReivew.date.getTime()));
+//            tvReviewDesc.setText(ownReivew.description);
+//            ratingBar.setRating((float) ownReivew.rating);
+//            iBtnDelete.setOnClickListener(this);
+//            iBtnEdit.setOnClickListener(this);
+//        } else {
+//            llOwnReview.setVisibility(View.GONE);
+//            btnWriteReview.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     public void setProductId(int id) {
         this.productId = id;
@@ -198,7 +198,7 @@ public class ProductReviewFragment extends BaseFragment {
             vendorNameList.add(vendors.get(i).name);
         }
         vendorNameList.notifyDataSetChanged();
-        addEditReviewDialogFragment.setVendors(vendorNameList);
+//        addEditReviewDialogFragment.setVendors(vendorNameList);
     }
 
     public void requestReview() {
@@ -210,9 +210,6 @@ public class ProductReviewFragment extends BaseFragment {
             public void onSuccess(Call<ProductAllReviewResponse> call, Response<ProductAllReviewResponse> response) {
                 super.onSuccess(call, response);
                 reviewAdapter.setNew(response.body().reviews);
-                ownReivew = response.body().youReview;
-                hasOwnReview = ownReivew.user != null;
-                updateOwnReviewView();
             }
 
             @Override
@@ -232,7 +229,7 @@ public class ProductReviewFragment extends BaseFragment {
                 super.onNoContent(call, response);
                 hasOwnReview = false;
                 ownReivew = null;
-                updateOwnReviewView();
+//                updateOwnReviewView();
                 progressDialog.dismiss();
             }
 
@@ -247,15 +244,15 @@ public class ProductReviewFragment extends BaseFragment {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_write_review:
-                addEditReviewDialogFragment.show(getFragmentManager(), "addEditReviewDialog");
-                break;
+//            case R.id.btn_write_review:
+//                addEditReviewDialogFragment.show(getFragmentManager(), "addEditReviewDialog");
+//                break;
             case R.id.btn_delete:
                 deleteReviewDialog.show();
                 break;
             case R.id.btn_edit:
-                addEditReviewDialogFragment.setReview(ownReivew);
-                addEditReviewDialogFragment.show(getFragmentManager(), "addEditReviewDialog");
+//                addEditReviewDialogFragment.setReview(ownReivew);
+//                addEditReviewDialogFragment.show(getFragmentManager(), "addEditReviewDialog");
                 break;
         }
     }

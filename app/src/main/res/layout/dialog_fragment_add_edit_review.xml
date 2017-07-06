@@ -11,13 +11,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin">
 
-        <Spinner
+        <!--<Spinner
             android:id="@+id/spinner_vendor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/item_space"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
-            />
+            />-->
 
         <RatingBar
             android:id="@+id/df_review_rating_star"

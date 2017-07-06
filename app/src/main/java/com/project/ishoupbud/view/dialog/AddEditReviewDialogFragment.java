@@ -42,55 +42,32 @@ import retrofit2.Response;
 
 public class AddEditReviewDialogFragment extends DialogFragment implements View.OnClickListener{
 
-    Spinner spinnerVendor;
     RatingBar ratingBar;
     EditText etReview;
     Button btnSubmit;
     Button btnCancel;
     ProgressDialog progressDialog;
-    ProductReviewFragment productReviewFragment;
 
     private Review review;
-    private ArrayAdapter<String> vendors;
-    public int selectedVendorIdx;
+    int productId;
+    int vendorId;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.dialog_fragment_add_edit_review,container,false);
-        getDialog().setTitle("Add Review");
 
-        spinnerVendor = (Spinner) rootView.findViewById(R.id.spinner_vendor);
         ratingBar = (RatingBar) rootView.findViewById(R.id.df_review_rating_star);
         etReview = (EditText) rootView.findViewById(R.id.df_review_desc);
         btnSubmit = (Button) rootView.findViewById(R.id.btn_submit);
         btnCancel = (Button) rootView.findViewById(R.id.btn_cancel);
 
-        spinnerVendor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedVendorIdx = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        if(vendors != null){
-            spinnerVendor.setAdapter(vendors);
-        }
-
         if(review != null){
-            for(int i = 0;i < productReviewFragment.vendorList.size(); i++){
-                if(review.vendor.id == productReviewFragment.vendorList.get(i).id){
-                    spinnerVendor.setSelection(i);
-                    break;
-                }
-            }
+            getDialog().setTitle("Edit Review");
             ratingBar.setRating((float)review.rating);
             etReview.setText(review.description);
+        }else{
+            getDialog().setTitle("Add Review");
         }
 
         progressDialog = new ProgressDialog(getContext());
@@ -101,26 +78,13 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
         return rootView;
     }
 
-    public void setProductReviewFragment(ProductReviewFragment productReviewFragment){
-        this.productReviewFragment = productReviewFragment;
-    }
-
-    public void setVendors(ArrayAdapter<String> vendors){
-        this.vendors = vendors;
-        if(spinnerVendor != null) spinnerVendor.setAdapter(vendors);
-    }
-
     public void setReview(Review review){
         this.review = review;
-        if(spinnerVendor == null) return;
-        for(int i = 0;i < productReviewFragment.vendorList.size(); i++){
-            if(review.vendor.id == productReviewFragment.vendorList.get(i).id){
-                spinnerVendor.setSelection(i);
-                break;
-            }
-        }
-        ratingBar.setRating((float)review.rating);
-        etReview.setText(review.description);
+    }
+
+    public void setProductAndVendorId(int productId, int vendorId){
+        this.productId = productId;
+        this.vendorId = vendorId;
     }
 
     public boolean validate(){
@@ -138,7 +102,6 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
     @Override
     public void onDismiss(DialogInterface dialog) {
         this.review = null;
-        spinnerVendor.setSelection(0);
         ratingBar.setRating(0);
         etReview.setText("");
         super.onDismiss(dialog);
@@ -146,8 +109,8 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
 
     public void addOrEditReview(){
         HashMap<String, Object> map = new HashMap<>();
-        map.put("product_id", productReviewFragment.productId);
-        map.put("vendor_id", productReviewFragment.vendorList.get(selectedVendorIdx).id);
+        map.put("product_id", productId);
+        map.put("vendor_id", vendorId);
         map.put("rating", ratingBar.getRating());
         map.put("body", etReview.getText().toString());
         if(review != null){
@@ -157,9 +120,6 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
                 @Override
                 public void onSuccess(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
                     super.onSuccess(call, response);
-                    productReviewFragment.ownReivew = response.body().data;
-                    productReviewFragment.hasOwnReview = true;
-                    productReviewFragment.updateOwnReviewView();
                     progressDialog.dismiss();
                     dismiss();
                 }
@@ -183,9 +143,6 @@ public class AddEditReviewDialogFragment extends DialogFragment implements View.
                 @Override
                 public void onCreated(Call<GenericResponse<Review>> call, Response<GenericResponse<Review>> response) {
                     super.onCreated(call, response);
-                    productReviewFragment.ownReivew = response.body().data;
-                    productReviewFragment.hasOwnReview = true;
-                    productReviewFragment.updateOwnReviewView();
                     progressDialog.dismiss();
                     dismiss();
                 }

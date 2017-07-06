@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -11,76 +11,91 @@
     android:clickable="true"
     >
 
-    <ImageView
-        android:id="@+id/iv_product"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/comingsoon"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        />
-
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         >
-        <TextView
-            android:id="@+id/tv_product_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Aqua"
-            android:layout_marginBottom="@dimen/item_space"
-            style="@style/ishoupbud_text_black"
+        <ImageView
+            android:id="@+id/iv_product"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/comingsoon"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_space"
-                android:layout_weight="1"
-                android:text="quantitiy"
-                />
-            <TextView
-                android:id="@+id/tv_quantity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_space"
-                android:text="2"
-                />
-
-        </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:orientation="vertical"
             >
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/tv_product_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Aqua"
                 android:layout_marginBottom="@dimen/item_space"
-                android:layout_weight="1"
-                android:text="Total: "
                 style="@style/ishoupbud_text_black"
-                android:textStyle="bold"
                 />
-            <TextView
-                android:id="@+id/tv_summary"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rp. 123123"
-                style="@style/ishoupbud_text_black"
-                android:textStyle="bold"
-                />
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:layout_weight="1"
+                    android:text="quantitiy"
+                    />
+                <TextView
+                    android:id="@+id/tv_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:text="2"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/item_space"
+                    android:layout_weight="1"
+                    android:text="Total: "
+                    style="@style/ishoupbud_text_black"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/tv_summary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp. 123123"
+                    style="@style/ishoupbud_text_black"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
-
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_ulas_barang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ulas barang"
+        style="@style/btnFlat"
+        />
+
 
 </LinearLayout>

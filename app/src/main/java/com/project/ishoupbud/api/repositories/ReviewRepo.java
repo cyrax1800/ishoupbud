@@ -39,6 +39,9 @@ public interface ReviewRepo {
     @PUT("review/{id_review}")
     Call<GenericResponse<Review>> updateReview(@FieldMap Map<String, Object> map, @Path("id_review") int reviewId);
 
+    @Headers("Accept: application/json")
+    @GET("reviewcheck/check")
+    Call<GenericResponse<Review>> checkReview(@QueryMap Map<String, Object> query);
 
     @Headers("Accept: application/json")
     @DELETE("review/{id_review}")
