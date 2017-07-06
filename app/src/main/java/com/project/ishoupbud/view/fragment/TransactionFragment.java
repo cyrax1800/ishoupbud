@@ -112,7 +112,8 @@ public class TransactionFragment extends BaseFragment {
                 super.onSuccess(call, response);
                 List<Transaction> tmpTransactions = response.body().data;
                 for(int i = 0; i< tmpTransactions.size(); i++){
-                    transactionAdapter.saldoTransactionFragment.addTranscation(tmpTransactions.get(i));
+                    if(tmpTransactions.get(i).debitCredit == 0)
+                        transactionAdapter.saldoTransactionFragment.addTranscation(tmpTransactions.get(i));
                 }
             }
 

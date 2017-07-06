@@ -21,6 +21,8 @@ public class Transaction {
     public int nominal;
     public int status;
     public int totalPrice;
+    @SerializedName("debit_credit")
+    public int debitCredit;
     public List<ShoppingCart> detail;
     public String vendor;
 
