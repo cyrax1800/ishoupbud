@@ -133,7 +133,7 @@ public class ShoppingCartContainerAdapter<Model> extends FastAdapter<Model> {
             if (shoppingCartContainerHolder.rvCart.findViewHolderForAdapterPosition(i) == null)
                 continue;
             total += shoppingCartContainerHolder.shoppingCartAdapter.getItemAt(i).quantity *
-                    shoppingCartContainerHolder.shoppingCartAdapter.getItemAt(i).product.price;
+                    shoppingCartContainerHolder.shoppingCartAdapter.getItemAt(i).harga;
         }
         int position = shoppingCartContainerHolder.getAdapterPosition();
         ShoppingCartContainer shoppingCartContainer =

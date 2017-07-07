@@ -81,8 +81,9 @@ public class ShoppingCartAdapter<Model> extends FastAdapter<Model> {
         ShoppingCartHolder shoppingCartHolder = (ShoppingCartHolder) holder;
         ShoppingCart shoppingCart = (ShoppingCart) mModelList.get(position);
 
+        shoppingCart.harga = shoppingCart.harga/shoppingCart.quantity;
         shoppingCartHolder.tvProductName.setText(shoppingCart.product.name);
-        shoppingCartHolder.tvPrice.setText(Utils.indonesiaFormat(shoppingCart.product.price));
+        shoppingCartHolder.tvPrice.setText(Utils.indonesiaFormat(shoppingCart.harga));
         shoppingCartHolder.stepperView.setValue(shoppingCart.quantity);
         shoppingCartHolder.stepperView.setOnValueChangeListener(onValueChangeListener, position);
 
