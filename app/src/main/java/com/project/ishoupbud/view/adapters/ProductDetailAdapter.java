@@ -107,6 +107,7 @@ public class ProductDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
                     productActivity.productPagerAdapter.productReviewFragment.setVendor(vendors);
                     productActivity. productPagerAdapter.productStatisticFragment.setVendor(vendors);
                     productActivity.productPagerAdapter.productStatisticFragment.setProductId(product.id);
+                    productActivity.showDialog("Fetching product data");
                     productActivity.requestProduct();
                 }
             });

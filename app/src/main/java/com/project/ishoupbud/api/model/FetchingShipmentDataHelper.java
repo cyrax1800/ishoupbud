@@ -9,7 +9,7 @@ import retrofit2.Call;
  * Created by michael on 7/1/17.
  */
 
-public class FetchingShipmentDataHelper {
+public class FetchingShipmentDataHelper<Model> {
 
     public int idx;
     public Call<Direction> callGetTime;
@@ -17,14 +17,16 @@ public class FetchingShipmentDataHelper {
     public Boolean status;
     public Boolean statusTime;
     public Boolean statusPrice;
-    public onFetchingListener onFetchingListener;
+    public onFetchingListener<Model> onFetchingListener;
+    public Model data;
 
     public FetchingShipmentDataHelper(int position, onFetchingListener onFetchingListener){
         idx = position;
         this.onFetchingListener = onFetchingListener;
     }
 
-    public void startFetch(){
+    public void startFetch(Model data){
+        this.data = data;
         status = false;
         statusTime = false;
         statusPrice = false;
@@ -34,7 +36,7 @@ public class FetchingShipmentDataHelper {
         statusTime = true;
         if(statusPrice){
             status = true;
-            onFetchingListener.onCompleteFetch(idx);
+            onFetchingListener.onCompleteFetch(idx, data);
         }
     }
 
@@ -42,12 +44,12 @@ public class FetchingShipmentDataHelper {
         statusPrice = true;
         if(statusTime){
             status = true;
-            onFetchingListener.onCompleteFetch(idx);
+            onFetchingListener.onCompleteFetch(idx, data);
         }
     }
 
-    public interface onFetchingListener{
-        public void onCompleteFetch(int idx);
+    public interface onFetchingListener<Model>{
+        public void onCompleteFetch(int idx, Model data);
     }
 
 }

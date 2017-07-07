@@ -1,12 +1,15 @@
 package com.project.ishoupbud.manager;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,7 +20,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.project.ishoupbud.view.activities.SelectLocationActivity;
+import com.project.michael.base.utils.PermissionsUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -84,6 +89,20 @@ public class GoogleAPIManager implements GoogleApiClient.OnConnectionFailedListe
         } catch (IntentSender.SendIntentException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public LatLng getCurrentPosition(Activity activity){
+        int rc = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
+        Location mLastLocation;
+        if (rc == PackageManager.PERMISSION_GRANTED) {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }else {
+            PermissionsUtils.shouldShowRequestPermission(activity,PermissionsUtils.PERMISSION_LOCATION);
+            mLastLocation = null;
+            Log.d(TAG, "getCurrentLocation: Permission");
+            return null;
+        }
+        return new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
     }
 
     public static synchronized GoogleAPIManager getGoogleApi() {

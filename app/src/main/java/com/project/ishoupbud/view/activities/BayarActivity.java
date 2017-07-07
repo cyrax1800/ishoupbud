@@ -51,7 +51,7 @@ import retrofit2.Response;
  */
 
 public class BayarActivity extends BaseActivity implements
-        FetchingShipmentDataHelper.onFetchingListener {
+        FetchingShipmentDataHelper.onFetchingListener<ShoppingCartContainer> {
 
     public static final int POSITION_REQUEST = 0;
 
@@ -75,7 +75,7 @@ public class BayarActivity extends BaseActivity implements
     @BindView(R.id.ll_total_harga) LinearLayout llTotalHarga;
 
     ProductTransactionContainerAdapter<ShoppingCartContainer> productTransactionContainerAdapter;
-    List<FetchingShipmentDataHelper> fetchingShipmentDataHelpers;
+    List<FetchingShipmentDataHelper<ShoppingCartContainer>> fetchingShipmentDataHelpers;
 
     User user;
     double longitude, latitude;
@@ -129,7 +129,7 @@ public class BayarActivity extends BaseActivity implements
         rvProduct.setAdapter(productTransactionContainerAdapter);
 
         for (int i = 0; i < tmpShoppingCartContainer.size(); i++) {
-            fetchingShipmentDataHelpers.add(new FetchingShipmentDataHelper(i, this));
+            fetchingShipmentDataHelpers.add(new FetchingShipmentDataHelper<ShoppingCartContainer>(i, this));
             totalItemPrice += tmpShoppingCartContainer.get(i).subTotal;
         }
         totalItemInFetching = tmpShoppingCartContainer.size();
@@ -172,7 +172,8 @@ public class BayarActivity extends BaseActivity implements
             data = productTransactionContainerAdapter.getItemAt(i);
             data.isFetching = true;
             productTransactionContainerAdapter.set(i, data);
-            fetchingShipmentDataHelpers.get(i).startFetch();
+            fetchingShipmentDataHelpers.get(i).startFetch(productTransactionContainerAdapter
+                    .getItemAt(i));
             getPath(i);
             getEstimatePrice(i);
         }
@@ -185,7 +186,7 @@ public class BayarActivity extends BaseActivity implements
         map.put("origin_lng", data.vendor.longitude);
         map.put("dest_lat", latitude);
         map.put("dest_lng", longitude);
-        final FetchingShipmentDataHelper fetcher = fetchingShipmentDataHelpers.get(position);
+        final FetchingShipmentDataHelper<ShoppingCartContainer> fetcher = fetchingShipmentDataHelpers.get(position);
         if (fetcher.callGetTime != null && fetcher.callGetTime.isExecuted()) {
             fetcher.callGetTime.cancel();
         }
@@ -195,9 +196,9 @@ public class BayarActivity extends BaseActivity implements
             @Override
             public void onSuccess(Call<Direction> call, retrofit2.Response<Direction> response) {
                 super.onSuccess(call, response);
-                data.distance = response.body().routes[0].legs[0].distance.text;
-                data.duration = response.body().routes[0].legs[0].durationInTraffic.text;
-                productTransactionContainerAdapter.set(position, data);
+                fetcher.data.distance = response.body().routes[0].legs[0].distance.text;
+                fetcher.data.duration = response.body().routes[0].legs[0].durationInTraffic.text;
+//                productTransactionContainerAdapter.set(position, fetcher.data);
                 fetcher.doneTime();
             }
 
@@ -220,7 +221,7 @@ public class BayarActivity extends BaseActivity implements
         map.put("start_longitude", data.vendor.longitude);
         map.put("end_latitude", latitude);
         map.put("end_longitude", longitude);
-        final FetchingShipmentDataHelper fetcher = fetchingShipmentDataHelpers.get(position);
+        final FetchingShipmentDataHelper<ShoppingCartContainer> fetcher = fetchingShipmentDataHelpers.get(position);
         if (fetcher.callGetPrice != null && fetcher.callGetPrice.isExecuted()) {
             fetcher.callGetPrice.cancel();
         }
@@ -234,8 +235,8 @@ public class BayarActivity extends BaseActivity implements
                 for (int i = 0; i < uberData.prices.size(); i++) {
                     priceValue = Math.min(uberData.prices.get(0).lowEstimate, priceValue);
                 }
-                data.shippingPrice = priceValue;
-                productTransactionContainerAdapter.set(position, data);
+                fetcher.data.shippingPrice = priceValue;
+//                productTransactionContainerAdapter.set(position, fetcher.data);
                 fetcher.donePrice();
             }
 
@@ -382,8 +383,7 @@ public class BayarActivity extends BaseActivity implements
     }
 
     @Override
-    public void onCompleteFetch(int idx) {
-        ShoppingCartContainer data = productTransactionContainerAdapter.getItemAt(idx);
+    public void onCompleteFetch(int idx, ShoppingCartContainer data) {
         data.isFetching = false;
         productTransactionContainerAdapter.set(idx, data);
         totalItemInFetching--;
@@ -393,5 +393,6 @@ public class BayarActivity extends BaseActivity implements
             progressBar.setVisibility(View.GONE);
             llTotalHarga.setVisibility(View.VISIBLE);
         }
+
     }
 }

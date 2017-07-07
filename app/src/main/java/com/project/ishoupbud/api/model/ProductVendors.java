@@ -14,6 +14,9 @@ public class ProductVendors extends RealmObject {
     public int id;
     public double price;
     public Vendor vendor;
+    public String distance;
+    public int shippingPrice;
+
 
     public ProductVendors(){
 

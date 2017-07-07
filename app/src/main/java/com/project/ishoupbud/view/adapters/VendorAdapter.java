@@ -11,6 +11,8 @@ import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.ProductVendors;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.view.holders.VendorHolder;
+import com.project.michael.base.utils.StringUtils;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.adapters.FastAdapter;
 
 /**
@@ -34,8 +36,12 @@ public class VendorAdapter<Model> extends FastAdapter<Model> {
         ProductVendors vendor = (ProductVendors) mModelList.get(position);
 
         vendorHolder.tvName.setText(vendor.vendor.name);
-        vendorHolder.tvAddress.setText(vendor.vendor.address);
-        vendorHolder.tvPrice.setText("Rp. " + vendor.price);
+        if(StringUtils.isNullOrEmpty(vendor.distance)){
+            vendorHolder.tvAddress.setText("");
+        }else{
+            vendorHolder.tvAddress.setText(vendor.distance);
+        }
+        vendorHolder.tvPrice.setText(Utils.indonesiaFormat(vendor.price));
         vendorHolder.radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

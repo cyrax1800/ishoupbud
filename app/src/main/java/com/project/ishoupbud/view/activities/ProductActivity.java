@@ -6,10 +6,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,30 +17,33 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
+import com.google.android.gms.maps.model.LatLng;
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.Uber.UberAPI;
+import com.project.ishoupbud.api.Uber.model.UberPrices;
+import com.project.ishoupbud.api.Uber.repositories.UberRepo;
 import com.project.ishoupbud.api.model.Compare;
+import com.project.ishoupbud.api.model.FetchingShipmentDataHelper;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.model.ProductVendors;
 import com.project.ishoupbud.api.model.ShoppingCart;
 import com.project.ishoupbud.api.model.Vendor;
 import com.project.ishoupbud.api.model.WishList;
+import com.project.ishoupbud.api.model.map.Direction;
 import com.project.ishoupbud.api.model.pusher.ProductPusher;
+import com.project.ishoupbud.api.repositories.GoogleMapRepo;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
+import com.project.ishoupbud.manager.GoogleAPIManager;
 import com.project.ishoupbud.manager.PusherManager;
 import com.project.ishoupbud.utils.ConstClass;
-import com.project.ishoupbud.view.StepperView;
 import com.project.ishoupbud.view.adapters.ProductDetailAdapter;
 import com.project.ishoupbud.view.adapters.ProductPagerAdapter;
 import com.project.ishoupbud.view.adapters.VendorAdapter;
@@ -57,6 +56,8 @@ import com.project.michael.base.views.BaseActivity;
 import com.pusher.client.channel.ChannelEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +71,13 @@ import retrofit2.Response;
  * Created by michael on 4/9/17.
  */
 
-public class ProductActivity extends BaseActivity {
+public class ProductActivity extends BaseActivity implements
+        FetchingShipmentDataHelper.onFetchingListener<ProductVendors> {
 
+    public int productQuantity;
+    public VendorAdapter<ProductVendors> vendorAdapter;
+    public ProductPagerAdapter productPagerAdapter;
+    public int totalItemInFetching = 5;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.appbar)
@@ -81,22 +87,16 @@ public class ProductActivity extends BaseActivity {
     TextView toolbar_title;
     @BindView(R.id.iv_product)
     ImageView ivProduct;
-
     @BindView(R.id.rv_product_detail)
     RecyclerView rvProductDetail;
     ProductDetailAdapter productDetailAdapter;
-
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-
     Menu menu;
-
     Product product;
-    public int productQuantity;
     boolean isInWishlist = false;
-
-    public VendorAdapter<ProductVendors> vendorAdapter;
-    public ProductPagerAdapter productPagerAdapter;
+    List<FetchingShipmentDataHelper<ProductVendors>> fetchingShipmentDataHelpers;
+    double longitude, latitude;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,8 @@ public class ProductActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         productQuantity = 1;
-        product = GsonUtils.getObjectFromJson(getIntent().getStringExtra(ConstClass.PRODUCT_EXTRA), Product.class);
+        product = GsonUtils.getObjectFromJson(getIntent().getStringExtra(ConstClass
+                .PRODUCT_EXTRA), Product.class);
 
         collapsingToolbarLayout.setTitleEnabled(false);
         setSupportActionBar(toolbar);
@@ -132,11 +133,12 @@ public class ProductActivity extends BaseActivity {
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                Log.d(TAG, "onOffsetChanged: " + scrollRange + " " + verticalOffset + " " + toolbar.getHeight());
-                if(!swipeRefreshLayout.isRefreshing()){
-                    if(verticalOffset > -10){
+//                Log.d(TAG, "onOffsetChanged: " + scrollRange + " " + verticalOffset + " " +
+// toolbar.getHeight());
+                if (!swipeRefreshLayout.isRefreshing()) {
+                    if (verticalOffset > -10) {
                         swipeRefreshLayout.setEnabled(true);
-                    }else{
+                    } else {
                         swipeRefreshLayout.setEnabled(false);
                     }
                 }
@@ -144,7 +146,7 @@ public class ProductActivity extends BaseActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset - toolbar.getHeight() <= 0) {
-                    if(isShow) return;
+                    if (isShow) return;
                     collapsingToolbarLayout.setScrimVisibleHeightTrigger(toolbar.getHeight() + 1);
                     toolbar_title.animate().alpha(1.0f).setDuration(250);
                     isShow = true;
@@ -164,11 +166,17 @@ public class ProductActivity extends BaseActivity {
                 .crossFade()
                 .into(ivProduct);
 
+        fetchingShipmentDataHelpers = new ArrayList<>();
+        for (int i = 0; i < product.vendors.size(); i++) {
+            fetchingShipmentDataHelpers.add(new FetchingShipmentDataHelper<ProductVendors>(i, this));
+        }
+
         vendorAdapter = new VendorAdapter<>();
-        vendorAdapter.setNew(product.vendors);
+//        vendorAdapter.setNew(product.vendors);
 
         productDetailAdapter = new ProductDetailAdapter(product, this);
-        rvProductDetail.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvProductDetail.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
+                .VERTICAL, false));
         rvProductDetail.setAdapter(productDetailAdapter);
 //
         productPagerAdapter = new ProductPagerAdapter(getSupportFragmentManager());
@@ -196,18 +204,123 @@ public class ProductActivity extends BaseActivity {
             }
         });
 
+        LatLng latLng = GoogleAPIManager.getGoogleApi().getCurrentPosition(this);
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
+    }
+
+    public void sortVendorByPrice() {
+        totalItemInFetching = product.vendors.size();
+        for (int i = 0; i < product.vendors.size(); i++) {
+            fetchingShipmentDataHelpers.get(i).startFetch(product.vendors.get(i));
+            getPath(i);
+            getEstimatePrice(i);
+        }
+    }
+
+    public void sortVendor() {
+        Collections.sort(product.vendors, new Comparator<ProductVendors>() {
+            @Override
+            public int compare(ProductVendors o1, ProductVendors o2) {
+                if ((o1.price + o1.shippingPrice) < (o2.price + o2.shippingPrice)) {
+                    return -1;
+                }else if((o1.price + o1.shippingPrice) > (o2.price + o2.shippingPrice)) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+        if(product.vendors.size() > 5){
+            product.vendors.subList(5, product.vendors.size() - 1).clear();
+        }
+        vendorAdapter.setNew(product.vendors);
+    }
+
+    public void getPath(final int position) {
+        final ProductVendors data = product.vendors.get(position);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("origin_lat", data.vendor.latitude);
+        map.put("origin_lng", data.vendor.longitude);
+        map.put("dest_lat", latitude);
+        map.put("dest_lng", longitude);
+        final FetchingShipmentDataHelper<ProductVendors> fetcher = fetchingShipmentDataHelpers.get(position);
+        if (fetcher.callGetTime != null && fetcher.callGetTime.isExecuted()) {
+            fetcher.callGetTime.cancel();
+        }
+        fetcher.callGetTime = APIManager.getRepository(GoogleMapRepo.class)
+                .getDirection(map);
+        fetcher.callGetTime.enqueue(new APICallback<Direction>() {
+            @Override
+            public void onSuccess(Call<Direction> call, retrofit2.Response<Direction> response) {
+                super.onSuccess(call, response);
+                fetcher.data.distance = response.body().routes[0].legs[0].distance.text;
+                fetcher.doneTime();
+//                product.vendors.set(position, fetcher.data);
+            }
+
+            @Override
+            public void onError(Call<Direction> call, retrofit2.Response<Direction> response) {
+                super.onError(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<Direction> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });
+    }
+
+    public void getEstimatePrice(final int position) {
+        final ProductVendors data = product.vendors.get(position);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("start_latitude", data.vendor.latitude);
+        map.put("start_longitude", data.vendor.longitude);
+        map.put("end_latitude", latitude);
+        map.put("end_longitude", longitude);
+        final FetchingShipmentDataHelper<ProductVendors> fetcher = fetchingShipmentDataHelpers.get(position);
+        if (fetcher.callGetPrice != null && fetcher.callGetPrice.isExecuted()) {
+            fetcher.callGetPrice.cancel();
+        }
+        fetcher.callGetPrice = UberAPI.getRepository(UberRepo.class).getEstimatePrice(map);
+        fetcher.callGetPrice.enqueue(new APICallback<UberPrices>() {
+            @Override
+            public void onSuccess(Call<UberPrices> call, retrofit2.Response<UberPrices> response) {
+                super.onSuccess(call, response);
+                UberPrices uberData = response.body();
+                int priceValue = Integer.MAX_VALUE;
+                for (int i = 0; i < uberData.prices.size(); i++) {
+                    priceValue = Math.min(uberData.prices.get(0).lowEstimate, priceValue);
+                }
+                fetcher.data.shippingPrice = priceValue;
+                fetcher.donePrice();
+//                product.vendors.set(position, fetcher.data);
+            }
+
+            @Override
+            public void onFailure(Call<UberPrices> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+
+            @Override
+            public void onError(Call<UberPrices> call, retrofit2.Response<UberPrices> response) {
+                super.onError(call, response);
+            }
+        });
     }
 
     public void requestProduct() {
         productPagerAdapter.productReviewFragment.requestReview();
-        Call<GenericResponse<Product>> getProduct = APIManager.getRepository(ProductRepo.class).getProductById(product.id);
+        Call<GenericResponse<Product>> getProduct = APIManager.getRepository(ProductRepo.class)
+                .getProductById(product.id);
         getProduct.enqueue(new APICallback<GenericResponse<Product>>() {
             @Override
-            public void onSuccess(Call<GenericResponse<Product>> call, Response<GenericResponse<Product>> response) {
+            public void onSuccess(Call<GenericResponse<Product>> call,
+                                  Response<GenericResponse<Product>> response) {
                 super.onSuccess(call, response);
                 product = response.body().data;
                 updateView();
                 swipeRefreshLayout.setRefreshing(false);
+                sortVendorByPrice();
             }
 
             @Override
@@ -217,7 +330,7 @@ public class ProductActivity extends BaseActivity {
         });
     }
 
-    public void updateView(){
+    public void updateView() {
         productDetailAdapter.product = product;
         productDetailAdapter.notifyItemChanged(0);
 
@@ -238,35 +351,37 @@ public class ProductActivity extends BaseActivity {
         toolbar_title.setText(product.name);
     }
 
-    public String calculateSummary(){
+    public String calculateSummary() {
         String text;
-        if(product.productSummary == null){
+        if (product.productSummary == null) {
             text = "OverAll: Netral";
-        }else{
-            double maxMean = Math.max(product.productSummary.mean.pos, product.productSummary.mean.neg);
+        } else {
+            double maxMean = Math.max(product.productSummary.mean.pos, product.productSummary
+                    .mean.neg);
             maxMean = Math.max(maxMean, product.productSummary.mean.neu);
             boolean isPos = maxMean == product.productSummary.mean.pos;
             boolean isNeu = maxMean == product.productSummary.mean.neu;
             boolean isNeg = maxMean == product.productSummary.mean.neg;
 
-            double totalReview = product.productSummary.count.pos + product.productSummary.count.neu + product.productSummary.count.neg;
-            double posPercent = product.productSummary.count.pos/totalReview;
-            double neuPercent = product.productSummary.count.neu/totalReview;
-            double negPercent = product.productSummary.count.neg/totalReview;
+            double totalReview = product.productSummary.count.pos + product.productSummary.count
+                    .neu + product.productSummary.count.neg;
+            double posPercent = product.productSummary.count.pos / totalReview;
+            double neuPercent = product.productSummary.count.neu / totalReview;
+            double negPercent = product.productSummary.count.neg / totalReview;
 
-            if(isPos && posPercent >= 0.8){
+            if (isPos && posPercent >= 0.8) {
                 text = "Keseluruhan: Luar biasa positif";
-            }else if(isPos && posPercent >= 0.65){
+            } else if (isPos && posPercent >= 0.65) {
                 text = "Keseluruhan: Sangat positif";
-            }else if(isPos || isNeu && posPercent >= 0.5){
+            } else if (isPos || isNeu && posPercent >= 0.5) {
                 text = "Keseluruhan: positif";
-            }else if(isNeg && isNeu && negPercent >= 0.8){
+            } else if (isNeg && isNeu && negPercent >= 0.8) {
                 text = "Keseluruhan: negatif";
-            }else if(isNeg && negPercent >= 0.65){
+            } else if (isNeg && negPercent >= 0.65) {
                 text = "OverAll: Sangat Negatif";
-            }else if(isNeg || negPercent >= 0.5){
+            } else if (isNeg || negPercent >= 0.5) {
                 text = "OverAll: Luar biasa negatif";
-            }else{
+            } else {
                 text = "OverAll: Netral";
             }
         }
@@ -276,73 +391,90 @@ public class ProductActivity extends BaseActivity {
     public void addToWishList() {
         Map<String, Object> map = new HashMap<>();
         map.put("product_id", product.id);
-        Call<GenericResponse<WishList>> addWishlist = APIManager.getRepository(WishlistRepo.class).addWishlist(map);
+        Call<GenericResponse<WishList>> addWishlist = APIManager.getRepository(WishlistRepo
+                .class).addWishlist(map);
         addWishlist.enqueue(new APICallback<GenericResponse<WishList>>() {
             @Override
-            public void onSuccess(Call<GenericResponse<WishList>> call, Response<GenericResponse<WishList>> response) {
+            public void onSuccess(Call<GenericResponse<WishList>> call,
+                                  Response<GenericResponse<WishList>> response) {
                 super.onSuccess(call, response);
                 menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite));
-                Toast.makeText(getApplicationContext(), "Product successfully added to wishlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Product successfully added to wishlist",
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onError(Call<GenericResponse<WishList>> call, Response<GenericResponse<WishList>> response) {
+            public void onError(Call<GenericResponse<WishList>> call,
+                                Response<GenericResponse<WishList>> response) {
                 super.onError(call, response);
                 menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border));
-                Toast.makeText(getApplicationContext(), "Product failed added to wishlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Product failed added to wishlist", Toast
+                        .LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<GenericResponse<WishList>> call, Throwable t) {
                 super.onFailure(call, t);
                 menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border));
-                Toast.makeText(getApplicationContext(), "Something Wrong, please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Something Wrong, please try again",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void removeFromWishList() {
-        Call<com.project.michael.base.models.Response> removeWishlist = APIManager.getRepository(WishlistRepo.class).deleteWishlist(product.id);
+        Call<com.project.michael.base.models.Response> removeWishlist = APIManager.getRepository
+                (WishlistRepo.class).deleteWishlist(product.id);
         removeWishlist.enqueue(new APICallback<com.project.michael.base.models.Response>() {
             @Override
-            public void onSuccess(Call<com.project.michael.base.models.Response> call, Response<com.project.michael.base.models.Response> response) {
+            public void onSuccess(Call<com.project.michael.base.models.Response> call,
+                                  Response<com.project.michael.base.models.Response> response) {
                 super.onSuccess(call, response);
                 menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border));
-                Toast.makeText(getApplicationContext(), "Product successfully removed to wishlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Product successfully removed to " +
+                        "wishlist", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onNoContent(Call<com.project.michael.base.models.Response> call, Response<com.project.michael.base.models.Response> response) {
+            public void onNoContent(Call<com.project.michael.base.models.Response> call,
+                                    Response<com.project.michael.base.models.Response> response) {
                 super.onNoContent(call, response);
                 menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite));
-                Toast.makeText(getApplicationContext(), "Product successfully removed to wishlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Product successfully removed to " +
+                        "wishlist", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<com.project.michael.base.models.Response> call, Throwable t) {
+            public void onFailure(Call<com.project.michael.base.models.Response> call, Throwable
+                    t) {
                 super.onFailure(call, t);
                 menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite));
-                Toast.makeText(getApplicationContext(), "Something Wrong, please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Something Wrong, please try again",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void addItemToCart(){
-        if(vendorAdapter.getCheckedIdx() == -1){
-            Toast.makeText(getApplicationContext(), "No vendor selected", Toast.LENGTH_SHORT).show();
+    public void addItemToCart() {
+        if (vendorAdapter.getCheckedIdx() == -1) {
+            Toast.makeText(getApplicationContext(), "No vendor selected", Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
-        int value = ((ProductDetailHolder)rvProductDetail.getChildViewHolder(rvProductDetail.getChildAt(0))).stepperView.getValue();
-        if(value == 0){
-            Toast.makeText(getApplicationContext(), "Quantity can't be zero", Toast.LENGTH_SHORT).show();
+        int value = ((ProductDetailHolder) rvProductDetail.getChildViewHolder(rvProductDetail
+                .getChildAt(0))).stepperView.getValue();
+        if (value == 0) {
+            Toast.makeText(getApplicationContext(), "Quantity can't be zero", Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
         showDialog("Adding to cart..");
-        HashMap<String,Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
 //        map.put("product_id", product.id);
-        map.put("product_vendor_id",vendorAdapter.getItemAt(vendorAdapter.getCheckedIdx()).id);
+        map.put("product_vendor_id", vendorAdapter.getItemAt(vendorAdapter.getCheckedIdx()).id);
         map.put("quantity", Integer.valueOf(value));
-        Call<ShoppingCart> addItemToCart = APIManager.getRepository(ShoppingCartRepo.class).addCart(map);
+        Call<ShoppingCart> addItemToCart = APIManager.getRepository(ShoppingCartRepo.class)
+                .addCart(map);
         addItemToCart.enqueue(new APICallback<ShoppingCart>() {
             @Override
             public void onCreated(Call<ShoppingCart> call, Response<ShoppingCart> response) {
@@ -355,7 +487,8 @@ public class ProductActivity extends BaseActivity {
             public void onError(Call<ShoppingCart> call, Response<ShoppingCart> response) {
                 super.onError(call, response);
                 progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "Harus dipesan melalui vendor yang sama yang berada pada keranjang belanja saat ini", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Harus dipesan melalui vendor yang sama " +
+                        "yang berada pada keranjang belanja saat ini", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -366,7 +499,7 @@ public class ProductActivity extends BaseActivity {
         });
     }
 
-    public void compare(){
+    public void compare() {
         showDialog("Get product for compare...");
         Call<Compare> getCompareProduct = APIManager.getRepository(ProductRepo.class)
                 .compareProduct(product.id);
@@ -395,9 +528,9 @@ public class ProductActivity extends BaseActivity {
         inflater.inflate(R.menu.menu_product, menu);
         this.menu = menu;
         isInWishlist = product.liked;
-        if(product.liked){
+        if (product.liked) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite));
-        }else{
+        } else {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border));
         }
         return true;
@@ -412,7 +545,8 @@ public class ProductActivity extends BaseActivity {
                 v.getGlobalVisibleRect(outRect);
                 if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context
+                            .INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
             }
@@ -457,5 +591,18 @@ public class ProductActivity extends BaseActivity {
     public void finish() {
         super.finish();
         PusherManager.getInstance().disconnectListenToProduct();
+    }
+
+    @Override
+    public void onCompleteFetch(int idx, ProductVendors data) {
+        totalItemInFetching--;
+//        if(fetchingShipmentDataHelpers.get(idx).status){
+            product.vendors.set(idx, data);
+//        }
+
+        if (totalItemInFetching == 0) {
+            sortVendor();
+            dismissDialog();
+        }
     }
 }

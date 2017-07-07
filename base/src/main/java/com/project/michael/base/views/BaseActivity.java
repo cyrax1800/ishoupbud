@@ -32,6 +32,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
+        dismissDialog();
         super.onDestroy();
         if(Settings.isUsingRealmDatabase() && realm != null)
             realm.close();
@@ -59,6 +60,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void dismissDialog(){
+        if(progressDialog == null) return;
         if(progressDialog.isShowing()){
             progressDialog.dismiss();
             progressDialog.setCanceledOnTouchOutside(true);
