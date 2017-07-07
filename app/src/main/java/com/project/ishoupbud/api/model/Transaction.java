@@ -25,6 +25,7 @@ public class Transaction {
     public int debitCredit;
     public List<ShoppingCart> detail;
     public String vendor;
+    public Shipment shipment;
 
     public Transaction(){
 

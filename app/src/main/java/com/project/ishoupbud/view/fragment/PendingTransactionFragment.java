@@ -50,7 +50,8 @@ public class PendingTransactionFragment extends BaseFragment {
                 public boolean onClick(View v, List<Transaction> transactions, Transaction transaction, int position) {
                     Intent i = new Intent(getContext(), DetailTransactionActivity.class);
                     i.putExtra(ConstClass.TRANSACTION_EXTRA, GsonUtils.getJsonFromObject(transaction,Transaction.class));
-                    startActivity(i);
+                    getActivity().startActivityForResult(i, TransactionFragment
+                            .REQUEST_TRANSACTION);
                     return false;
                 }
             });
@@ -72,6 +73,15 @@ public class PendingTransactionFragment extends BaseFragment {
 
     public void clearAdapter(){
         transactionAdapter.clear();
+    }
+
+    public void removeTransaction(Transaction transaction){
+        for(int i = 0; i< transactionAdapter.getItemCount(); i++){
+            if(transaction.id == transactionAdapter.getItemAt(i).id){
+                transactionAdapter.remove(i);
+                break;
+            }
+        }
     }
 
     public static PendingTransactionFragment newInstance() {

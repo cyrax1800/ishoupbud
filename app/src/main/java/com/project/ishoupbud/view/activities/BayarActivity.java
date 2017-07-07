@@ -271,11 +271,16 @@ public class BayarActivity extends BaseActivity implements
         progressDialog.setMessage("Checkint out...");
         progressDialog.show();
         List<Integer> dataCartCheckout = new ArrayList<>();
+        List<Integer> dataShippment = new ArrayList<>();
         for (int i = 0; i < productTransactionContainerAdapter.getItemCount(); i++) {
             dataCartCheckout.add(productTransactionContainerAdapter.getItemAt(i).id);
+            dataShippment.add(productTransactionContainerAdapter.getItemAt(i).shippingPrice);
         }
         HashMap<String, Object> map = new HashMap<>();
         map.put("cart_id", dataCartCheckout);
+        map.put("shipment", dataShippment);
+        map.put("lat", latitude);
+        map.put("lng", longitude);
         APIManager.getRepository(TransactionRepo.class).checkout(map)
                 .enqueue(new APICallback<List<Transaction>>() {
                     @Override

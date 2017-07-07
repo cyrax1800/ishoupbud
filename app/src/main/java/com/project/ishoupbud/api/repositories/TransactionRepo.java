@@ -2,6 +2,7 @@ package com.project.ishoupbud.api.repositories;
 
 import com.project.ishoupbud.api.model.Transaction;
 import com.project.michael.base.models.GenericResponse;
+import com.project.michael.base.models.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -31,4 +33,8 @@ public interface TransactionRepo {
     @Headers("Accept: application/json")
     @POST("transaction")
     Call<List<Transaction>> checkout(@Body Map map);
+
+    @Headers("Accept: application/json")
+    @POST("admin/transaction/{transaction}/approve")
+    Call<Response> approve(@Path("transaction") int transactionId);
 }

@@ -231,7 +231,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
         if(requestCode == ProfileFragment.REQUEST_LOGIN ||
                 requestCode == ProfileFragment.REQUEST_REGISTER ||
                 requestCode == ProfileFragment.REQUEST_EDIT_PROFILE ||
-                requestCode == ProfileFragment.REQUEST_EDIT_PASSWORD
+                requestCode == ProfileFragment.REQUEST_EDIT_PASSWORD ||
+                requestCode == TransactionFragment.REQUEST_TRANSACTION
                 ){
             if(mNavController.getCurrentFrag() != null){
                 mNavController.getCurrentFrag().onActivityResult(requestCode,resultCode,data);
