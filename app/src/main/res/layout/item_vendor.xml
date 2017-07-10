@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_product_vendor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,6 +13,7 @@
         android:id="@+id/radio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         style="@style/vendor_radioButton"
         />
 

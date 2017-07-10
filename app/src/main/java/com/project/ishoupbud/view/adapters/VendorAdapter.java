@@ -50,6 +50,12 @@ public class VendorAdapter<Model> extends FastAdapter<Model> {
                 checkedIdx = vendorHolder.getAdapterPosition();
             }
         });
+        vendorHolder.llProductVendor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vendorHolder.radioButton.setChecked(true);
+            }
+        });
     }
 
     public int getCheckedIdx(){

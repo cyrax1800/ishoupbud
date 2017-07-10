@@ -2,9 +2,11 @@ package com.project.ishoupbud.view.holders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.google.android.gms.vision.text.Line;
 import com.project.ishoupbud.R;
 
 import butterknife.BindView;
@@ -16,6 +18,7 @@ import butterknife.ButterKnife;
 
 public class VendorHolder extends RecyclerView.ViewHolder {
 
+    @BindView(R.id.ll_product_vendor) public LinearLayout llProductVendor;
     @BindView(R.id.radio) public RadioButton radioButton;
     @BindView(R.id.tv_vendor) public TextView tvName;
     @BindView(R.id.tv_alamat) public TextView tvAddress;
