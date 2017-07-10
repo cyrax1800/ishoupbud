@@ -15,6 +15,7 @@ import com.project.ishoupbud.view.activities.ProductActivity;
 import com.project.ishoupbud.view.holders.ProductDetailHolder;
 import com.project.ishoupbud.view.holders.ProductDetailPagerHolder;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,8 @@ public class ProductDetailAdapter extends RecyclerView.Adapter<RecyclerView.View
         if(holder instanceof ProductDetailHolder){
             ProductDetailHolder productDetailHolder = (ProductDetailHolder) holder;
             productDetailHolder.tvProductName.setText(product.name);
-            productDetailHolder.tvRatingSummary.setText(String.valueOf(product.totalRating));
+            DecimalFormat format = new DecimalFormat("#.0");
+            productDetailHolder.tvRatingSummary.setText(format.format(product.totalRating));
             productDetailHolder.tvTotalRater.setText("(" + product.totalReview + " Reviews)");
             productDetailHolder.ratingBar.setRating((float) product.totalRating);
             if(product.productSummary == null){
