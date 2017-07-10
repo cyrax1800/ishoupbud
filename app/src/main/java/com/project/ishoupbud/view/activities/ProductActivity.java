@@ -309,6 +309,7 @@ public class ProductActivity extends BaseActivity implements
     }
 
     public void requestProduct() {
+        progressDialog.setCancelable(false);
         productPagerAdapter.productReviewFragment.requestReview();
         Call<GenericResponse<Product>> getProduct = APIManager.getRepository(ProductRepo.class)
                 .getProductById(product.id);
