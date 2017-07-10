@@ -126,7 +126,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
             public void onSearchTextChanged(String oldQuery, String newQuery) {
                 Log.d(TAG, "onSearchTextChanged: " + newQuery);
                 if(newQuery.isEmpty()) return;
-                searchProduct(1, newQuery);
+                searchProduct(-1, newQuery);
             }
         });
 
@@ -203,7 +203,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
     public void searchProduct(int categoryId, String text){
         if(searchProductCall != null && searchProductCall.isExecuted())
             searchProductCall.cancel();
-        searchProductCall = APIManager.getRepository(ProductRepo.class).getProductFilter(categoryId, text);
+        searchProductCall = APIManager.getRepository(ProductRepo.class).getProductFilterByName( text);
         searchProductCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {

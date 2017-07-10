@@ -31,7 +31,13 @@ public interface ProductRepo {
 
     @GET("product")
     @Headers("Accept: application/json")
-    Call<GenericResponse<List<Product>>> getProductFilter(@Query("category") int categoryId, @Query("keyword") String keyword);
+    Call<GenericResponse<List<Product>>> getProductFilter(@Query("category_id") int categoryId,
+                                                          @Query("keyword") String keyword);
+
+    @GET("product")
+    @Headers("Accept: application/json")
+    Call<GenericResponse<List<Product>>> getProductFilterByName(
+                                                          @Query("keyword") String keyword);
 
     @GET("product")
     @Headers("Accept: application/json")

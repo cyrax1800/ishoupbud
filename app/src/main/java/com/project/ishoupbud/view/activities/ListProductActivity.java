@@ -100,7 +100,8 @@ public class ListProductActivity extends BaseActivity {
     }
 
     public void fetchProduct(){
-        Call<GenericResponse<List<Product>>> categoryProductCall = APIManager.getRepository(ProductRepo.class).getProductFilter(categoryID, null);
+        Call<GenericResponse<List<Product>>> categoryProductCall = APIManager.getRepository
+                (ProductRepo.class).getProductFilter(categoryID + 1, null);
         categoryProductCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
