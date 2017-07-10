@@ -139,6 +139,7 @@ public class TransactionFragment extends BaseFragment {
             Transaction transaction = GsonUtils.getObjectFromJson(data.getStringExtra(ConstClass
                     .TRANSACTION_EXTRA), Transaction.class);
             transactionAdapter.pendingTransactionFragment.removeTransaction(transaction);
+            transaction.status = 1;
             transactionAdapter.completeTransactionFragment.addTranscation(transaction);
         }
     }
