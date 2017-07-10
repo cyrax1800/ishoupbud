@@ -16,84 +16,85 @@
 
         <include layout="@layout/app_bar_shopping_cart"/>
 
-        <!--<android.support.v4.widget.NestedScrollView-->
-            <!--android:id="@+id/nestedScroll"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-            <!--&gt;-->
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nestedScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
 
-            <RelativeLayout
-                android:orientation="vertical"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_cart_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 >
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_cart_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+            </android.support.v7.widget.RecyclerView>
 
-                </android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.NestedScrollView>
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:layout_above="@+id/bottom_container"
-                    android:background="@drawable/bb_divider"
-                    />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_above="@+id/bottom_container"
+                android:background="@drawable/bb_divider"
+                />
 
+            <LinearLayout
+                android:id="@+id/bottom_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bb_height"
+                android:layout_alignParentBottom="true"
+                android:paddingLeft="@dimen/item_space"
+                android:paddingRight="@dimen/item_space"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@color/white"
+                >
                 <LinearLayout
-                    android:id="@+id/bottom_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/bb_height"
-                    android:layout_alignParentBottom="true"
-                    android:paddingLeft="@dimen/item_space"
-                    android:paddingRight="@dimen/item_space"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:background="@color/white"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
                     >
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center_vertical"
-                        >
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Total Belanja"
-                            android:textSize="12sp"
-                            />
-                        <TextView
-                            android:id="@+id/tv_total_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rp. 123.3123"
-                            style="@style/ishoupbud_text_black"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            />
-
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_continue"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bayar"
-                        style="@style/btnFlat"
+                        android:text="Total Belanja"
+                        android:textSize="12sp"
                         />
-
+                    <TextView
+                        android:id="@+id/tv_total_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 123.3123"
+                        style="@style/ishoupbud_text_black"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        />
 
                 </LinearLayout>
 
-            </RelativeLayout>
-        <!--</android.support.v4.widget.NestedScrollView>-->
+                <Button
+                    android:id="@+id/btn_continue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bayar"
+                    style="@style/btnFlat"
+                    />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
 
     </android.support.design.widget.CoordinatorLayout>

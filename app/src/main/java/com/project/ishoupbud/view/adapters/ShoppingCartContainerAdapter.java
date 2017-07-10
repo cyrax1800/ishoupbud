@@ -44,6 +44,7 @@ public class ShoppingCartContainerAdapter<Model> extends FastAdapter<Model> {
         View itemView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.item_shopping_cart_container, parent, false);
+
         final ShoppingCartContainerHolder shoppingCartHolder =
                 new ShoppingCartContainerHolder(itemView, this, viewType);
 
@@ -70,7 +71,6 @@ public class ShoppingCartContainerAdapter<Model> extends FastAdapter<Model> {
                         }
                     }
                 });
-
         return super.onPostCreateViewHolder(shoppingCartHolder, viewType);
     }
 
@@ -90,11 +90,6 @@ public class ShoppingCartContainerAdapter<Model> extends FastAdapter<Model> {
                 validateList(shoppingCartHolder);
             }
         });
-        if (position > checkedIdx.size() - 1) {
-            while (position > checkedIdx.size() - 1) {
-                checkedIdx.add(false);
-            }
-        }
     }
 
     public void delete(int id, final int pos) {

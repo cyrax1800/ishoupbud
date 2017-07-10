@@ -13,7 +13,7 @@ import java.util.List;
 public class ShoppingCart {
     public int id;
     public int quantity;
-    @SerializedName("price")
+    @SerializedName(value="price", alternate="harga")
     public double harga;
     @SerializedName(value="items", alternate={"item", "product"})
     public Product product;

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +54,7 @@ public class ShoppingCartActivity extends BaseActivity {
     public float totalPrice = 0;
     public boolean isAllNotChecked = true;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.nestedScroll) NestedScrollView nestedScroll;
     @BindView(R.id.ll_chk_all_transaction) LinearLayout llChkAllTransaction;
     @BindView(R.id.rv_cart_container) RecyclerView rvShoppingCart;
     @BindView(R.id.tv_total_price) TextView tvTotalPrice;
@@ -104,13 +106,15 @@ public class ShoppingCartActivity extends BaseActivity {
         shoppingCartContainerAdapter = new ShoppingCartContainerAdapter<>(this);
         shoppingCartContainerAdapter.setItemListener(R.id.ll_chk_vendor, new
                 ClickEventListener<ShoppingCartContainer>() {
-            @Override
-            public void onClick(View v, ShoppingCartContainer shoppingCartContainer, int position) {
-                Log.d(TAG, "onClick: asdasdasd");
-                shoppingCartContainerAdapter.toggleChecked((ShoppingCartContainerHolder)
-                        rvShoppingCart.findViewHolderForAdapterPosition(position), position);
-            }
-        }).setItemListener(R.id.btn_bayar, new ClickEventListener<ShoppingCartContainer>() {
+                    @Override
+                    public void onClick(View v, ShoppingCartContainer shoppingCartContainer, int
+                            position) {
+                        Log.d(TAG, "onClick: asdasdasd");
+                        shoppingCartContainerAdapter.toggleChecked((ShoppingCartContainerHolder)
+                                rvShoppingCart.findViewHolderForAdapterPosition(position),
+                                position);
+                    }
+                }).setItemListener(R.id.btn_bayar, new ClickEventListener<ShoppingCartContainer>() {
             @Override
             public void onClick(View v, final ShoppingCartContainer shoppingCartContainer, int
                     position) {
@@ -121,6 +125,7 @@ public class ShoppingCartActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
 
+        rvShoppingCart.setNestedScrollingEnabled(false);
         rvShoppingCart.setLayoutManager(layoutManager);
         rvShoppingCart.setAdapter(shoppingCartContainerAdapter);
 
@@ -141,6 +146,10 @@ public class ShoppingCartActivity extends BaseActivity {
                 super.onSuccess(call, response);
                 List<ShoppingCartContainer> shoppingCartContainers = response.body().data;
                 shoppingCartContainerAdapter.setNew(shoppingCartContainers);
+                shoppingCartContainerAdapter.checkedIdx.clear();
+                for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
+                    shoppingCartContainerAdapter.checkedIdx.add(false);
+                }
             }
 
             @Override
@@ -156,14 +165,14 @@ public class ShoppingCartActivity extends BaseActivity {
         isChecked = !isChecked;
         chkAllTransaction.setChecked(isChecked);
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams)
-                rvShoppingCart.getLayoutParams();
+                nestedScroll.getLayoutParams();
         marginLayoutParams.setMargins(0, 0, 0, 0);
         llBtnContainer.setVisibility(View.GONE);
         if (isChecked) {
             llBtnContainer.setVisibility(View.VISIBLE);
             marginLayoutParams.setMargins(0, 0, 0, bottomContainerHeight);
         }
-        rvShoppingCart.setLayoutParams(marginLayoutParams);
+        nestedScroll.setLayoutParams(marginLayoutParams);
         for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
             shoppingCartContainerAdapter.setCheck((ShoppingCartContainerHolder) rvShoppingCart
                     .findViewHolderForAdapterPosition(i), i, isChecked);
@@ -187,7 +196,7 @@ public class ShoppingCartActivity extends BaseActivity {
         }
 
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams)
-                rvShoppingCart.getLayoutParams();
+                nestedScroll.getLayoutParams();
         marginLayoutParams.setMargins(0, 0, 0, 0);
         llBtnContainer.setVisibility(View.GONE);
         if (isAllChecked) {
@@ -217,7 +226,7 @@ public class ShoppingCartActivity extends BaseActivity {
                 shoppingCartContainerHolder.btmContainer.setVisibility(View.VISIBLE);
             }
         }
-        rvShoppingCart.setLayoutParams(marginLayoutParams);
+        nestedScroll.setLayoutParams(marginLayoutParams);
         calculateTotal();
     }
 
@@ -231,7 +240,7 @@ public class ShoppingCartActivity extends BaseActivity {
         tvTotalPrice.setText(Utils.indonesiaFormat(totalPrice));
     }
 
-    public void konfirmasiPembayaran(List<ShoppingCartContainer> list){
+    public void konfirmasiPembayaran(List<ShoppingCartContainer> list) {
         Intent intent = new Intent(this, BayarActivity.class);
         intent.putExtra(ConstClass.CART_EXTRA, GsonUtils.getJsonFromObject(list));
         startActivity(intent);
@@ -257,7 +266,7 @@ public class ShoppingCartActivity extends BaseActivity {
                 konfirmasiPembayaran(tmpList);
                 break;
             case R.id.ll_chk_all_transaction:
-                if(shoppingCartContainerAdapter.getItemCount() == 0) return;
+                if (shoppingCartContainerAdapter.getItemCount() == 0) return;
                 toggleCheckFromClick();
                 break;
         }

@@ -127,6 +127,7 @@ public class BayarActivity extends BaseActivity implements
 
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(productTransactionContainerAdapter);
+        rvProduct.setNestedScrollingEnabled(false);
 
         for (int i = 0; i < tmpShoppingCartContainer.size(); i++) {
             fetchingShipmentDataHelpers.add(new FetchingShipmentDataHelper<ShoppingCartContainer>(i, this));
@@ -328,6 +329,15 @@ public class BayarActivity extends BaseActivity implements
                 rbAlamatUtama.setChecked(false);
                 startFetching();
             } else {
+                if(altLatitude == 0 && altLongitude == 0){
+                    if (user.longitude != null && user.latitude != null) {
+                        longitude = user.longitude;
+                        latitude = user.latitude;
+                        rbAlamatUtama.setChecked(true);
+                        rbAlamatLain.setChecked(false);
+                        return;
+                    }
+                }
                 if (longitude == 0 && latitude == 0) {
                     DialogMessageHelper.getInstance().show(this, "Harus memilih tempat tujuan " +
                             "barang dikirimkan", "Pilih", new DialogInterface.OnClickListener() {
@@ -365,6 +375,8 @@ public class BayarActivity extends BaseActivity implements
                 startFetching();
                 break;
             case R.id.btn_pilih_lokasi:
+                rbAlamatLain.setChecked(true);
+                rbAlamatUtama.setChecked(false);
                 callPilihLokasi();
                 break;
             case R.id.btn_bayar:
