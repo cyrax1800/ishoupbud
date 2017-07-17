@@ -12,6 +12,8 @@ import com.project.ishoupbud.api.model.WishList;
 import com.project.ishoupbud.view.holders.ProductHolder;
 import com.project.michael.base.views.adapters.FastAdapter;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by michael on 4/30/17.
  */
@@ -31,7 +33,8 @@ public class WishListAdapter<Model> extends FastAdapter<Model> {
 
         productHolder.tvTitle.setText(product.name);
         productHolder.tvPrice.setText("Rp. " + product.price);
-        productHolder.tvRating.setText("(" + product.totalRating + ")");
+        DecimalFormat format = new DecimalFormat("#.0");
+        productHolder.tvRating.setText("(" + format.format(product.totalRating) + ")");
         productHolder.ratingBar.setRating((float)product.totalRating);
 
         Glide
