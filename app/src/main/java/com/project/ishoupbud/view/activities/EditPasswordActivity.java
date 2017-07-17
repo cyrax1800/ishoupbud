@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +44,7 @@ public class EditPasswordActivity extends BaseActivity {
     @BindView(R.id.etl_password) TextInputLayout etlNewPassword;
     @BindView(R.id.et_conf_password) EditText etRePassword;
     @BindView(R.id.etl_conf_password) TextInputLayout etlRePassword;
-    @BindView(R.id.btn_save) Button btnSave;
+//    @BindView(R.id.btn_save) Button btnSave;
 
     String currentPassword, password, rePassword;
 
@@ -60,7 +62,7 @@ public class EditPasswordActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        btnSave.setOnClickListener(this);
+//        btnSave.setOnClickListener(this);
 
         initProgressDialog("Changing Password...");
     }
@@ -164,9 +166,22 @@ public class EditPasswordActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_edit, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
+        }else if(item.getItemId() == R.id.action_save){
+            if(validation()){
+                changePassword();
+            }else{
+                Toast.makeText(getApplicationContext(), "Confirmation Password is wrong", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -177,16 +192,16 @@ public class EditPasswordActivity extends BaseActivity {
         setResult(ProfileFragment.RESULT_NO_CHANGES);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_save:
-                if(validation()){
-                    changePassword();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Confirmation Password is wrong", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()){
+//            case R.id.btn_save:
+//                if(validation()){
+//                    changePassword();
+//                }else{
+//                    Toast.makeText(getApplicationContext(), "Confirmation Password is wrong", Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//        }
+//    }
 }

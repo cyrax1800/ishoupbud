@@ -14,6 +14,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -79,7 +81,7 @@ public class EditProfileActivity extends BaseActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.iv_profile_pic) ImageView ivProfile;
     @BindView(R.id.btn_edit_photo) Button btnChangePhoto;
-    @BindView(R.id.btn_save) Button btnSave;
+//    @BindView(R.id.btn_save) Button btnSave;
     @BindView(R.id.btn_map) Button btnSelectMap;
     @BindView(R.id.et_name) EditText etName;
     @BindView(R.id.et_email) EditText etEmail;
@@ -116,7 +118,7 @@ public class EditProfileActivity extends BaseActivity {
         }
 
         btnChangePhoto.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
+//        btnSave.setOnClickListener(this);
         btnSelectMap.setOnClickListener(this);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -343,9 +345,22 @@ public class EditProfileActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_edit, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
+        }else if(item.getItemId() == R.id.action_save){
+            if(checkFieldChanged()){
+                editProfile();
+            }else{
+                Toast.makeText(getApplicationContext(), "Nothing Change", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -360,13 +375,6 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_save:
-                if(checkFieldChanged()){
-                    editProfile();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Nothing Change", Toast.LENGTH_SHORT).show();
-                }
-                break;
             case R.id.btn_edit_photo:
                 mediaAlertDialog.show();
                 break;
