@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.project.ishoupbud.R;
@@ -53,6 +54,9 @@ public class HomeFragment extends BaseFragment {
     @BindView(R.id.rv_popular_product) RecyclerView rvPopular;
     @BindView(R.id.fab_barcode) FloatingActionButton fabBarcode;
     @BindView(R.id.nestedScroll) NestedScrollView nestedScrollView;
+    @BindView(R.id.progress_new) ProgressBar progressNew;
+    @BindView(R.id.progress_popular) ProgressBar progressPopular;
+    @BindView(R.id.progress_last) ProgressBar progressLast;
 
     CategoriesDialogFragment categoriesDialogFragment;
 
@@ -139,6 +143,7 @@ public class HomeFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
                 promoProduct.setNew(response.body().data);
+                progressPopular.setVisibility(View.GONE);
             }
 
             @Override
@@ -155,6 +160,7 @@ public class HomeFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
                 newProduct.setNew(response.body().data);
+                progressNew.setVisibility(View.GONE);
             }
 
             @Override
@@ -171,6 +177,7 @@ public class HomeFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
                 popularProduct.setNew(response.body().data);
+                progressLast.setVisibility(View.GONE);
             }
 
             @Override
