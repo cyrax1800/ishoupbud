@@ -8,10 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
@@ -55,13 +57,18 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
     private FragNavController mNavController;
 
     FloatingSearchView floatingSearchView;
+    List<Product> actualProductList;
 
     Call<GenericResponse<List<Product>>> searchProductCall;
+
+    boolean isNoProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        isNoProduct = true;
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         floatingSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
@@ -125,7 +132,10 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
             @Override
             public void onSearchTextChanged(String oldQuery, String newQuery) {
                 Log.d(TAG, "onSearchTextChanged: " + newQuery);
-                if(newQuery.isEmpty()) return;
+                if(newQuery.isEmpty()){
+                    floatingSearchView.clearSuggestions();
+                    return;
+                }
                 searchProduct(-1, newQuery);
             }
         });
@@ -134,28 +144,49 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
             @Override
             public void onBindSuggestion(View suggestionView, ImageView leftIcon, TextView textView, SearchSuggestion item, int itemPosition) {
                 Product product = (Product)item;
-                textView.setText(product.name);
-
-                Glide
-                    .with(getApplicationContext())
-                    .load(product.pictureUrl.small)
-                    .centerCrop()
-                    .crossFade()
-                    .into(leftIcon);
+                if(StringUtils.isNullOrEmpty(product.barcode)){
+                    textView.setText(product.name);
+                    leftIcon.setVisibility(View.GONE);
+                }else{
+                    textView.setText(product.name);
+                    leftIcon.setVisibility(View.VISIBLE);
+                    Glide
+                            .with(getApplicationContext())
+                            .load(product.pictureUrl.small)
+                            .centerCrop()
+                            .crossFade()
+                            .into(leftIcon);
+                }
             }
         });
 
         floatingSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
             @Override
             public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
-                Intent i = new Intent(getApplicationContext(), ProductActivity.class);
-                i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject(searchSuggestion, Product.class));
-                startActivity(i);
+                if(((Product)searchSuggestion).name.equals("No Product"))return;
+                if(((Product)searchSuggestion).name.equals("See all")){
+                    Intent i = new Intent(getApplicationContext(), ListProductActivity.class);
+                    i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
+                            (actualProductList));
+                    startActivity(i);
+                }else{
+                    Intent i = new Intent(getApplicationContext(), ProductActivity.class);
+                    i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject(searchSuggestion, Product.class));
+                    startActivity(i);
+                }
             }
 
             @Override
             public void onSearchAction(String currentQuery) {
-
+                if(StringUtils.isNullOrEmpty(floatingSearchView.getQuery()) || isNoProduct) {
+                    Toast.makeText(getApplicationContext(),"Nothing to seacrh",Toast
+                            .LENGTH_SHORT).show();
+                    return;
+                }
+                Intent i = new Intent(getApplicationContext(), ListProductActivity.class);
+                i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
+                        (actualProductList));
+                startActivity(i);
             }
         });
 
@@ -203,13 +234,30 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
     public void searchProduct(int categoryId, String text){
         if(searchProductCall != null && searchProductCall.isExecuted())
             searchProductCall.cancel();
-        searchProductCall = APIManager.getRepository(ProductRepo.class).getProductFilterByName( text);
+        searchProductCall = APIManager.getRepository(ProductRepo.class).getProductFilterByName(text);
         searchProductCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
                 if(!floatingSearchView.isSearchBarFocused()) return;
-                floatingSearchView.swapSuggestions(response.body().data);
+                actualProductList = response.body().data;
+                isNoProduct = false;
+                if(actualProductList.size() == 0){
+                    List<Product> productsData = new ArrayList<Product>();
+                    Product product = new Product();
+                    product.name = "No Product";
+                    productsData.add(product);
+                    floatingSearchView.swapSuggestions(productsData);
+                    isNoProduct = true;
+                }else if(response.body().data.size() >= 5){
+                    List<Product> productsData = response.body().data.subList(0,4);
+                    Product product = new Product();
+                    product.name = "See All";
+                    productsData.add(product);
+                    floatingSearchView.swapSuggestions(productsData);
+                }else{
+                    floatingSearchView.swapSuggestions(response.body().data);
+                }
             }
 
             @Override

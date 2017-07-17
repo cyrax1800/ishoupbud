@@ -15,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.gson.reflect.TypeToken;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
+import com.project.ishoupbud.api.model.ShoppingCartContainer;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.adapters.ProductAdapter;
@@ -95,7 +97,15 @@ public class ListProductActivity extends BaseActivity {
         btnCategories.setOnClickListener(this);
         fabMoveUp.setOnClickListener(this);
 
-        fetchProduct();
+        if(getIntent().hasExtra(ConstClass.PRODUCT_EXTRA)){
+            @SuppressWarnings("unchecked")
+            List<Product> tmpProduct = (List<Product>) GsonUtils.getObjectFromJson
+                    (getIntent().getStringExtra(ConstClass.PRODUCT_EXTRA),
+                            new TypeToken<List<Product>>() {}.getType());
+            productAdapter.setNew(tmpProduct);
+        }else{
+            fetchProduct();
+        }
 
     }
 

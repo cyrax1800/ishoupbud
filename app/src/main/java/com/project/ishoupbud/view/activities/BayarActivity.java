@@ -84,6 +84,7 @@ public class BayarActivity extends BaseActivity implements
     int totalItemInFetching;
     float totalItemPrice, totalSaldo, totalBelanja, totalShipmenentPrice;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
