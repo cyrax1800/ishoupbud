@@ -20,6 +20,7 @@
         android:id="@+id/scan_container"
         android:layout_alignParentBottom="true">
         <LinearLayout
+            android:id="@+id/radio_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -57,6 +58,20 @@
                     />
 
             </RadioGroup>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/radio_layout"
+            android:layout_marginTop="@dimen/item_space"
+            >
+            <CheckBox
+                android:id="@+id/cb_fast_scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Use Fast Scan"
+                />
         </LinearLayout>
     </RelativeLayout>
 

@@ -121,6 +121,7 @@ public class CameraSource {
     private Camera mCamera;
 
     private int mFacing = CAMERA_FACING_BACK;
+    private Camera.PreviewCallback mPreviewCallback;
 
     /**
      * Rotation of the device, and thus the associated preview images captured from the device.
@@ -237,6 +238,11 @@ public class CameraSource {
                 throw new IllegalArgumentException("Invalid camera: " + facing);
             }
             mCameraSource.mFacing = facing;
+            return this;
+        }
+
+        public Builder setPreviewCallBack(Camera.PreviewCallback cb){
+            mCameraSource.mPreviewCallback = cb;
             return this;
         }
 
@@ -810,6 +816,7 @@ public class CameraSource {
         camera.addCallbackBuffer(createPreviewBuffer(mPreviewSize));
         camera.addCallbackBuffer(createPreviewBuffer(mPreviewSize));
         camera.addCallbackBuffer(createPreviewBuffer(mPreviewSize));
+//        camera.setPreviewCallback(mPreviewCallback);
 
         return camera;
     }
@@ -1061,6 +1068,7 @@ public class CameraSource {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
             mFrameProcessor.setNextFrame(data, camera);
+            mPreviewCallback.onPreviewFrame(data, camera);
         }
     }
 

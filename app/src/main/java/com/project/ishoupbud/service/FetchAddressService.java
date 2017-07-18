@@ -23,7 +23,7 @@ import java.util.Locale;
 
 public class FetchAddressService extends IntentService {
 
-    public static final String TAG = "tmp-Service";
+    public static final String TAG = "tmp-Fetch-Service";
 
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
