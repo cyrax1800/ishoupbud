@@ -41,6 +41,7 @@ public class ProductAdapter<Model> extends FastAdapter<Model> {
         Glide
                 .with(productHolder.ivProductImage.getContext())
                 .load(product.pictureUrl.small)
+                .placeholder(R.drawable.comingsoon)
                 .fitCenter()
                 .crossFade()
                 .into(productHolder.ivProductImage);
