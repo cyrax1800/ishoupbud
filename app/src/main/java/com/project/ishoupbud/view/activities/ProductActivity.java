@@ -366,6 +366,10 @@ public class ProductActivity extends BaseActivity implements
             double maxMean = Math.max(product.productSummary.mean.pos, product.productSummary
                     .mean.neg);
             maxMean = Math.max(maxMean, product.productSummary.mean.neu);
+            if(maxMean == 0){
+                text = "OverAll: Netral";
+                return text;
+            }
             boolean isPos = maxMean == product.productSummary.mean.pos;
             boolean isNeu = maxMean == product.productSummary.mean.neu;
             boolean isNeg = maxMean == product.productSummary.mean.neg;

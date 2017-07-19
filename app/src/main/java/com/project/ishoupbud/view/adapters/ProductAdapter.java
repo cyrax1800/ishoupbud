@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.view.holders.ProductHolder;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.adapters.FastAdapter;
 
 import java.text.DecimalFormat;
@@ -31,11 +32,10 @@ public class ProductAdapter<Model> extends FastAdapter<Model> {
         Product product = (Product)mModelList.get(position);
 
         productHolder.tvTitle.setText(product.name);
-        productHolder.tvPrice.setText("Rp. " + product.price);
+        productHolder.tvPrice.setText(Utils.indonesiaFormat(product.price));
 //        productHolder.tvRating.setText("(" + product.totalRating + ")");
 
-        DecimalFormat format = new DecimalFormat("#.0");
-        productHolder.tvRating.setText("(" + format.format(product.totalRating) + ")");
+        productHolder.tvRating.setText(Utils.reviewFormat(product.totalRating));
         productHolder.ratingBar.setRating((float)product.totalRating);
 
         Glide

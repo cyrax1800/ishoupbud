@@ -272,4 +272,13 @@ public class Utils {
         return mataUangIndonesia.format(angka);
     }
 
+    public static String reviewFormat(double value){
+        if(value == 0){
+            return "(0)";
+        }else{
+            DecimalFormat format = new DecimalFormat("#.0");
+            return  "(" + format.format(value) + ")";
+        }
+    }
+
 }
