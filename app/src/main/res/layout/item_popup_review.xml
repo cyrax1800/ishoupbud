@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/ll_popup_review"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="@dimen/item_space"
+              android:layout_marginRight="@dimen/item_space"
+              android:layout_marginTop="@dimen/bb_height"
+              android:padding="@dimen/item_space"
+              style="@style/btnBorder"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="New Update Review"
+        android:layout_marginBottom="@dimen/item_space"
+        style="@style/product_card_title"
+        />
+    <TextView
+        android:id="@+id/tv_popup_review_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/item_space"
+        android:text="nama orang"
+        style="@style/review_name"
+        />
+
+    <TextView
+        android:id="@+id/tv_popup_review_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="bagus koq barang ini"
+        style="@style/review_desc"
+        />
+
+</LinearLayout>

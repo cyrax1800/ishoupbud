@@ -24,6 +24,8 @@
 
         </android.support.v7.widget.RecyclerView>
 
+        <include layout="@layout/item_popup_review"/>
+
         <!--<android.support.v4.widget.NestedScrollView
             android:id="@+id/nestedScroll"
             android:layout_width="match_parent"

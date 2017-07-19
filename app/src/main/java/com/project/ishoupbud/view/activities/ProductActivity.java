@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,20 +79,18 @@ public class ProductActivity extends BaseActivity implements
     public VendorAdapter<ProductVendors> vendorAdapter;
     public ProductPagerAdapter productPagerAdapter;
     public int totalItemInFetching = 5;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.appbar)
-    AppBarLayout appBarLayout;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     TextView toolbar_title;
-    @BindView(R.id.iv_product)
-    ImageView ivProduct;
-    @BindView(R.id.rv_product_detail)
-    RecyclerView rvProductDetail;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.appbar) AppBarLayout appBarLayout;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.iv_product) ImageView ivProduct;
+    @BindView(R.id.rv_product_detail) RecyclerView rvProductDetail;
+    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.ll_popup_review) LinearLayout llPopUp;
+    @BindView(R.id.tv_popup_review_name) TextView tvPopUpName;
+    @BindView(R.id.tv_popup_review_desc) TextView tvPopUpDesc;
     ProductDetailAdapter productDetailAdapter;
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
+
     Menu menu;
     Product product;
     boolean isInWishlist = false;
@@ -168,7 +167,8 @@ public class ProductActivity extends BaseActivity implements
 
         fetchingShipmentDataHelpers = new ArrayList<>();
         for (int i = 0; i < product.vendors.size(); i++) {
-            fetchingShipmentDataHelpers.add(new FetchingShipmentDataHelper<ProductVendors>(i, this));
+            fetchingShipmentDataHelpers
+                    .add(new FetchingShipmentDataHelper<ProductVendors>(i, this));
         }
 
         vendorAdapter = new VendorAdapter<>();
@@ -181,6 +181,9 @@ public class ProductActivity extends BaseActivity implements
 //
         productPagerAdapter = new ProductPagerAdapter(getSupportFragmentManager());
 
+        llPopUp.setClickable(false);
+        llPopUp.setAlpha(0f);
+
         initProgressDialog("Adding to cart...");
 
         PusherManager.getInstance().listenToProduct(product.id, new ChannelEventListener() {
@@ -192,13 +195,14 @@ public class ProductActivity extends BaseActivity implements
             @Override
             public void onEvent(String channel, String event, String data) {
                 Log.d(TAG, "onEvent: Product " + data);
-                ProductPusher productPusher = GsonUtils.getObjectFromJson(data,
+                final ProductPusher productPusher = GsonUtils.getObjectFromJson(data,
                         ProductPusher.class);
                 product = productPusher.review.product;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateView();
+                        showPopUp(productPusher.review.user.name, productPusher.review.description);
                     }
                 });
             }
@@ -243,7 +247,8 @@ public class ProductActivity extends BaseActivity implements
         map.put("origin_lng", data.vendor.longitude);
         map.put("dest_lat", latitude);
         map.put("dest_lng", longitude);
-        final FetchingShipmentDataHelper<ProductVendors> fetcher = fetchingShipmentDataHelpers.get(position);
+        final FetchingShipmentDataHelper<ProductVendors> fetcher =
+                fetchingShipmentDataHelpers.get(position);
         if (fetcher.callGetTime != null && fetcher.callGetTime.isExecuted()) {
             fetcher.callGetTime.cancel();
         }
@@ -277,7 +282,8 @@ public class ProductActivity extends BaseActivity implements
         map.put("start_longitude", data.vendor.longitude);
         map.put("end_latitude", latitude);
         map.put("end_longitude", longitude);
-        final FetchingShipmentDataHelper<ProductVendors> fetcher = fetchingShipmentDataHelpers.get(position);
+        final FetchingShipmentDataHelper<ProductVendors> fetcher =
+                fetchingShipmentDataHelpers.get(position);
         if (fetcher.callGetPrice != null && fetcher.callGetPrice.isExecuted()) {
             fetcher.callGetPrice.cancel();
         }
@@ -519,6 +525,18 @@ public class ProductActivity extends BaseActivity implements
             public void onFailure(Call<Compare> call, Throwable t) {
                 super.onFailure(call, t);
                 dismissDialog();
+            }
+        });
+    }
+
+    public void showPopUp(String name, String desc){
+        tvPopUpName.setText(name);
+        tvPopUpDesc.setText(desc);
+        llPopUp.clearAnimation();
+        llPopUp.animate().alpha(1.0f).setDuration(250).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                llPopUp.animate().alpha(0f).setDuration(250).setStartDelay(1000);
             }
         });
     }

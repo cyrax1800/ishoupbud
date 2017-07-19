@@ -85,6 +85,7 @@ public class ProductReviewFragment extends BaseFragment {
     public Review ownReivew;
 
     public int productId;
+    public int selectedVendorId;
     public List<Vendor> vendorList;
     private ArrayAdapter<String> vendorNameList;
 
@@ -100,12 +101,14 @@ public class ProductReviewFragment extends BaseFragment {
 
 //            btnWriteReview.setOnClickListener(this);
 
+            selectedVendorId = -1;
+
             vendorNameList = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
             spinnerVendorFilter.setAdapter(vendorNameList);
             spinnerVendorFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                    selectedVendorId = position - 1;
                 }
 
                 @Override
@@ -194,10 +197,18 @@ public class ProductReviewFragment extends BaseFragment {
     public void setVendor(List<Vendor> vendors) {
         this.vendorList = vendors;
         vendorNameList.clear();
+        vendorNameList.add("All");
         for (int i = 0; i < vendors.size(); i++) {
             vendorNameList.add(vendors.get(i).name);
         }
         vendorNameList.notifyDataSetChanged();
+        if(selectedVendorId >= 0){
+            for(int i = 0; i< vendors.size(); i++){
+                if(vendors.get(i).id == selectedVendorId){
+                    spinnerVendorFilter.setSelection(i + 1);
+                }
+            }
+        }
 //        addEditReviewDialogFragment.setVendors(vendorNameList);
     }
 
