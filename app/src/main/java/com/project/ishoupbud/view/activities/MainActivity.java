@@ -164,7 +164,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
             @Override
             public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
                 if(((Product)searchSuggestion).name.equals("No Product"))return;
-                if(((Product)searchSuggestion).name.equals("See all")){
+                if(((Product)searchSuggestion).name.equals("See All")){
                     Intent i = new Intent(getApplicationContext(), ListProductActivity.class);
                     i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
                             (actualProductList));
@@ -250,7 +250,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                     floatingSearchView.swapSuggestions(productsData);
                     isNoProduct = true;
                 }else if(response.body().data.size() >= 5){
-                    List<Product> productsData = response.body().data.subList(0,4);
+                    List<Product> productsData = new ArrayList<Product>(response.body().data
+                            .subList(0,5));
                     Product product = new Product();
                     product.name = "See All";
                     productsData.add(product);
@@ -258,6 +259,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                 }else{
                     floatingSearchView.swapSuggestions(response.body().data);
                 }
+                Log.d(TAG, "onSuccess: " + actualProductList.size());
             }
 
             @Override
