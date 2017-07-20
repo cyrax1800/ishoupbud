@@ -13,18 +13,25 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.google.gson.reflect.TypeToken;
 import com.project.ishoupbud.R;
+import com.project.ishoupbud.api.model.Category;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.model.ShoppingCartContainer;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.utils.ConstClass;
+import com.project.ishoupbud.view.adapters.CategoryAdapter;
 import com.project.ishoupbud.view.adapters.ProductAdapter;
 import com.project.ishoupbud.view.dialog.CategoriesDialogFragment;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
+import com.project.michael.base.database.RealmDb;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.Utils;
@@ -48,12 +55,16 @@ public class ListProductActivity extends BaseActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rv_product) RecyclerView rvProduct;
     @BindView(R.id.fab_scrol_up) FloatingActionButton fabMoveUp;
-    @BindView(R.id.btn_categories) Button btnCategories;
+//    @BindView(R.id.btn_categories) Button btnCategories;
     @BindView(R.id.nestedScroll) NestedScrollView nestedScrollView;
     @BindView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
+    @BindView(R.id.spinner_category) Spinner spinnerCategory;
+    @BindView(R.id.et_keyword) EditText etSearch;
+    @BindView(R.id.btn_search) Button btnSearch;
 
     ProductAdapter<Product> productAdapter;
+    private ArrayAdapter<String> categoryNameList;
 
     CategoriesDialogFragment categoriesDialogFragment;
 
@@ -66,6 +77,18 @@ public class ListProductActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
+        fabMoveUp.hide();
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY > oldScrollY) {
+                    fabMoveUp.hide();
+                } else {
+                    fabMoveUp.show();
+                }
+            }
+        });
+
         categoryID = getIntent().getIntExtra(ConstClass.CATEGORY_EXTRA, -1);
 
         toolbar.setTitle("List Product");
@@ -75,7 +98,28 @@ public class ListProductActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        categoriesDialogFragment = new CategoriesDialogFragment();
+        categoryNameList = new ArrayAdapter<>(ListProductActivity.this,
+                android.R.layout.simple_list_item_1);
+        CategoryAdapter<Category> tmpCategory = new CategoryAdapter<>(ListProductActivity.this,
+                RealmDb.getRealm().where(Category.class).findAll(), true);
+        for(int i = 0;i < tmpCategory.getItemCount(); i++){
+            categoryNameList.add(tmpCategory.getItem(i).name);
+        }
+
+        spinnerCategory.setAdapter(categoryNameList);
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+//        categoriesDialogFragment = new CategoriesDialogFragment();
 
         productAdapter = new ProductAdapter<>();
         productAdapter.setOnClickListener(new BaseAdapter.OnClickListener<Product>() {
@@ -94,7 +138,8 @@ public class ListProductActivity extends BaseActivity {
         rvProduct.addItemDecoration(new GridSpacingItemDecoration(2, Utils.dpToPx(16),true));
         rvProduct.setAdapter(productAdapter);
 
-        btnCategories.setOnClickListener(this);
+//        btnCategories.setOnClickListener(this);
+        btnSearch.setOnClickListener(this);
         fabMoveUp.setOnClickListener(this);
 
         if(getIntent().hasExtra(ConstClass.PRODUCT_EXTRA)){
@@ -131,6 +176,10 @@ public class ListProductActivity extends BaseActivity {
         });
     }
 
+    public void doSearch(){
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
@@ -147,6 +196,9 @@ public class ListProductActivity extends BaseActivity {
                 break;
             case R.id.fab_scrol_up:
                 nestedScrollView.smoothScrollTo(0, 0);
+                break;
+            case R.id.btn_search:
+                doSearch();
                 break;
         }
     }
