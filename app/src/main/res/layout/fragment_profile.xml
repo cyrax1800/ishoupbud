@@ -41,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:text="Edit Profile"
                     android:drawableEnd="@drawable/ic_right_arrow_24"
+                    android:drawableRight="@drawable/ic_right_arrow_24"
                     style="@style/btnProfile"
                     />
 
@@ -56,6 +57,7 @@
                     android:layout_height="wrap_content"
                     android:text="Change Password"
                     android:drawableEnd="@drawable/ic_right_arrow_24"
+                    android:drawableRight="@drawable/ic_right_arrow_24"
                     style="@style/btnProfile"
                     />
 

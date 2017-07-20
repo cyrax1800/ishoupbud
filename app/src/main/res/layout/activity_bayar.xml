@@ -137,6 +137,7 @@
                         android:layout_height="wrap_content"
                         android:text="Rp. 123.123"
                         android:textAlignment="textEnd"
+                        android:layout_gravity="end"
                         />
                     <TextView
                         android:id="@+id/tv_total_kirim"
@@ -144,6 +145,7 @@
                         android:layout_height="wrap_content"
                         android:text="Rp. 123.123"
                         android:textAlignment="textEnd"
+                        android:layout_gravity="end"
                         />
                     <TextView
                         android:id="@+id/tv_total_saldo"
@@ -151,6 +153,7 @@
                         android:layout_height="wrap_content"
                         android:text="Rp. 123.123"
                         android:textAlignment="textEnd"
+                        android:layout_gravity="end"
                         />
                     <TextView
                         android:id="@+id/tv_total_belanja"
@@ -159,6 +162,7 @@
                         android:text="Rp. 123.123"
                         android:paddingTop="16dp"
                         android:textAlignment="textEnd"
+                        android:layout_gravity="end"
                         style="@style/product_card_price"
                         android:textSize="16sp"
                         />

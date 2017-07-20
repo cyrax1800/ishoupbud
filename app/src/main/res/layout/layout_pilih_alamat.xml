@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/item_space"
+                android:paddingLeft="@dimen/item_space"
                 android:text="Alamat Utama"
                 />
         </LinearLayout>
@@ -87,6 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/item_space"
+                android:paddingLeft="@dimen/item_space"
                 android:text="Alamat Lain"
                 />
         </LinearLayout>

@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:text="Top - up"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             style="@style/btnFlat"
             />
     </RelativeLayout>

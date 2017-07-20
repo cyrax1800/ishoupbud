@@ -13,6 +13,7 @@
         android:layout_height="40dp"
         android:src="@drawable/ic_person"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         />
 
     <RelativeLayout
@@ -52,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:text="Rp. 12312312"
             style="@style/product_card_price"
             />

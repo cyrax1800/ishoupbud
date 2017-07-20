@@ -53,6 +53,7 @@
                     android:text="See All"
                     android:gravity="center_vertical"
                     android:drawableEnd="@drawable/ic_arrow_see_all"
+                    android:drawableRight="@drawable/ic_arrow_see_all"
                     style="@style/ishoupbud_text_link"
                     />
 
@@ -95,6 +96,7 @@
                     android:text="See All"
                     android:gravity="center_vertical"
                     android:drawableEnd="@drawable/ic_arrow_see_all"
+                    android:drawableRight="@drawable/ic_arrow_see_all"
                     style="@style/ishoupbud_text_link"
                     />
 
@@ -137,6 +139,7 @@
                     android:text="See All"
                     android:gravity="center_vertical"
                     android:drawableEnd="@drawable/ic_arrow_see_all"
+                    android:drawableRight="@drawable/ic_arrow_see_all"
                     style="@style/ishoupbud_text_link"
                     />
 
