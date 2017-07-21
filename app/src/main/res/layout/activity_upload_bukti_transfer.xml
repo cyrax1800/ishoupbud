@@ -9,12 +9,23 @@
         layout="@layout/app_bar"/>
 
     <TextView
+        android:id="@+id/tv_saldo_konfirmasi"
+        android:layout_below="@id/container_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/item_space"
+        android:text="Status: Saldo telah Terkonfirmasi!"
+        android:textSize="22sp"
+        android:textColor="@color/dark_green"
+        />
+
+    <TextView
         android:id="@+id/tv_total_top_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/container_app_bar"
-        android:layout_marginBottom="@dimen/item_space"
-        android:layout_marginTop="@dimen/item_space"
+        android:layout_below="@id/tv_saldo_konfirmasi"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:text="Total Top-up: Rp.200.00"

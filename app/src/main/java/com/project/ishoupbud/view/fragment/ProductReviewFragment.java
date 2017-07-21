@@ -128,7 +128,7 @@ public class ProductReviewFragment extends BaseFragment {
                 }
             });
 
-            reviewAdapter = new ReviewAdapter<>();
+            reviewAdapter = new ReviewAdapter<>(this);
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 

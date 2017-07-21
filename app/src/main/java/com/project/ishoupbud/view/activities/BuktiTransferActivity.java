@@ -63,6 +63,7 @@ public class BuktiTransferActivity extends BaseActivity {
     @BindView(R.id.btn_upload) Button btnUploadPhoto;
     @BindView(R.id.btn_cancel) Button btnCancel;
     @BindView(R.id.btn_confirmation) Button btnSubmit;
+    @BindView(R.id.tv_saldo_konfirmasi) TextView tvTextKonfirmasi;
     AlertDialog mediaAlertDialog;
 
     Transaction transaction;
@@ -125,6 +126,15 @@ public class BuktiTransferActivity extends BaseActivity {
         transaction = GsonUtils.getObjectFromJson(getIntent().getStringExtra(
                 ConstClass.TRANSACTION_EXTRA), Transaction.class);
         user = GsonUtils.getObjectFromJson(SharedPref.getValueString(ConstClass.USER), User.class);
+
+        tvTextKonfirmasi.setVisibility(View.GONE);
+        if(transaction.status == 1){
+            tvPathImage.setVisibility(View.GONE);
+            btnUploadPhoto.setVisibility(View.GONE);
+            btnCancel.setVisibility(View.GONE);
+            btnSubmit.setVisibility(View.GONE);
+            tvTextKonfirmasi.setVisibility(View.VISIBLE);
+        }
 
         tvTotalTopUp.setText("Total Top-up: " + Utils.indonesiaFormat(transaction.nominal));
         tvCurrentSaldo.setText("Current Saldo: " + Utils.indonesiaFormat(user.saldo));
