@@ -32,4 +32,13 @@
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/tv_blank_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Tidak ada barang di keranjang belanja"
+        android:textSize="24sp"
+        android:gravity="center"
+        />
 </android.support.design.widget.CoordinatorLayout>

@@ -111,6 +111,12 @@ public class ShoppingCartContainerAdapter<Model> extends FastAdapter<Model> {
                         remove(pos);
                         notifyDataSetChanged();
                         shoppingCartActivity.dismissDialog();
+
+                        if(getItemCount() == 0){
+                            shoppingCartActivity.tvBlankInfo.setVisibility(View.VISIBLE);
+                        }else{
+                            shoppingCartActivity.tvBlankInfo.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override

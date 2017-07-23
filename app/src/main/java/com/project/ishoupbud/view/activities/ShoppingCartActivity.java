@@ -60,6 +60,7 @@ public class ShoppingCartActivity extends BaseActivity {
     @BindView(R.id.tv_total_price) TextView tvTotalPrice;
     @BindView(R.id.btn_continue) Button btnContinue;
     ShoppingCartContainerAdapter<ShoppingCartContainer> shoppingCartContainerAdapter;
+    @BindView(R.id.tv_blank_info) public TextView tvBlankInfo;
 
     int selectedIdx;
     Vendor vendor;
@@ -149,6 +150,12 @@ public class ShoppingCartActivity extends BaseActivity {
                 shoppingCartContainerAdapter.checkedIdx.clear();
                 for (int i = 0; i < shoppingCartContainerAdapter.getItemCount(); i++) {
                     shoppingCartContainerAdapter.checkedIdx.add(false);
+                }
+
+                if(response.body().data.size() == 0){
+                    tvBlankInfo.setVisibility(View.VISIBLE);
+                }else{
+                    tvBlankInfo.setVisibility(View.GONE);
                 }
             }
 

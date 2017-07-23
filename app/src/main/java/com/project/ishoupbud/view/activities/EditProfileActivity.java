@@ -302,9 +302,11 @@ public class EditProfileActivity extends BaseActivity {
             fileInputStreamReader.read(bytes);
             encodedImage = Base64.encodeToString(bytes, Base64.DEFAULT);
         } catch (FileNotFoundException e) {
+            Log.d(TAG, "processImage: Error " + e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d(TAG, "processImage: Error " + e.getMessage());
         }
         //Compress
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();

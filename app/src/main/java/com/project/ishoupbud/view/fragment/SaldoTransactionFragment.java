@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Transaction;
@@ -36,6 +37,7 @@ public class SaldoTransactionFragment extends BaseFragment {
 
     @BindView(R.id.rv_transaction)
     RecyclerView rvTransaction;
+    @BindView(R.id.tv_blank_info) TextView tvBlankInfo;
 
     TransactionAdapter<Transaction> transactionAdapter;
 
@@ -57,6 +59,8 @@ public class SaldoTransactionFragment extends BaseFragment {
                     return false;
                 }
             });
+
+            tvBlankInfo.setText("Belum ada transaksi saldo");
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
@@ -91,10 +95,22 @@ public class SaldoTransactionFragment extends BaseFragment {
 
     public void addTranscation(Transaction transaction){
         transactionAdapter.add(transaction);
+
+        if(transactionAdapter.getItemCount() == 0){
+            tvBlankInfo.setVisibility(View.VISIBLE);
+        }else{
+            tvBlankInfo.setVisibility(View.GONE);
+        }
     }
 
     public void clearAdapter(){
         transactionAdapter.clear();
+
+        if(transactionAdapter.getItemCount() == 0){
+            tvBlankInfo.setVisibility(View.VISIBLE);
+        }else{
+            tvBlankInfo.setVisibility(View.GONE);
+        }
     }
 
     public static SaldoTransactionFragment newInstance() {

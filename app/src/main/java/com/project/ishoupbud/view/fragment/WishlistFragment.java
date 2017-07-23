@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.ishoupbud.R;
@@ -43,6 +44,7 @@ import retrofit2.Response;
 public class WishlistFragment extends BaseFragment {
 
     @BindView(R.id.rv_wishlist) RecyclerView rvWishlist;
+    @BindView(R.id.tv_blank_info) TextView tvBlankInfo;
 
     WishListAdapter<WishList> wishListAdapter;
 
@@ -112,6 +114,11 @@ public class WishlistFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<WishList>>> call, Response<GenericResponse<List<WishList>>> response) {
                 super.onSuccess(call, response);
                 wishListAdapter.setNew(response.body().data);
+                if(response.body().data.size() == 0){
+                    tvBlankInfo.setVisibility(View.VISIBLE);
+                }else{
+                    tvBlankInfo.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -129,6 +136,11 @@ public class WishlistFragment extends BaseFragment {
                 super.onSuccess(call, response);
                 wishListAdapter.remove(positionToDeleteWishlist);
                 Toast.makeText(getContext(), "Product successfully removed to wishlist", Toast.LENGTH_SHORT).show();
+                if(wishListAdapter.getItemCount() == 0){
+                    tvBlankInfo.setVisibility(View.VISIBLE);
+                }else{
+                    tvBlankInfo.setVisibility(View.GONE);
+                }
             }
 
             @Override

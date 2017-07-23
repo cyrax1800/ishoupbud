@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Transaction;
@@ -33,6 +34,7 @@ import butterknife.ButterKnife;
 public class PendingTransactionFragment extends BaseFragment {
 
     @BindView(R.id.rv_transaction) RecyclerView rvTransaction;
+    @BindView(R.id.tv_blank_info) TextView tvBlankInfo;
 
     TransactionAdapter<Transaction> transactionAdapter;
 
@@ -55,6 +57,8 @@ public class PendingTransactionFragment extends BaseFragment {
                     return false;
                 }
             });
+
+            tvBlankInfo.setText("Tidak ada transaksi yang sedang berjalan");
 //            transactionAdapter.setNew(Transaction.getDummy(10));
 
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
@@ -69,10 +73,21 @@ public class PendingTransactionFragment extends BaseFragment {
 
     public void addTranscation(Transaction transaction){
         transactionAdapter.add(transaction);
+        if(transactionAdapter.getItemCount() == 0){
+            tvBlankInfo.setVisibility(View.VISIBLE);
+        }else{
+            tvBlankInfo.setVisibility(View.GONE);
+        }
     }
 
     public void clearAdapter(){
         transactionAdapter.clear();
+
+        if(transactionAdapter.getItemCount() == 0){
+            tvBlankInfo.setVisibility(View.VISIBLE);
+        }else{
+            tvBlankInfo.setVisibility(View.GONE);
+        }
     }
 
     public void removeTransaction(Transaction transaction){
@@ -81,6 +96,12 @@ public class PendingTransactionFragment extends BaseFragment {
                 transactionAdapter.remove(i);
                 break;
             }
+        }
+
+        if(transactionAdapter.getItemCount() == 0){
+            tvBlankInfo.setVisibility(View.VISIBLE);
+        }else{
+            tvBlankInfo.setVisibility(View.GONE);
         }
     }
 
