@@ -46,4 +46,8 @@ public interface ReviewRepo {
     @Headers("Accept: application/json")
     @DELETE("review/{id_review}")
     Call<Response> deleteReview(@Path("id_review") int reviewId);
+
+    @Headers("Accept: application/json")
+    @POST("report")
+    Call<Response> reportReview(@Body Map map);
 }
