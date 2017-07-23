@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/item_space"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="@dimen/item_space"
     >
 
     <!--<include layout="@layout/item_own_review"/>
@@ -53,7 +54,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_review"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:nestedScrollingEnabled="true"
         >
 
     </android.support.v7.widget.RecyclerView>

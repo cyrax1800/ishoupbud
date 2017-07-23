@@ -1,8 +1,10 @@
 package com.project.ishoupbud.view.activities;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -53,6 +55,7 @@ import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 import com.pusher.client.channel.ChannelEventListener;
 
@@ -145,6 +148,11 @@ public class ProductActivity extends BaseActivity implements
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset - toolbar.getHeight() <= 0) {
+//                    if(verticalOffset == -900){
+//                        productPagerAdapter.productReviewFragment.isCanEnableFromParent = true;
+//                    }else{
+//                        productPagerAdapter.productReviewFragment.isCanEnableFromParent = false;
+//                    }
                     if (isShow) return;
                     collapsingToolbarLayout.setScrimVisibleHeightTrigger(toolbar.getHeight() + 1);
                     toolbar_title.animate().alpha(1.0f).setDuration(250);
@@ -178,6 +186,26 @@ public class ProductActivity extends BaseActivity implements
         rvProductDetail.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
                 .VERTICAL, false));
         rvProductDetail.setAdapter(productDetailAdapter);
+        rvProductDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int firstVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager())
+                        .findLastCompletelyVisibleItemPosition();
+
+                if(firstVisibleItem == 1) {
+                    Log.d(TAG, "onScrolled: Parent ");
+                    productPagerAdapter.productReviewFragment.isCanEnableFromParent = true;
+                }else{
+                    productPagerAdapter.productReviewFragment.isCanEnableFromParent = false;
+                }
+            }
+        });
 //
         productPagerAdapter = new ProductPagerAdapter(getSupportFragmentManager());
 
@@ -316,7 +344,7 @@ public class ProductActivity extends BaseActivity implements
 
     public void requestProduct() {
         progressDialog.setCancelable(false);
-        productPagerAdapter.productReviewFragment.requestReview();
+        productPagerAdapter.productReviewFragment.requestReview(1);
         Call<GenericResponse<Product>> getProduct = APIManager.getRepository(ProductRepo.class)
                 .getProductById(product.id);
         getProduct.enqueue(new APICallback<GenericResponse<Product>>() {
@@ -537,12 +565,39 @@ public class ProductActivity extends BaseActivity implements
         tvPopUpName.setText(name);
         tvPopUpDesc.setText(desc);
         llPopUp.clearAnimation();
-        llPopUp.animate().alpha(1.0f).setDuration(250).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                llPopUp.animate().alpha(0f).setDuration(250).setStartDelay(1000);
-            }
-        });
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
+            llPopUp.animate().alpha(1.0f).setDuration(250).setListener(new Animator.AnimatorListener() {
+
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    llPopUp.animate().alpha(0f).setDuration(250).setStartDelay(1000);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+        }else{
+            llPopUp.animate().alpha(1.0f).setDuration(250).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    llPopUp.animate().alpha(0f).setDuration(250).setStartDelay(1000);
+                }
+            });
+
+        }
     }
 
     @Override

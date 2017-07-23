@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -74,7 +76,7 @@ public class ProductReviewFragment extends BaseFragment {
     @BindView(R.id.spinner_vendor)
     Spinner spinnerVendorFilter;
     @BindView(R.id.rv_review)
-    RecyclerView rvReview;
+    public RecyclerView rvReview;
 
     ReviewAdapter<Review> reviewAdapter;
 //    AddEditReviewDialogFragment addEditReviewDialogFragment;
@@ -84,10 +86,15 @@ public class ProductReviewFragment extends BaseFragment {
     public boolean hasOwnReview;
     public Review ownReivew;
 
+    public String order;
     public int productId;
     public int selectedVendorId;
     public List<Vendor> vendorList;
     private ArrayAdapter<String> vendorNameList;
+
+    Call<ProductAllReviewResponse> getReview;
+    public boolean isCanEnableFromParent;
+    public boolean isRecyclerviewInTop;
 
     @Nullable
     @Override
@@ -102,6 +109,8 @@ public class ProductReviewFragment extends BaseFragment {
 //            btnWriteReview.setOnClickListener(this);
 
             selectedVendorId = -1;
+            isCanEnableFromParent = false;
+            isRecyclerviewInTop = true;
 
             vendorNameList = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
             spinnerVendorFilter.setAdapter(vendorNameList);
@@ -109,6 +118,7 @@ public class ProductReviewFragment extends BaseFragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     selectedVendorId = position - 1;
+                    requestReview(1);
                 }
 
                 @Override
@@ -119,7 +129,14 @@ public class ProductReviewFragment extends BaseFragment {
             spinnerTimeFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                    if(position == 0){
+                        order = "Newest";
+                    }else if(position == 1){
+                        order = "rate_high";
+                    }else if(position == 2){
+                        order = "rate_low";
+                    }
+                    requestReview(1);
                 }
 
                 @Override
@@ -130,11 +147,52 @@ public class ProductReviewFragment extends BaseFragment {
 
             reviewAdapter = new ReviewAdapter<>(this);
 
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),
+                    LinearLayoutManager.VERTICAL, false);
 
             rvReview.addItemDecoration(new InsetDividerItemDecoration(getContext()));
             rvReview.setLayoutManager(layoutManager);
             rvReview.setAdapter(reviewAdapter);
+            rvReview.setNestedScrollingEnabled(false);
+            rvReview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    int firstVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+
+                    if(firstVisibleItem == 0){
+                        Log.d(TAG, "onScrolled: Review ");
+                        if(isCanEnableFromParent){
+                            recyclerView.setNestedScrollingEnabled(true);
+                            isCanEnableFromParent = false;
+                        }else{
+                            recyclerView.setNestedScrollingEnabled(false);
+                        }
+//                        if(!recyclerView.isNestedScrollingEnabled()){
+//                            recyclerView.setNestedScrollingEnabled(true);
+//                        }else{
+//                            recyclerView.setNestedScrollingEnabled(false);
+//                        }
+                        // your code
+                    }else{
+                        recyclerView.setNestedScrollingEnabled(false);
+                    }
+                }
+            });
+            rvReview.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(isCanEnableFromParent){
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                    }
+                    return false;
+                }
+            });
 
 //            addEditReviewDialogFragment = new AddEditReviewDialogFragment();
 //            addEditReviewDialogFragment.setProductReviewFragment(this);
@@ -191,7 +249,7 @@ public class ProductReviewFragment extends BaseFragment {
 
     public void setProductId(int id) {
         this.productId = id;
-        requestReview();
+        requestReview(1);
     }
 
     public void setVendor(List<Vendor> vendors) {
@@ -212,10 +270,19 @@ public class ProductReviewFragment extends BaseFragment {
 //        addEditReviewDialogFragment.setVendors(vendorNameList);
     }
 
-    public void requestReview() {
+    public void requestReview(int page) {
         Map<String, Object> map = new HashMap<>();
         map.put("product_id", productId);
-        Call<ProductAllReviewResponse> getReview = APIManager.getRepository(ReviewRepo.class).getReview(map);
+        map.put("order", order);
+        if(selectedVendorId > -1){
+            map.put("vendor_id", selectedVendorId);
+        }
+        map.put("page", page);
+        map.put("perpage", 10);
+        if((getReview != null) && getReview.isExecuted()){
+            getReview.cancel();
+        }
+        getReview = APIManager.getRepository(ReviewRepo.class).getReview(map);
         getReview.enqueue(new APICallback<ProductAllReviewResponse>() {
             @Override
             public void onSuccess(Call<ProductAllReviewResponse> call, Response<ProductAllReviewResponse> response) {
