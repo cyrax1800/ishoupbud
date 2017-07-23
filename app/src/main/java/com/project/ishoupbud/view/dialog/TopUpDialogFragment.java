@@ -4,6 +4,9 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,8 @@ import com.project.ishoupbud.api.repositories.UserRepo;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
 import com.project.michael.base.models.GenericResponse;
+import com.project.michael.base.utils.StringUtils;
+import com.project.michael.base.utils.Utils;
 
 import java.util.HashMap;
 
@@ -29,6 +34,8 @@ import retrofit2.Response;
  */
 
 public class TopUpDialogFragment extends DialogFragment implements View.OnClickListener {
+
+    private static final String TAG = "tmp-topup";
 
     EditText etNominal;
     Button btnSubmit;
@@ -51,6 +58,33 @@ public class TopUpDialogFragment extends DialogFragment implements View.OnClickL
         btnSubmit.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
 
+        etNominal.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(StringUtils.isNullOrEmpty(s.toString())) return;
+                String cleanString = s.toString().replaceAll("(^Rp. )|\\.", "");
+                if(StringUtils.isNullOrEmpty(cleanString)){
+                    etNominal.setText("");
+                    return;
+                }
+                etNominal.removeTextChangedListener(this);
+                String formatted = Utils.indonesiaFormat(Double.parseDouble(cleanString), false);
+                etNominal.setText(formatted);
+                etNominal.setSelection(formatted.length());
+                etNominal.addTextChangedListener(this);
+            }
+        });
+
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Requesting top-up");
 
@@ -62,7 +96,8 @@ public class TopUpDialogFragment extends DialogFragment implements View.OnClickL
             Toast.makeText(getContext(),"Nominal cant be empty", Toast.LENGTH_SHORT).show();
             return false;
         }
-        nominal = Integer.parseInt(etNominal.getText().toString());
+        String cleanString = etNominal.getText().toString().replaceAll("(^Rp. )|\\.", "");
+        nominal = Integer.parseInt(cleanString);
         if(nominal == 0){
             Toast.makeText(getContext(),"Nominal cant be 0", Toast.LENGTH_SHORT).show();
             return false;

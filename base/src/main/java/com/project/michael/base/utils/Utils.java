@@ -272,6 +272,15 @@ public class Utils {
         return mataUangIndonesia.format(angka);
     }
 
+    public static String indonesiaFormat(double angka, boolean useDecimalSeparator) {
+        String textIdr = indonesiaFormat(angka);
+        if(!useDecimalSeparator){
+            textIdr = textIdr.replaceAll("(,00)$", "");
+        }
+
+        return textIdr;
+    }
+
     public static String reviewFormat(double value){
         if(value == 0){
             return "(0)";
