@@ -77,13 +77,13 @@ public class SaldoTransactionFragment extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CEK_SALDO){
             if(resultCode == BATAL_TRASASKSI){
-                int idx = data.getIntExtra(ConstClass.TRANSACTION_EXTRA,-1);
+                int idx = data.getIntExtra(ConstClass.TRANSACTION_EXTRA, -1);
                 if(idx == -1) return;
-                Transaction tmpTransaction = GsonUtils.getObjectFromJson(data.getStringExtra(
-                        ConstClass.TRANSACTION_EXTRA), Transaction.class);
+//                Transaction tmpTransaction = GsonUtils.getObjectFromJson(data.getStringExtra(
+//                        ConstClass.TRANSACTION_EXTRA), Transaction.class);
                 for(int i = 0; i< transactionAdapter.getItemCount(); i++){
-                    Transaction transaksi = transactionAdapter.getItemAt(idx);
-                    if(transaksi.id == tmpTransaction.id){
+                    Transaction transaksi = transactionAdapter.getItemAt(i);
+                    if(transaksi.id == idx){
                         transaksi.status = 4;
                         transactionAdapter.set(i, transaksi);
                         break;

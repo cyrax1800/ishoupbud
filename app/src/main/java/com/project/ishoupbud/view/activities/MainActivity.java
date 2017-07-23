@@ -28,6 +28,7 @@ import com.project.ishoupbud.manager.PusherManager;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.fragment.HomeFragment;
 import com.project.ishoupbud.view.fragment.ProfileFragment;
+import com.project.ishoupbud.view.fragment.SaldoTransactionFragment;
 import com.project.ishoupbud.view.fragment.TransactionFragment;
 import com.project.ishoupbud.view.fragment.WishlistFragment;
 import com.project.michael.base.api.APICallback;
@@ -288,7 +289,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                 requestCode == ProfileFragment.REQUEST_REGISTER ||
                 requestCode == ProfileFragment.REQUEST_EDIT_PROFILE ||
                 requestCode == ProfileFragment.REQUEST_EDIT_PASSWORD ||
-                requestCode == TransactionFragment.REQUEST_TRANSACTION
+                requestCode == TransactionFragment.REQUEST_TRANSACTION ||
+                requestCode == SaldoTransactionFragment.CEK_SALDO
                 ){
             if(mNavController.getCurrentFrag() != null){
                 mNavController.getCurrentFrag().onActivityResult(requestCode,resultCode,data);

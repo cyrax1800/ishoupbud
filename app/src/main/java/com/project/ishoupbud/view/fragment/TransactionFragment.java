@@ -141,6 +141,9 @@ public class TransactionFragment extends BaseFragment {
             transactionAdapter.pendingTransactionFragment.removeTransaction(transaction);
             transaction.status = 1;
             transactionAdapter.completeTransactionFragment.addTranscation(transaction);
+        }else if(requestCode == SaldoTransactionFragment.CEK_SALDO){
+            transactionAdapter.saldoTransactionFragment.onActivityResult(requestCode, resultCode,
+                    data);
         }
     }
 
