@@ -272,7 +272,7 @@ public class BayarActivity extends BaseActivity implements
     }
 
     public void doCheckOut() {
-        progressDialog.setMessage("Checkint out...");
+        progressDialog.setMessage("Checking out...");
         progressDialog.show();
         List<Integer> dataCartCheckout = new ArrayList<>();
         List<Integer> dataShippment = new ArrayList<>();
