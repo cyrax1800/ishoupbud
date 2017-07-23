@@ -36,7 +36,7 @@ public class IshoupbudApplication extends BaseApplication {
     public void onCreate() {
         APIManager.addJSONKeyForGeneric("product", "products", "user", "wishlist", "review",
                                         "reviews", "statistic", "carts", "cart", "transactions",
-                                        "history");
+                                        "history", "transaction");
         APIManager.addInterceptor(new SessionInterceptor());
         APIManager.addInterceptor(new GenericResponseInterceptor());
 

@@ -8,11 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -37,4 +40,13 @@ public interface TransactionRepo {
     @Headers("Accept: application/json")
     @POST("admin/transaction/{transaction}/approve")
     Call<Response> approve(@Path("transaction") int transactionId);
+
+    @Headers("Accept: application/json")
+    @POST("admin/transaction/{id}/cancel")
+    Call<Response> cancel(@Path("id") int transactionId);
+
+    @Multipart
+    @Headers("Accept: application/json")
+    @POST("transaction/{id}/upload")
+    Call<GenericResponse<Transaction>> konfirmTopUp(@Path("id") int transactionId, @Part MultipartBody.Part picture_url);
 }

@@ -31,20 +31,32 @@ public class TransactionAdapter<Model> extends FastAdapter<Model> {
         TransactionHolder transactionHolder = (TransactionHolder) holder;
         Transaction transaction = (Transaction)mModelList.get(position);
 
-        transactionHolder.tvNoTransaction.setText("No.Transaction: " + String.valueOf(transaction.id));
+        String textTitle =         "No.Transaction: " + String.valueOf(transaction.id);
         transactionHolder.tvPrice.setText(Utils.indonesiaFormat(transaction.nominal));
         transactionHolder.tvDate.setText(DateUtils.getDate(transaction.date.getTime()));
-        if(transaction.type.equals("User"))
-            transactionHolder.tvType.setText(transaction.vendor);
-        else
-            transactionHolder.tvType.setText("Top up");
-
-        Glide
-                .with(transactionHolder.ivType.getContext())
+        if(transaction.type.equals("User")){
+            transactionHolder.tvType.setText(transaction.detail.get(0).vendor.vendor.name);
+            Glide
+                    .with(transactionHolder.ivType.getContext())
 //                .load(product.picUrl)
-                .load("http://kingofwallpapers.com/aqua/aqua-001.jpg")
-                .centerCrop()
-                .crossFade()
-                .into(transactionHolder.ivType);
+                    .load("https://shoupbud.xyz/image/medium/" + transaction.detail.get(0).vendor
+                            .vendor.picture_url)
+                    .centerCrop()
+                    .crossFade()
+                    .into(transactionHolder.ivType);
+        }
+        else{
+            if(transaction.status == 0 || transaction.status == 3){
+                textTitle += " (Pending)";
+            }else if(transaction.status == 4){
+                textTitle += " (Cancelled)";
+            }else{
+                textTitle += " (Approved)";
+            }
+            transactionHolder.tvType.setText("Top up");
+        }
+        transactionHolder.tvNoTransaction.setText(textTitle);
+
+
     }
 }

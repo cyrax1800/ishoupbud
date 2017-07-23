@@ -31,6 +31,9 @@ import butterknife.ButterKnife;
 
 public class SaldoTransactionFragment extends BaseFragment {
 
+    public static final int CEK_SALDO = 568;
+    public static final int BATAL_TRASASKSI = 652;
+
     @BindView(R.id.rv_transaction)
     RecyclerView rvTransaction;
 
@@ -50,7 +53,7 @@ public class SaldoTransactionFragment extends BaseFragment {
                 public boolean onClick(View v, List<Transaction> transactions, Transaction transaction, int position) {
                     Intent i = new Intent(getContext(), BuktiTransferActivity.class);
                     i.putExtra(ConstClass.TRANSACTION_EXTRA, GsonUtils.getJsonFromObject(transaction, Transaction.class));
-                    startActivity(i);
+                    getActivity().startActivityForResult(i, CEK_SALDO);
                     return false;
                 }
             });
@@ -63,6 +66,27 @@ public class SaldoTransactionFragment extends BaseFragment {
         }
 
         return _rootView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CEK_SALDO){
+            if(resultCode == BATAL_TRASASKSI){
+                int idx = data.getIntExtra(ConstClass.TRANSACTION_EXTRA,-1);
+                if(idx == -1) return;
+                Transaction tmpTransaction = GsonUtils.getObjectFromJson(data.getStringExtra(
+                        ConstClass.TRANSACTION_EXTRA), Transaction.class);
+                for(int i = 0; i< transactionAdapter.getItemCount(); i++){
+                    Transaction transaksi = transactionAdapter.getItemAt(idx);
+                    if(transaksi.id == tmpTransaction.id){
+                        transaksi.status = 4;
+                        transactionAdapter.set(i, transaksi);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public void addTranscation(Transaction transaction){

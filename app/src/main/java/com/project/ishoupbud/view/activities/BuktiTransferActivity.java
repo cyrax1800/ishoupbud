@@ -17,15 +17,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Transaction;
 import com.project.ishoupbud.api.model.User;
+import com.project.ishoupbud.api.repositories.TransactionRepo;
 import com.project.ishoupbud.helper.TextImageCircleHelper;
 import com.project.ishoupbud.utils.ConstClass;
+import com.project.ishoupbud.view.fragment.SaldoTransactionFragment;
+import com.project.michael.base.api.APICallback;
+import com.project.michael.base.api.APIManager;
 import com.project.michael.base.database.SharedPref;
+import com.project.michael.base.models.GenericResponse;
+import com.project.michael.base.models.Response;
 import com.project.michael.base.utils.GsonUtils;
+import com.project.michael.base.utils.ImageUtils;
+import com.project.michael.base.utils.StringUtils;
 import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 
@@ -40,6 +49,10 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
 
 /**
  * Created by michael on 4/13/17.
@@ -127,13 +140,21 @@ public class BuktiTransferActivity extends BaseActivity {
                 ConstClass.TRANSACTION_EXTRA), Transaction.class);
         user = GsonUtils.getObjectFromJson(SharedPref.getValueString(ConstClass.USER), User.class);
 
-        tvTextKonfirmasi.setVisibility(View.GONE);
         if(transaction.status == 1){
             tvPathImage.setVisibility(View.GONE);
             btnUploadPhoto.setVisibility(View.GONE);
             btnCancel.setVisibility(View.GONE);
             btnSubmit.setVisibility(View.GONE);
             tvTextKonfirmasi.setVisibility(View.VISIBLE);
+        }else if(transaction.status == 4){
+            tvTextKonfirmasi.setText("Status: Dibatalkan");
+            tvPathImage.setVisibility(View.GONE);
+            btnUploadPhoto.setVisibility(View.GONE);
+            btnCancel.setVisibility(View.GONE);
+            btnSubmit.setVisibility(View.GONE);
+            tvTextKonfirmasi.setVisibility(View.VISIBLE);
+        }else{
+            tvTextKonfirmasi.setText("Status: Pending");
         }
 
         tvTotalTopUp.setText("Total Top-up: " + Utils.indonesiaFormat(transaction.nominal));
@@ -171,6 +192,7 @@ public class BuktiTransferActivity extends BaseActivity {
 //                .crossFade()
 //                .skipMemoryCache(true)
 //                .into(ivProfile);
+        tvPathImage.setText(mCurrentPhotoPath);
         Log.d(TAG, "processImage: " + encodedImage );
         Log.d(TAG, "processImage: " + file.length() );
         Log.d(TAG, "processImage: " + encodedImage.length() );
@@ -189,6 +211,85 @@ public class BuktiTransferActivity extends BaseActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         Log.i(TAG, "photo path = " + mCurrentPhotoPath);
         return image;
+    }
+
+    public void doConfirmTopUp(){
+        if(StringUtils.isNullOrEmpty(mCurrentPhotoPath)){
+            Toast.makeText(this, "Tidak ada foto untuk di upload", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showDialog("Sedang mengupload gambar..");
+        MultipartBody.Part body;
+        File tmpfile = new File(mCurrentPhotoPath);
+        byte[] bytes = ImageUtils.compressImage(tmpfile);
+        RequestBody requestFile;
+        if (bytes != null){
+            requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), bytes);
+        }else{
+            requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), tmpfile);
+        }
+        body = MultipartBody.Part.createFormData("image", tmpfile.getName(), requestFile);
+        APIManager.getRepository(TransactionRepo.class).konfirmTopUp(transaction.id, body)
+                .enqueue(new APICallback<GenericResponse<Transaction>>() {
+                    @Override
+                    public void onSuccess(Call<GenericResponse<Transaction>> call, retrofit2.Response<GenericResponse<Transaction>> response) {
+                        super.onSuccess(call, response);
+                        dismissDialog();
+                        Toast.makeText(BuktiTransferActivity.this, "Upload telah selesai",
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Call<GenericResponse<Transaction>> call, retrofit2.Response<GenericResponse<Transaction>> response) {
+                        super.onError(call, response);
+                        dismissDialog();
+                        Toast.makeText(BuktiTransferActivity.this, "Ada masalah, silahkan diulangi",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<GenericResponse<Transaction>> call, Throwable t) {
+                        super.onFailure(call, t);
+                        dismissDialog();
+                        Toast.makeText(BuktiTransferActivity.this, "Ada masalah, silahkan diulangi",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void batalTransaksi(){
+        showDialog("Batal Transaksi");
+        APIManager.getRepository(TransactionRepo.class).cancel(transaction.id)
+                .enqueue(new APICallback<Response>() {
+                    @Override
+                    public void onSuccess(Call<Response> call, retrofit2.Response<Response>
+                            response) {
+                        super.onSuccess(call, response);
+                        dismissDialog();
+                        Intent i = new Intent();
+                        i.putExtra(ConstClass.TRANSACTION_EXTRA, transaction.id);
+                        setResult(SaldoTransactionFragment.BATAL_TRASASKSI, i);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Call<Response> call, retrofit2.Response<Response>
+                            response) {
+                        super.onError(call, response);
+                        dismissDialog();
+                        Toast.makeText(BuktiTransferActivity.this, "Ada masalah, silahkan diulangi",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Response> call, Throwable t) {
+                        super.onFailure(call, t);
+                        dismissDialog();
+                        Toast.makeText(BuktiTransferActivity.this, "Ada masalah, silahkan diulangi",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
@@ -223,8 +324,10 @@ public class BuktiTransferActivity extends BaseActivity {
                 mediaAlertDialog.show();
                 break;
             case R.id.btn_cancel:
+                batalTransaksi();
                 break;
             case R.id.btn_confirmation:
+                doConfirmTopUp();
                 break;
         }
     }

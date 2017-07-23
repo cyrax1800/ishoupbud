@@ -101,7 +101,10 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
 
         ButterKnife.bind(this);
 
-        toolbar.setTitle("Detail Transaction");
+        transaction = GsonUtils.getObjectFromJson(getIntent().getStringExtra(
+                ConstClass.TRANSACTION_EXTRA), Transaction.class);
+
+        toolbar.setTitle(transaction.detail.get(0).vendor.vendor.name);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -113,8 +116,6 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        transaction = GsonUtils.getObjectFromJson(getIntent().getStringExtra(
-                ConstClass.TRANSACTION_EXTRA), Transaction.class);
         if (transaction.status == 0) {
             btnBarangTerima.setVisibility(View.VISIBLE);
             tvStatus.setText("Status: in progress");
