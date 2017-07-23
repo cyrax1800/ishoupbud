@@ -1,5 +1,6 @@
 package com.project.ishoupbud.view.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -200,6 +202,16 @@ public class ListProductActivity extends BaseActivity {
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
                 productAdapter.setNew(response.body().data);
+                if(endlessScrollListener == null){
+                    endlessScrollListener = new EndlessScrollListener() {
+                        @Override
+                        public void LoadMore(int currentPage) {
+                            super.LoadMore(currentPage);
+                            doSearch(currentPage);
+                        }
+                    };
+                    rvProduct.addOnScrollListener(endlessScrollListener);
+                }
             }
 
             @Override
@@ -215,6 +227,11 @@ public class ListProductActivity extends BaseActivity {
     }
 
     public void doSearch(final int page){
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
         showDialog("Searching Product");
         HashMap<String, Object> map = new HashMap<>();
         map.put("page",page);
