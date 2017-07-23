@@ -74,6 +74,13 @@ public class EditPasswordActivity extends BaseActivity {
         password = etNewPassword.getText().toString();
         rePassword = etRePassword.getText().toString();
 
+        if(password.equals(currentPassword)){
+            isValid = false;
+            Toast.makeText(getApplicationContext(), "Password lama dan baru tidak boleh sama",
+                    Toast.LENGTH_SHORT).show();
+            return isValid;
+        }
+
         if(!checkConfPasswordValid()){
             isValid = false;
             etRePassword.requestFocus();
@@ -92,6 +99,8 @@ public class EditPasswordActivity extends BaseActivity {
         if(!ValidationUtils.isPasswordValid(password,rePassword)){
             isValid =false;
             etRePassword.requestFocus();
+            Toast.makeText(getApplicationContext(), "Confirmation Password is wrong",
+                    Toast.LENGTH_SHORT).show();
         }
 
         return isValid;
@@ -179,8 +188,6 @@ public class EditPasswordActivity extends BaseActivity {
         }else if(item.getItemId() == R.id.action_save){
             if(validation()){
                 changePassword();
-            }else{
-                Toast.makeText(getApplicationContext(), "Confirmation Password is wrong", Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);
