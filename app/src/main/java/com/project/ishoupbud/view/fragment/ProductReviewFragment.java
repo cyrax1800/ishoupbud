@@ -187,7 +187,12 @@ public class ProductReviewFragment extends BaseFragment {
             rvReview.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if(isCanEnableFromParent){
+                    int firstVisibleItem = ((LinearLayoutManager)rvReview.getLayoutManager())
+                            .findFirstCompletelyVisibleItemPosition();
+                    int lastVisibleItem = ((LinearLayoutManager)rvReview.getLayoutManager())
+                            .findLastCompletelyVisibleItemPosition();
+                    if(isCanEnableFromParent && !((firstVisibleItem == 0) && lastVisibleItem ==
+                            reviewAdapter.getItemCount() - 1)){
                         v.getParent().requestDisallowInterceptTouchEvent(true);
                     }
                     return false;
@@ -275,7 +280,7 @@ public class ProductReviewFragment extends BaseFragment {
         map.put("product_id", productId);
         map.put("order", order);
         if(selectedVendorId > -1){
-            map.put("vendor_id", selectedVendorId);
+            map.put("vendor_id", vendorList.get(selectedVendorId).id);
         }
         map.put("page", page);
         map.put("perpage", 10);
