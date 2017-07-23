@@ -408,7 +408,9 @@ public class ProductActivity extends BaseActivity implements
             double neuPercent = product.productSummary.count.neu / totalReview;
             double negPercent = product.productSummary.count.neg / totalReview;
 
-            if (isPos && posPercent >= 0.8) {
+            if(isPos && isNeg && isNeu){
+                text = "Keseluruhan: Netral";
+            }else if (isPos && posPercent >= 0.8) {
                 text = "Keseluruhan: Luar biasa positif";
             } else if (isPos && posPercent >= 0.65) {
                 text = "Keseluruhan: Sangat positif";
@@ -417,11 +419,11 @@ public class ProductActivity extends BaseActivity implements
             } else if (isNeg && isNeu && negPercent >= 0.8) {
                 text = "Keseluruhan: negatif";
             } else if (isNeg && negPercent >= 0.65) {
-                text = "OverAll: Sangat Negatif";
+                text = "Keseluruhan: Sangat Negatif";
             } else if (isNeg || negPercent >= 0.5) {
-                text = "OverAll: Luar biasa negatif";
+                text = "Keseluruhan: Luar biasa negatif";
             } else {
-                text = "OverAll: Netral";
+                text = "Keseluruhan: Netral";
             }
         }
         return text;
