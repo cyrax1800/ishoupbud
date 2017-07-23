@@ -32,6 +32,7 @@ import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.views.BaseFragment;
 import com.project.michael.base.views.adapters.BaseAdapter;
 
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -137,7 +138,11 @@ public class HomeFragment extends BaseFragment {
     }
 
     public void fetchAllPromo(){
-        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo.class).getAllProduct();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("page",1);
+        map.put("perpage", 10);
+        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo
+                .class).getAllProduct("newest", map);
         productCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
@@ -154,7 +159,11 @@ public class HomeFragment extends BaseFragment {
     }
 
     public void fetchAllNew(){
-        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo.class).getAllProduct();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("page",1);
+        map.put("perpage", 10);
+        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo
+                .class).getAllProduct("newest", map);
         productCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
@@ -171,7 +180,11 @@ public class HomeFragment extends BaseFragment {
     }
 
     public void fetchAllPopular(){
-        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(ProductRepo.class).getAllProduct();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("page",1);
+        map.put("perpage", 10);
+        Call<GenericResponse<List<Product>>> productCall = APIManager.getRepository(
+                ProductRepo.class).getAllProduct("trending", map);
         productCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
@@ -208,14 +221,20 @@ public class HomeFragment extends BaseFragment {
                 break;
             case R.id.tv_see_all_promo:
                 Intent listIntent = new Intent(this.getContext(), ListProductActivity.class);
+                listIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
+                        (promoProduct.getAllItem()));
                 startActivity(listIntent);
                 break;
             case R.id.tv_see_all_popular:
                 Intent popularIntent = new Intent(this.getContext(), ListProductActivity.class);
+                popularIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
+                        (popularProduct.getAllItem()));
                 startActivity(popularIntent);
                 break;
             case R.id.tv_see_all_new:
                 Intent seeAllIntent = new Intent(this.getContext(), ListProductActivity.class);
+                seeAllIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
+                        (newProduct.getAllItem()));
                 startActivity(seeAllIntent);
                 break;
         }

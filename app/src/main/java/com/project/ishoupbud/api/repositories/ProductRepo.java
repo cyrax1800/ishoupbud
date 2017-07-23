@@ -31,21 +31,22 @@ public interface ProductRepo {
 
     @GET("product")
     @Headers("Accept: application/json")
-    Call<GenericResponse<List<Product>>> getProductFilter(@Query("category_id") int categoryId,
-                                                          @Query("keyword") String keyword);
+    Call<GenericResponse<List<Product>>> getProductFilter(@QueryMap Map<String, Object> map);
 
     @GET("product")
     @Headers("Accept: application/json")
     Call<GenericResponse<List<Product>>> getProductFilterByName(
                                                           @Query("keyword") String keyword);
 
-    @GET("product")
+    @GET("product/{type}")
     @Headers("Accept: application/json")
-    Call<GenericResponse<List<Product>>> getAllProduct();
+    Call<GenericResponse<List<Product>>> getAllProduct(@Path("type") String type, @QueryMap
+            Map<String, Object> data);
 
     @GET("statistic")
     @Headers("Accept: application/json")
-    Call<GenericResponse<List<Statistic>>> getStatistic(@Query("product_id") int productId, @Query("vendor_id") int vendorId, @Query("range") int range);
+    Call<GenericResponse<List<Statistic>>> getStatistic(@Query("product_id") int productId, @
+            Query("vendor_id") int vendorId, @Query("range") int range);
 
     @GET("compare")
     @Headers("Accept: application/json")

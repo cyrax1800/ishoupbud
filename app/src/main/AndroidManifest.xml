@@ -45,6 +45,7 @@
         <activity android:name=".view.activities.EditProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.activities.ListProductActivity"
+                  android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.activities.CompareActivity"
             android:theme="@style/AppTheme.NoActionBar" />

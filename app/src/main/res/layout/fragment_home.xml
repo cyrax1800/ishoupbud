@@ -90,7 +90,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/tv_see_all_promo"
+                    android:id="@+id/tv_see_all_popular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="See All"
@@ -109,7 +109,7 @@
                 />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_promo_product"
+                android:id="@+id/rv_popular_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_space"
@@ -133,7 +133,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/tv_see_all_popular"
+                    android:id="@+id/tv_see_all_promo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="See All"
@@ -152,7 +152,7 @@
                 />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_popular_product"
+                android:id="@+id/rv_promo_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_space"

@@ -39,6 +39,7 @@ import com.project.michael.base.views.BaseActivity;
 import com.project.michael.base.views.adapters.BaseAdapter;
 import com.project.michael.base.views.helpers.GridSpacingItemDecoration;
 
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -82,14 +83,15 @@ public class ListProductActivity extends BaseActivity {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY > oldScrollY) {
-                    fabMoveUp.hide();
-                } else {
                     fabMoveUp.show();
+                } else {
+                    fabMoveUp.hide();
                 }
             }
         });
 
-        categoryID = getIntent().getIntExtra(ConstClass.CATEGORY_EXTRA, -1);
+        categoryID = getIntent().getIntExtra(ConstClass.CATEGORY_EXTRA, 0);
+        etSearch.setText(getIntent().getStringExtra(ConstClass.KEYWORD_EXTRA));
 
         toolbar.setTitle("List Product");
         setSupportActionBar(toolbar);
@@ -110,7 +112,7 @@ public class ListProductActivity extends BaseActivity {
         spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                categoryID = position;
             }
 
             @Override
@@ -118,6 +120,8 @@ public class ListProductActivity extends BaseActivity {
 
             }
         });
+
+        spinnerCategory.setSelection(categoryID);
 
 //        categoriesDialogFragment = new CategoriesDialogFragment();
 
@@ -155,8 +159,11 @@ public class ListProductActivity extends BaseActivity {
     }
 
     public void fetchProduct(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("category_id", categoryID + 1);
+        map.put("keyword", etSearch.getText().toString());
         Call<GenericResponse<List<Product>>> categoryProductCall = APIManager.getRepository
-                (ProductRepo.class).getProductFilter(categoryID + 1, null);
+                (ProductRepo.class).getProductFilter(map);
         categoryProductCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
@@ -176,8 +183,37 @@ public class ListProductActivity extends BaseActivity {
         });
     }
 
-    public void doSearch(){
+    public void doSearch(final int page){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("page",page);
+        map.put("perpage", 10);
+        if(categoryID > 0){
+            map.put("category_id", categoryID + 1);
+        }
+        map.put("keyword", etSearch.getText().toString());
+        Call<GenericResponse<List<Product>>> categoryProductCall = APIManager.getRepository
+                (ProductRepo.class).getProductFilter(map);
+        categoryProductCall.enqueue(new APICallback<GenericResponse<List<Product>>>() {
+            @Override
+            public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
+                super.onSuccess(call, response);
+                if(page == 1){
+                    productAdapter.setNew(response.body().data);
+                }else{
+                    productAdapter.addAll(response.body().data);
+                }
+            }
 
+            @Override
+            public void onFailure(Call<GenericResponse<List<Product>>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+
+            @Override
+            public void onNotFound(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
+                super.onNotFound(call, response);
+            }
+        });
     }
 
     @Override
@@ -198,7 +234,7 @@ public class ListProductActivity extends BaseActivity {
                 nestedScrollView.smoothScrollTo(0, 0);
                 break;
             case R.id.btn_search:
-                doSearch();
+                doSearch(1);
                 break;
         }
     }

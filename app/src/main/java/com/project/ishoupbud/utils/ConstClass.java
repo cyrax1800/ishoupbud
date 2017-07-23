@@ -24,5 +24,6 @@ public class ConstClass {
     public static String CART_EXTRA = "cart";
     public static String FROM_CHECKOUT_EXTRA = "checkout";
     public static String COMPARE_EXTRA = "compare";
+    public static String KEYWORD_EXTRA = "keyword";
 
 }
