@@ -9,5 +9,6 @@ import com.google.gson.annotations.SerializedName;
 public class GenericResponse<T> extends Response{
     @SerializedName("data")
     public T data;
+    @SerializedName(value = "pagination", alternate = {"link"})
     public Pagination pagination;
 }

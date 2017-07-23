@@ -7,5 +7,5 @@ package com.project.michael.base.models;
 public class Pagination {
     public String next;
     public String prev;
-    public int Total;
+    public int total;
 }

@@ -1,5 +1,6 @@
 package com.project.michael.base.views.listeners;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,6 +45,11 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
         this.mTotalPage = totalPage;
     }
 
+    public void setTotalPage(int total){
+        mTotalPage = total;
+        mCurrentPage = 1;
+    }
+
     public void LoadMore(int currentPage){
         Log.d(TAG, "LoadMore: " + currentPage);
     }
@@ -62,7 +68,11 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
 
         mTotalItem = mLayoutManager.getItemCount() - footerItem;
         mVisibleItemCount = recyclerView.getChildCount() - footerItem;
-        mLastVisibleItem = ((LinearLayoutManager)mLayoutManager).findLastVisibleItemPosition();
+        if(mLayoutManager instanceof  GridLayoutManager){
+            mLastVisibleItem = ((GridLayoutManager)mLayoutManager).findLastVisibleItemPosition();
+        }else{
+            mLastVisibleItem = ((LinearLayoutManager)mLayoutManager).findLastVisibleItemPosition();
+        }
 
         if(mPreviousTotal == -1)
             mPreviousTotal = mTotalItem;

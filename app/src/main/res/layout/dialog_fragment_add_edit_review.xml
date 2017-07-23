@@ -36,6 +36,7 @@
             android:id="@+id/df_review_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/item_space"
             android:lines="3"
             android:gravity="top"
             style="@style/box_edittext"

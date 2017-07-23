@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.project.ishoupbud.R;
@@ -28,6 +29,7 @@ import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.utils.ConstClass;
 import com.project.ishoupbud.view.adapters.CategoryAdapter;
 import com.project.ishoupbud.view.adapters.ProductAdapter;
+import com.project.ishoupbud.view.adapters.ProductPagingAdapter;
 import com.project.ishoupbud.view.dialog.CategoriesDialogFragment;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
@@ -38,6 +40,7 @@ import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
 import com.project.michael.base.views.adapters.BaseAdapter;
 import com.project.michael.base.views.helpers.GridSpacingItemDecoration;
+import com.project.michael.base.views.listeners.EndlessScrollListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,17 +60,19 @@ public class ListProductActivity extends BaseActivity {
     @BindView(R.id.rv_product) RecyclerView rvProduct;
     @BindView(R.id.fab_scrol_up) FloatingActionButton fabMoveUp;
 //    @BindView(R.id.btn_categories) Button btnCategories;
-    @BindView(R.id.nestedScroll) NestedScrollView nestedScrollView;
+//    @BindView(R.id.nestedScroll) NestedScrollView nestedScrollView;
     @BindView(R.id.coordinator_layout) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.appbar) AppBarLayout appBarLayout;
     @BindView(R.id.spinner_category) Spinner spinnerCategory;
     @BindView(R.id.et_keyword) EditText etSearch;
     @BindView(R.id.btn_search) Button btnSearch;
+    @BindView(R.id.tv_blank_info) TextView tvBlankInfo;
 
-    ProductAdapter<Product> productAdapter;
+    ProductPagingAdapter<Product> productAdapter;
     private ArrayAdapter<String> categoryNameList;
 
     CategoriesDialogFragment categoriesDialogFragment;
+    EndlessScrollListener endlessScrollListener;
 
     int categoryID;
 
@@ -79,16 +84,16 @@ public class ListProductActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         fabMoveUp.hide();
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (scrollY > oldScrollY) {
-                    fabMoveUp.show();
-                } else {
-                    fabMoveUp.hide();
-                }
-            }
-        });
+//        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+//            @Override
+//            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                if (scrollY > oldScrollY) {
+//                    fabMoveUp.show();
+//                } else {
+//                    fabMoveUp.hide();
+//                }
+//            }
+//        });
 
         categoryID = getIntent().getIntExtra(ConstClass.CATEGORY_EXTRA, 0);
         etSearch.setText(getIntent().getStringExtra(ConstClass.KEYWORD_EXTRA));
@@ -125,7 +130,7 @@ public class ListProductActivity extends BaseActivity {
 
 //        categoriesDialogFragment = new CategoriesDialogFragment();
 
-        productAdapter = new ProductAdapter<>();
+        productAdapter = new ProductPagingAdapter<>();
         productAdapter.setOnClickListener(new BaseAdapter.OnClickListener<Product>() {
             @Override
             public boolean onClick(View v, List<Product> products, Product product, int position) {
@@ -142,6 +147,7 @@ public class ListProductActivity extends BaseActivity {
         rvProduct.addItemDecoration(new GridSpacingItemDecoration(2, Utils.dpToPx(16),true));
         rvProduct.setAdapter(productAdapter);
 
+
 //        btnCategories.setOnClickListener(this);
         btnSearch.setOnClickListener(this);
         fabMoveUp.setOnClickListener(this);
@@ -152,6 +158,31 @@ public class ListProductActivity extends BaseActivity {
                     (getIntent().getStringExtra(ConstClass.PRODUCT_EXTRA),
                             new TypeToken<List<Product>>() {}.getType());
             productAdapter.setNew(tmpProduct);
+            int totalPage = getIntent().getIntExtra(ConstClass.PAGING_EXTRA,1);
+            rvProduct.removeOnScrollListener(endlessScrollListener);
+            endlessScrollListener = new EndlessScrollListener(productAdapter, totalPage, 4) {
+                @Override
+                public void LoadMore(int currentPage) {
+                    super.LoadMore(currentPage);
+                    doSearch(currentPage);
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                }
+
+                @Override
+                public void resetPageCount(int page) {
+                    super.resetPageCount(page);
+                }
+
+                @Override
+                public void resetPageCount() {
+                    super.resetPageCount();
+                }
+            };
+            rvProduct.addOnScrollListener(endlessScrollListener);
         }else{
             fetchProduct();
         }
@@ -184,6 +215,7 @@ public class ListProductActivity extends BaseActivity {
     }
 
     public void doSearch(final int page){
+        showDialog("Searching Product");
         HashMap<String, Object> map = new HashMap<>();
         map.put("page",page);
         map.put("perpage", 10);
@@ -197,8 +229,15 @@ public class ListProductActivity extends BaseActivity {
             @Override
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
+                dismissDialog();
+                if(response.body().data.size() == 0){
+                    tvBlankInfo.setVisibility(View.VISIBLE);
+                }else{
+                    tvBlankInfo.setVisibility(View.GONE);
+                }
                 if(page == 1){
                     productAdapter.setNew(response.body().data);
+                    endlessScrollListener.setTotalPage(response.body().pagination.total);
                 }else{
                     productAdapter.addAll(response.body().data);
                 }
@@ -207,11 +246,13 @@ public class ListProductActivity extends BaseActivity {
             @Override
             public void onFailure(Call<GenericResponse<List<Product>>> call, Throwable t) {
                 super.onFailure(call, t);
+                dismissDialog();
             }
 
             @Override
             public void onNotFound(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onNotFound(call, response);
+                dismissDialog();
             }
         });
     }
@@ -231,7 +272,7 @@ public class ListProductActivity extends BaseActivity {
                 categoriesDialogFragment.show(getSupportFragmentManager(),"categoriesDF");
                 break;
             case R.id.fab_scrol_up:
-                nestedScrollView.smoothScrollTo(0, 0);
+//                nestedScrollView.smoothScrollTo(0, 0);
                 break;
             case R.id.btn_search:
                 doSearch(1);

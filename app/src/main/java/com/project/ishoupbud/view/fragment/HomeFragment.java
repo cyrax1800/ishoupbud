@@ -65,6 +65,10 @@ public class HomeFragment extends BaseFragment {
     public ProductAdapter<Product> promoProduct;
     public ProductAdapter<Product> popularProduct;
 
+    int totalPageNew;
+    int totalPagePromo;
+    int totalPagePopular;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -149,6 +153,7 @@ public class HomeFragment extends BaseFragment {
                 super.onSuccess(call, response);
                 promoProduct.setNew(response.body().data);
                 progressPopular.setVisibility(View.GONE);
+                totalPagePromo = response.body().pagination.total;
             }
 
             @Override
@@ -170,6 +175,7 @@ public class HomeFragment extends BaseFragment {
                 super.onSuccess(call, response);
                 newProduct.setNew(response.body().data);
                 progressNew.setVisibility(View.GONE);
+                totalPageNew = response.body().pagination.total;
             }
 
             @Override
@@ -191,6 +197,7 @@ public class HomeFragment extends BaseFragment {
                 super.onSuccess(call, response);
                 popularProduct.setNew(response.body().data);
                 progressLast.setVisibility(View.GONE);
+                totalPagePopular = response.body().pagination.total;
             }
 
             @Override
@@ -223,18 +230,21 @@ public class HomeFragment extends BaseFragment {
                 Intent listIntent = new Intent(this.getContext(), ListProductActivity.class);
                 listIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
                         (promoProduct.getAllItem()));
+                listIntent.putExtra(ConstClass.PAGING_EXTRA, totalPagePromo);
                 startActivity(listIntent);
                 break;
             case R.id.tv_see_all_popular:
                 Intent popularIntent = new Intent(this.getContext(), ListProductActivity.class);
                 popularIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
                         (popularProduct.getAllItem()));
+                popularIntent.putExtra(ConstClass.PAGING_EXTRA, totalPagePopular);
                 startActivity(popularIntent);
                 break;
             case R.id.tv_see_all_new:
                 Intent seeAllIntent = new Intent(this.getContext(), ListProductActivity.class);
                 seeAllIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
                         (newProduct.getAllItem()));
+                seeAllIntent.putExtra(ConstClass.PAGING_EXTRA, totalPageNew);
                 startActivity(seeAllIntent);
                 break;
         }

@@ -61,6 +61,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
 
     Call<GenericResponse<List<Product>>> searchProductCall;
 
+    int totalPage = 0;
+
     boolean isNoProduct;
 
     @Override
@@ -168,6 +170,8 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                     Intent i = new Intent(getApplicationContext(), ListProductActivity.class);
                     i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
                             (actualProductList));
+
+                    i.putExtra(ConstClass.PAGING_EXTRA, totalPage);
                     startActivity(i);
                 }else{
                     Intent i = new Intent(getApplicationContext(), ProductActivity.class);
@@ -186,6 +190,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                 Intent i = new Intent(getApplicationContext(), ListProductActivity.class);
                 i.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
                         (actualProductList));
+                i.putExtra(ConstClass.PAGING_EXTRA, totalPage);
                 startActivity(i);
             }
         });
@@ -259,6 +264,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
                 }else{
                     floatingSearchView.swapSuggestions(response.body().data);
                 }
+                totalPage = response.body().pagination.total;
                 Log.d(TAG, "onSuccess: " + actualProductList.size());
             }
 

@@ -25,5 +25,6 @@ public class ConstClass {
     public static String FROM_CHECKOUT_EXTRA = "checkout";
     public static String COMPARE_EXTRA = "compare";
     public static String KEYWORD_EXTRA = "keyword";
+    public static String PAGING_EXTRA = "paging";
 
 }

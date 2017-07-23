@@ -9,20 +9,22 @@
 
     <include layout="@layout/app_bar"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <!--<android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        android:fillViewport="true"
+        android:descendantFocusability="blocksDescendants"
+        >-->
 
         <LinearLayout
+            android:id="@+id/nestedScroll"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
 
             <android.support.design.widget.TextInputLayout
@@ -74,26 +76,28 @@
 
             </LinearLayout>
 
-            <!--<Button
-                android:id="@+id/btn_categories"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/item_space"
-                android:text="Categories"
-                style="@style/btnFlat"
-                />-->
+            <TextView
+                android:id="@+id/tv_blank_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Product yang dicari tidak ada"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:visibility="gone"
+                />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:paddingTop="@dimen/item_space"
                 >
 
             </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    <!--</android.support.v4.widget.NestedScrollView>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_scrol_up"
