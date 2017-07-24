@@ -37,6 +37,7 @@ public class GoogleAPIManager implements GoogleApiClient.OnConnectionFailedListe
     private static GoogleAPIManager instance;
 
     private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
 
     private WeakReference<AppCompatActivity> activityRef;
 
@@ -67,7 +68,6 @@ public class GoogleAPIManager implements GoogleApiClient.OnConnectionFailedListe
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "onConnected: " + getGoogleApiClient().isConnected());
-
     }
 
     @Override
@@ -93,7 +93,6 @@ public class GoogleAPIManager implements GoogleApiClient.OnConnectionFailedListe
 
     public LatLng getCurrentPosition(Activity activity){
         int rc = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
-        Location mLastLocation;
         if (rc == PackageManager.PERMISSION_GRANTED) {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }else {

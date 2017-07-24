@@ -43,10 +43,9 @@ public interface ProductRepo {
     Call<GenericResponse<List<Product>>> getAllProduct(@Path("type") String type, @QueryMap
             Map<String, Object> data);
 
-    @GET("statistic")
+    @GET("statistic/all")
     @Headers("Accept: application/json")
-    Call<GenericResponse<List<Statistic>>> getStatistic(@Query("product_id") int productId, @
-            Query("vendor_id") int vendorId, @Query("range") int range);
+    Call<Statistic> getStatistic(@QueryMap Map<String, Object> map);
 
     @GET("compare")
     @Headers("Accept: application/json")
