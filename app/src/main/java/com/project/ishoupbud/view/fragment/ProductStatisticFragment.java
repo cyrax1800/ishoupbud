@@ -189,37 +189,43 @@ public class ProductStatisticFragment extends BaseFragment {
                         statisticData.add(new Entry(0, dataSets.get(i).data.get(start)));
                         if(start - 7 > 0){
                             start = start - 7;
-                            tmpDateList.add(response.body().labels.get(start));
+                            tmpDateList.add(0, response.body().labels.get(start));
                             statisticData.add(new Entry(1, dataSets.get(i).data.get(start)));
                         }
                         if(start - 7 > 0){
                             start = start - 7;
-                            tmpDateList.add(response.body().labels.get(start));
+                            tmpDateList.add(0, response.body().labels.get(start));
                             statisticData.add(new Entry(2, dataSets.get(i).data.get(start)));
                         }
                         if(start - 7 > 0){
                             start = start - 7;
-                            tmpDateList.add(response.body().labels.get(start));
+                            tmpDateList.add(0, response.body().labels.get(start));
                             statisticData.add(new Entry(3, dataSets.get(i).data.get(start)));
                         }
                         if(dateList.size() < tmpDateList.size()){
                             dateList = tmpDateList;
                         }
                     }else if(rangeIdx == 2){
-                        dateList = new ArrayList<String>();
-                        int start = response.body().labels.size() - 1;
-                        for (int j = start - 1; j > -1; j--) {
-                            if(dateList.indexOf(DateUtils.getMonth(Integer.parseInt(response.body().labels
-                                    .get(i).split("/")[1]) - 1)) > -1 ) continue;
-                            dateList.add(DateUtils.getMonth(Integer.parseInt(response.body().labels
-                                            .get(i).split("/")[1]) - 1));
-                            statisticData.add(new Entry(dateList.size() - 1, response.body().datasets
+                        int start = dataSets.get(i).data.size();
+                        List<String> tmpDateList = new ArrayList<String>();
+                        for (int j = 0; j < dataSets.get(i).data.size(); j++) {
+                            if(tmpDateList.indexOf(DateUtils.getMonth(Integer.parseInt(response.body().labels
+                                    .get(j).split("/")[1]) - 1)) > -1 ) continue;
+                            tmpDateList.add(DateUtils.getMonth(Integer.parseInt(response.body().labels
+                                            .get(j).split("/")[1]) - 1));
+                            statisticData.add(new Entry(tmpDateList.size() - 1, response.body().datasets
                                     .get(i).data.get(j) - 1));
+                        }
+                        if(dateList.size() < tmpDateList.size()){
+                            dateList = tmpDateList;
                         }
                         if(dateList.size() > 3){
                             while (dateList.size() > 3){
-                                dateList.remove(dateList.size()-1);
-                                statisticData.remove(statisticData.size()-1);
+                                dateList.remove(0);
+                                statisticData.remove(0);
+                                for(int j = 0; j< statisticData.size();j++){
+                                    statisticData.get(j).setX(j);
+                                }
                             }
                         }
                     }else{
