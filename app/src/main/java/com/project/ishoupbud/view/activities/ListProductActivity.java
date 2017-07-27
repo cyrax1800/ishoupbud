@@ -232,7 +232,6 @@ public class ListProductActivity extends BaseActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-        showDialog("Searching Product");
         HashMap<String, Object> map = new HashMap<>();
         map.put("page",page);
         map.put("perpage", 10);
@@ -292,6 +291,7 @@ public class ListProductActivity extends BaseActivity {
 //                nestedScrollView.smoothScrollTo(0, 0);
                 break;
             case R.id.btn_search:
+                showDialog("Searching Product");
                 doSearch(1);
                 break;
         }
