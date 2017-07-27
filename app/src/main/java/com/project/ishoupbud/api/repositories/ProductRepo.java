@@ -50,4 +50,8 @@ public interface ProductRepo {
     @GET("compare")
     @Headers("Accept: application/json")
     Call<Compare> compareProduct(@Query("product_id") int productId);
+
+    @GET("knn")
+    @Headers("Accept: application/json")
+    Call<List<Product>> compareKNN(@Query("id") int productId, @Query("target") int target);
 }

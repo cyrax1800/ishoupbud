@@ -542,21 +542,43 @@ public class ProductActivity extends BaseActivity implements
 
     public void compare() {
         showDialog("Get product for compare...");
-        Call<Compare> getCompareProduct = APIManager.getRepository(ProductRepo.class)
-                .compareProduct(product.id);
-        getCompareProduct.enqueue(new APICallback<Compare>() {
+//        Call<Compare> getCompareProduct = APIManager.getRepository(ProductRepo.class)
+//                .compareProduct(product.id);
+//        getCompareProduct.enqueue(new APICallback<Compare>() {
+//            @Override
+//            public void onSuccess(Call<Compare> call, Response<Compare> response) {
+//                super.onSuccess(call, response);
+//                Intent compareIntent = new Intent(ProductActivity.this, CompareActivity.class);
+//                compareIntent.putExtra(ConstClass.COMPARE_EXTRA,
+//                        GsonUtils.getJsonFromObject(response.body(), Compare.class));
+//                startActivity(compareIntent);
+//                dismissDialog();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Compare> call, Throwable t) {
+//                super.onFailure(call, t);
+//                dismissDialog();
+//            }
+//        });
+        Call<List<Product>> getCompareProduct = APIManager.getRepository(ProductRepo.class)
+                .compareKNN(product.id, 10);
+        getCompareProduct.enqueue(new APICallback<List<Product>>() {
             @Override
-            public void onSuccess(Call<Compare> call, Response<Compare> response) {
+            public void onSuccess(Call<List<Product>> call, Response<List<Product>> response) {
                 super.onSuccess(call, response);
                 Intent compareIntent = new Intent(ProductActivity.this, CompareActivity.class);
+                Compare compare = new Compare();
+                compare.products = response.body();
+                compare.source = product;
                 compareIntent.putExtra(ConstClass.COMPARE_EXTRA,
-                        GsonUtils.getJsonFromObject(response.body(), Compare.class));
+                        GsonUtils.getJsonFromObject(compare, Compare.class));
                 startActivity(compareIntent);
                 dismissDialog();
             }
 
             @Override
-            public void onFailure(Call<Compare> call, Throwable t) {
+            public void onFailure(Call<List<Product>> call, Throwable t) {
                 super.onFailure(call, t);
                 dismissDialog();
             }
