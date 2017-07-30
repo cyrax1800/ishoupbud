@@ -95,7 +95,7 @@ public class TransactionFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
                 super.onSuccess(call, response);
                 List<Transaction> tmpTransactions = response.body().data;
-                for(int i = 0; i< tmpTransactions.size(); i++){
+                for(int i = tmpTransactions.size() - 1; i > -1 ; i--){
                     if(tmpTransactions.get(i).status == 0){
                         if(transactionAdapter.pendingTransactionFragment != null)
                             transactionAdapter.pendingTransactionFragment.addTranscation(tmpTransactions.get(i));
@@ -118,7 +118,7 @@ public class TransactionFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<Transaction>>> call, Response<GenericResponse<List<Transaction>>> response) {
                 super.onSuccess(call, response);
                 List<Transaction> tmpTransactions = response.body().data;
-                for(int i = 0; i< tmpTransactions.size(); i++){
+                for(int i = tmpTransactions.size() - 1; i > -1 ; i--){
                     if(tmpTransactions.get(i).debitCredit == 0)
                         if(transactionAdapter.saldoTransactionFragment != null)
                             transactionAdapter.saldoTransactionFragment.addTranscation(tmpTransactions.get(i));
