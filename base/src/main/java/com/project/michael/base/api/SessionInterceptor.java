@@ -18,15 +18,15 @@ public class SessionInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Response response = chain.proceed(chain.request());
+        Request request = chain.request();
 
         if(!SharedPref.getValueString(SharedPref.ACCESS_TOKEN).isEmpty()){
-            Request request = chain.request().newBuilder().addHeader(
+            request = request.newBuilder().addHeader(
                     APIManager.AUTHORIZATION_HEADER,
                     "Bearer " + SharedPref.getValueString(SharedPref.ACCESS_TOKEN))
                     .build();
-            response = chain.proceed(request);
         }
-        return response;
+
+        return chain.proceed(request);
     }
 }

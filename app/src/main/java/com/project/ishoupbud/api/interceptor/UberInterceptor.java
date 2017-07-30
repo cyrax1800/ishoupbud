@@ -19,16 +19,12 @@ public class UberInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Response response = chain.proceed(chain.request());
+        Request request = chain.request().newBuilder().addHeader(
+                APIManager.AUTHORIZATION_HEADER,
+                "Token " + "dMcBeMKnz79K9KF2l4X_KorAj8MfEazd8BlVt1aa")
+                .addHeader("Content-Type", "application/json")
+                .build();
 
-        if(!SharedPref.getValueString(SharedPref.ACCESS_TOKEN).isEmpty()){
-            Request request = chain.request().newBuilder().addHeader(
-                    APIManager.AUTHORIZATION_HEADER,
-                    "Token " + "dMcBeMKnz79K9KF2l4X_KorAj8MfEazd8BlVt1aa")
-                    .addHeader("Content-Type", "application/json")
-                    .build();
-            response = chain.proceed(request);
-        }
-        return response;
+        return chain.proceed(request);
     }
 }
