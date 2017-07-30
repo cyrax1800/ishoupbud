@@ -38,7 +38,6 @@ public class TransactionAdapter<Model> extends FastAdapter<Model> {
             transactionHolder.tvType.setText(transaction.detail.get(0).vendor.vendor.name);
             Glide
                     .with(transactionHolder.ivType.getContext())
-//                .load(product.picUrl)
                     .load("https://shoupbud.xyz/image/medium/" + transaction.detail.get(0).vendor
                             .vendor.picture_url)
                     .centerCrop()
@@ -46,11 +45,33 @@ public class TransactionAdapter<Model> extends FastAdapter<Model> {
                     .into(transactionHolder.ivType);
         }
         else{
+
             if(transaction.status == 0 || transaction.status == 3){
+                Glide
+                        .with(transactionHolder.ivType.getContext())
+                        .load("")
+                        .placeholder(R.drawable.ic_pending)
+                        .fitCenter()
+                        .crossFade()
+                        .into(transactionHolder.ivType);
                 textTitle += " (Pending)";
             }else if(transaction.status == 4){
+                Glide
+                        .with(transactionHolder.ivType.getContext())
+                        .load("")
+                        .placeholder(R.drawable.ic_cancel)
+                        .fitCenter()
+                        .crossFade()
+                        .into(transactionHolder.ivType);
                 textTitle += " (Cancelled)";
             }else{
+                Glide
+                        .with(transactionHolder.ivType.getContext())
+                        .load("")
+                        .placeholder(R.drawable.ic_check_done)
+                        .fitCenter()
+                        .crossFade()
+                        .into(transactionHolder.ivType);
                 textTitle += " (Approved)";
             }
             transactionHolder.tvType.setText("Top up");
