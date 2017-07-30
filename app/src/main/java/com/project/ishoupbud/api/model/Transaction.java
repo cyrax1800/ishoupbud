@@ -26,6 +26,7 @@ public class Transaction {
     public List<ShoppingCart> detail;
     public String vendor;
     public Shipment shipment;
+    public PictureSize attachments;
 
     public Transaction(){
 

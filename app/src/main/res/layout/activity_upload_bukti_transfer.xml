@@ -46,9 +46,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        android:layout_centerVertical="true"
+        android:layout_below="@id/tv_current_saldo"
         >
+
+        <ImageView
+            android:id="@+id/iv_bukti_transfer"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/no_pic_avaiable"
+            />
 
         <TextView
             android:id="@+id/tvPathImage"

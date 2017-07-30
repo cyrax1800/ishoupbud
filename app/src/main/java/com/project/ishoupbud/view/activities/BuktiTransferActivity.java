@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +80,7 @@ public class BuktiTransferActivity extends BaseActivity {
     @BindView(R.id.btn_cancel) Button btnCancel;
     @BindView(R.id.btn_confirmation) Button btnSubmit;
     @BindView(R.id.tv_saldo_konfirmasi) TextView tvTextKonfirmasi;
+    @BindView(R.id.iv_bukti_transfer) ImageView ivBukti;
     AlertDialog mediaAlertDialog;
 
     Transaction transaction;
@@ -161,6 +163,15 @@ public class BuktiTransferActivity extends BaseActivity {
 
         tvTotalTopUp.setText("Total Top-up: " + Utils.indonesiaFormat(transaction.nominal));
         tvCurrentSaldo.setText("Current Saldo: " + Utils.indonesiaFormat(user.saldo));
+
+        if(transaction.attachments != null){
+            Glide.with(BuktiTransferActivity.this)
+                    .load(transaction.attachments.medium)
+                    .placeholder(R.drawable.no_pic_avaiable)
+                    .centerCrop()
+                    .crossFade()
+                    .into(ivBukti);
+        }
     }
 
     public void processImage(){
@@ -187,13 +198,13 @@ public class BuktiTransferActivity extends BaseActivity {
             Bitmap decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
             encodedImage = Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
         }
-//        Glide.with(EditProfileActivity.this)
-//                .load(file)
-//                .placeholder(TextImageCircleHelper.getInstance().getImage(user.name))
-//                .centerCrop()
-//                .crossFade()
-//                .skipMemoryCache(true)
-//                .into(ivProfile);
+        Glide.with(BuktiTransferActivity.this)
+                .load(file)
+                .placeholder(R.drawable.no_pic_avaiable)
+                .centerCrop()
+                .crossFade()
+                .into(ivBukti);
+
         tvPathImage.setText(mCurrentPhotoPath);
         Log.d(TAG, "processImage: " + encodedImage );
         Log.d(TAG, "processImage: " + file.length() );
