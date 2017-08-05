@@ -64,9 +64,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.pusher:pusher-java-client:1.4.0'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
     testCompile 'junit:junit:4.12'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {

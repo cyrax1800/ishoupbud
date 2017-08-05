@@ -22,7 +22,7 @@ import com.project.michael.base.api.APIManager;
 import com.project.michael.base.api.GenericResponseInterceptor;
 import com.project.michael.base.api.SessionInterceptor;
 import com.project.michael.base.database.RealmDb;
-import com.squareup.leakcanary.LeakCanary;
+//import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -45,12 +45,12 @@ public class IshoupbudApplication extends BaseApplication {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
+//            return;
+//        }
+//        LeakCanary.install(this);
 
         UberAPI.SetUpRetrofit();
         UberAPI.registerRepository(UberRepo.class);
