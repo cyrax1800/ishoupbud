@@ -124,7 +124,7 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
         if (transaction.status == 0) {
             btnBarangTerima.setVisibility(View.VISIBLE);
             tvStatus.setText("Status: in progress");
-            getPath();
+            getPath(true);
         } else if (transaction.status == 1) {
             btnBarangTerima.setVisibility(View.GONE);
             mapFragment.getView().setVisibility(View.GONE);
@@ -133,6 +133,7 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
             marginLayoutParams.setMargins(0, 0, 0, 0);
             nestedScrollView.setLayoutParams(marginLayoutParams);
             tvStatus.setText("Status: Complete");
+            getPath(false);
         }
 
         btnBarangTerima.setOnClickListener(this);
@@ -155,13 +156,12 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
         rvProduct.setAdapter(productTransactionAdapter);
 
         tvNoTransaction.setText("No. Transaction: " + transaction.id);
-        tvPrice.setText("Total Price: " + Utils.indonesiaFormat(transaction.nominal + transaction
-                .shipment.price));
+        tvPrice.setText("Total Price: " + Utils.indonesiaFormat(transaction.nominal));
 
 
     }
 
-    public void getPath() {
+    public void getPath(final boolean animate) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("origin_lat", transaction.detail.get(0).vendor.vendor.latitude);
         map.put("origin_lng", transaction.detail.get(0).vendor.vendor.longitude);
@@ -198,10 +198,13 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
 
                     LatLng position = new LatLng(transaction.shipment.lat, transaction.shipment.lng);
 
-                    Marker marker = mMap.addMarker(new MarkerOptions()
-                            .position(position)
-                            .flat(true));
-                    animateMarker(mMap, marker, listLatLang, true);
+                    if(animate){
+                        Marker marker = mMap.addMarker(new MarkerOptions()
+                                .position(position)
+                                .flat(true));
+                        animateMarker(mMap, marker, listLatLang, true);
+                    }
+
                 }
             }
 

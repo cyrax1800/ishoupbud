@@ -31,7 +31,7 @@ public class TransactionAdapter<Model> extends FastAdapter<Model> {
         TransactionHolder transactionHolder = (TransactionHolder) holder;
         Transaction transaction = (Transaction)mModelList.get(position);
 
-        String textTitle =         "No.Transaction: " + String.valueOf(transaction.id);
+        String textTitle = "No.Transaction: " + String.valueOf(transaction.id);
         transactionHolder.tvPrice.setText(Utils.indonesiaFormat(transaction.nominal));
         transactionHolder.tvDate.setText(DateUtils.getDate(transaction.date.getTime()));
         if(transaction.type.equals("User")){
