@@ -19,6 +19,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.bumptech.glide.Glide;
+import com.google.gson.reflect.TypeToken;
 import com.ncapdevi.fragnav.FragNavController;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
@@ -33,6 +34,7 @@ import com.project.ishoupbud.view.fragment.TransactionFragment;
 import com.project.ishoupbud.view.fragment.WishlistFragment;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
+import com.project.michael.base.database.SharedPref;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.StringUtils;
@@ -67,6 +69,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
     boolean isNoProduct;
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -210,6 +213,9 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
 
         GoogleAPIManager.getGoogleApi().initGoogleAPI(this);
         PusherManager.getInstance().listenToSaldoChannel();
+
+        ConstClass.lastSeenProduct = (List<Product>)GsonUtils.getObjectFromJson(SharedPref.getValueString
+                (ConstClass.LAST_PRODUCT), new TypeToken<List<Product>>() {}.getType());
 
         if(mNavController.getCurrentFrag() != null && mNavController.getCurrentFrag() instanceof HomeFragment){
             ((HomeFragment)mNavController.getCurrentFrag()).fetchAllNew();

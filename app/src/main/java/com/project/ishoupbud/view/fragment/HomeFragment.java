@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.project.ishoupbud.R;
 import com.project.ishoupbud.api.model.Product;
 import com.project.ishoupbud.api.repositories.ProductRepo;
@@ -27,8 +29,11 @@ import com.project.ishoupbud.view.adapters.ProductAdapter;
 import com.project.ishoupbud.view.dialog.CategoriesDialogFragment;
 import com.project.michael.base.api.APICallback;
 import com.project.michael.base.api.APIManager;
+import com.project.michael.base.database.SharedPref;
 import com.project.michael.base.models.GenericResponse;
 import com.project.michael.base.utils.GsonUtils;
+import com.project.michael.base.utils.StringUtils;
+import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseFragment;
 import com.project.michael.base.views.adapters.BaseAdapter;
 
@@ -48,7 +53,7 @@ public class HomeFragment extends BaseFragment {
 
     @BindView(R.id.btn_categories) Button btnCategories;
     @BindView(R.id.tv_see_all_new) TextView tvSeeAllNewProduct;
-    @BindView(R.id.tv_see_all_promo) TextView tvSeeAllPromo;
+//    @BindView(R.id.tv_see_all_promo) TextView tvSeeAllPromo;
     @BindView(R.id.tv_see_all_popular) TextView tvSeeAllPopular;
     @BindView(R.id.rv_new_product) RecyclerView rvNewProduct;
     @BindView(R.id.rv_promo_product) RecyclerView rvPromo;
@@ -89,14 +94,14 @@ public class HomeFragment extends BaseFragment {
 
             btnCategories.setOnClickListener(this);
             tvSeeAllNewProduct.setOnClickListener(this);
-            tvSeeAllPromo.setOnClickListener(this);
+//            tvSeeAllPromo.setOnClickListener(this);
             tvSeeAllPopular.setOnClickListener(this);
             fabBarcode.setOnClickListener(this);
 
             String htmlString ="<u>See All</u>";
             tvSeeAllNewProduct.setText(Html.fromHtml(htmlString));
-            tvSeeAllPromo.setText(Html.fromHtml(htmlString));
-            tvSeeAllPromo.setText(Html.fromHtml(htmlString));
+            tvSeeAllPopular.setText(Html.fromHtml(htmlString));
+//            tvSeeAllPromo.setText(Html.fromHtml(htmlString));
 
             newProduct = new ProductAdapter<>();
             newProduct.setOnClickListener(new BaseAdapter.OnClickListener<Product>() {
@@ -137,11 +142,19 @@ public class HomeFragment extends BaseFragment {
 
             categoriesDialogFragment = new CategoriesDialogFragment();
 
+            if((ConstClass.lastSeenProduct != null) && (ConstClass.lastSeenProduct.size() != 0)){
+                promoProduct.setNew(ConstClass.lastSeenProduct);
+                progressLast.setVisibility(View.GONE);
+            }
+
         }
         return _rootView;
     }
 
     public void fetchAllPromo(){
+        if((ConstClass.lastSeenProduct != null) && (ConstClass.lastSeenProduct.size() != 0)){
+            return;
+        }
         HashMap<String, Object> map = new HashMap<>();
         map.put("page",1);
         map.put("perpage", 10);
@@ -152,7 +165,7 @@ public class HomeFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
                 promoProduct.setNew(response.body().data);
-                progressPopular.setVisibility(View.GONE);
+                progressLast.setVisibility(View.GONE);
                 totalPagePromo = response.body().pagination.total;
             }
 
@@ -196,7 +209,7 @@ public class HomeFragment extends BaseFragment {
             public void onSuccess(Call<GenericResponse<List<Product>>> call, Response<GenericResponse<List<Product>>> response) {
                 super.onSuccess(call, response);
                 popularProduct.setNew(response.body().data);
-                progressLast.setVisibility(View.GONE);
+                progressPopular.setVisibility(View.GONE);
                 totalPagePopular = response.body().pagination.total;
             }
 
@@ -226,13 +239,13 @@ public class HomeFragment extends BaseFragment {
                 Intent i = new Intent(this.getContext(), ScanBarcodeActivity.class);
                 startActivity(i);
                 break;
-            case R.id.tv_see_all_promo:
-                Intent listIntent = new Intent(this.getContext(), ListProductActivity.class);
-                listIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
-                        (promoProduct.getAllItem()));
-                listIntent.putExtra(ConstClass.PAGING_EXTRA, totalPagePromo);
-                startActivity(listIntent);
-                break;
+//            case R.id.tv_see_all_promo:
+//                Intent listIntent = new Intent(this.getContext(), ListProductActivity.class);
+//                listIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject
+//                        (promoProduct.getAllItem()));
+//                listIntent.putExtra(ConstClass.PAGING_EXTRA, totalPagePromo);
+//                startActivity(listIntent);
+//                break;
             case R.id.tv_see_all_popular:
                 Intent popularIntent = new Intent(this.getContext(), ListProductActivity.class);
                 popularIntent.putExtra(ConstClass.PRODUCT_EXTRA, GsonUtils.getJsonFromObject

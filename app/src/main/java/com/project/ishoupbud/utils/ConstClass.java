@@ -1,6 +1,11 @@
 package com.project.ishoupbud.utils;
 
+import com.project.ishoupbud.api.model.Product;
 import com.project.michael.base.database.SharedPref;
+import com.project.michael.base.utils.GsonUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by michael on 4/9/17.
@@ -10,6 +15,7 @@ public class ConstClass {
 
     // Shared Preference
     public static String USER = "user";
+    public static String LAST_PRODUCT = "last_product";
 
     // Extra
     public static String REGISTER_EXTRA = "register";
@@ -26,5 +32,23 @@ public class ConstClass {
     public static String COMPARE_EXTRA = "compare";
     public static String KEYWORD_EXTRA = "keyword";
     public static String PAGING_EXTRA = "paging";
+
+    public static List<Product> lastSeenProduct = new ArrayList<>();
+
+    public static void addLastSeenProduct(Product product){
+        if(lastSeenProduct == null) lastSeenProduct = new ArrayList<>();
+        for(int i = 0; i< lastSeenProduct.size(); i++){
+            if(lastSeenProduct.get(i).id == product.id){
+                lastSeenProduct.set(i,product);
+                return;
+            }
+        }
+        if(lastSeenProduct.size() >= 10){
+            lastSeenProduct.remove(lastSeenProduct.size() - 1);
+        }
+        lastSeenProduct.add(0, product);
+
+        SharedPref.save(LAST_PRODUCT, GsonUtils.getJsonFromObject(lastSeenProduct));
+    }
 
 }

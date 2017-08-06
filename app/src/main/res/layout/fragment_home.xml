@@ -132,7 +132,7 @@
                     style="@style/ishoupbud_text_black"
                     />
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/tv_see_all_promo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -141,11 +141,11 @@
                     android:drawableEnd="@drawable/ic_arrow_see_all"
                     android:drawableRight="@drawable/ic_arrow_see_all"
                     style="@style/ishoupbud_text_link"
-                    />
+                    />-->
 
             </LinearLayout>
 
-            <ProgressBar
+            <
                 android:id="@+id/progress_last"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

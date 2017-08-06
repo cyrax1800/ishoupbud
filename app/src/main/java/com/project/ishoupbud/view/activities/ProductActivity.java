@@ -111,6 +111,8 @@ public class ProductActivity extends BaseActivity implements
         product = GsonUtils.getObjectFromJson(getIntent().getStringExtra(ConstClass
                 .PRODUCT_EXTRA), Product.class);
 
+        ConstClass.addLastSeenProduct(product);
+
         collapsingToolbarLayout.setTitleEnabled(false);
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
