@@ -44,7 +44,7 @@ import retrofit2.Response;
 public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.tv_register) TextView tvRegister;
-    @BindView(R.id.tv_forgot_password) TextView tvForgotPassword;
+//    @BindView(R.id.tv_forgot_password) TextView tvForgotPassword;
     @BindView(R.id.et_email) EditText etEmail;
     @BindView(R.id.et_password) EditText etPassword;
     @BindView(R.id.btn_login) Button btnLogin;
@@ -68,10 +68,10 @@ public class LoginActivity extends BaseActivity {
         String htmlString="<u>Register Here</u>";
         tvRegister.setText(Html.fromHtml(htmlString));
 
-        htmlString ="<u>Forgot Password?</u>";
-        tvForgotPassword.setText(Html.fromHtml(htmlString));
+//        htmlString ="<u>Forgot Password?</u>";
+//        tvForgotPassword.setText(Html.fromHtml(htmlString));
 
-        tvForgotPassword.setOnClickListener(this);
+//        tvForgotPassword.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
 
@@ -143,6 +143,7 @@ public class LoginActivity extends BaseActivity {
             public void onSuccess(Call<User> call, Response<User> response) {
                 super.onSuccess(call, response);
                 progressDialog.dismiss();
+                SharedPref.save(ConstClass.USER,GsonUtils.getJsonFromObject(response.body(),User.class));
 
                 if(getIntent().hasExtra(ConstClass.REGISTER_EXTRA)){
                     Intent i = new Intent();
@@ -215,9 +216,9 @@ public class LoginActivity extends BaseActivity {
                 setResult(ProfileFragment.RESULT_FOR_REGISTER);
                 finish();
                 break;
-            case R.id.tv_forgot_password:
-                forgotPasswordDialogFragment.show(getSupportFragmentManager(),"Forget Password");
-                break;
+//            case R.id.tv_forgot_password:
+//                forgotPasswordDialogFragment.show(getSupportFragmentManager(),"Forget Password");
+//                break;
         }
     }
 }

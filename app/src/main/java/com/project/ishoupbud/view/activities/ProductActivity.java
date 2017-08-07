@@ -2,6 +2,7 @@ package com.project.ishoupbud.view.activities;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
@@ -44,6 +45,7 @@ import com.project.ishoupbud.api.repositories.GoogleMapRepo;
 import com.project.ishoupbud.api.repositories.ProductRepo;
 import com.project.ishoupbud.api.repositories.ShoppingCartRepo;
 import com.project.ishoupbud.api.repositories.WishlistRepo;
+import com.project.ishoupbud.helper.DialogMessageHelper;
 import com.project.ishoupbud.manager.GoogleAPIManager;
 import com.project.ishoupbud.manager.PusherManager;
 import com.project.ishoupbud.utils.ConstClass;
@@ -438,9 +440,9 @@ public class ProductActivity extends BaseActivity implements
                 .class).addWishlist(map);
         addWishlist.enqueue(new APICallback<GenericResponse<WishList>>() {
             @Override
-            public void onSuccess(Call<GenericResponse<WishList>> call,
+            public void onCreated(Call<GenericResponse<WishList>> call,
                                   Response<GenericResponse<WishList>> response) {
-                super.onSuccess(call, response);
+                super.onCreated(call, response);
                 menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite));
                 Toast.makeText(getApplicationContext(), "Product successfully added to wishlist",
                         Toast.LENGTH_SHORT).show();
@@ -482,7 +484,7 @@ public class ProductActivity extends BaseActivity implements
             public void onNoContent(Call<com.project.michael.base.models.Response> call,
                                     Response<com.project.michael.base.models.Response> response) {
                 super.onNoContent(call, response);
-                menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite));
+                menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_favorite_border));
                 Toast.makeText(getApplicationContext(), "Product successfully removed to " +
                         "wishlist", Toast.LENGTH_SHORT).show();
             }
@@ -499,6 +501,19 @@ public class ProductActivity extends BaseActivity implements
     }
 
     public void addItemToCart() {
+        if(!Utils.isLogin()){
+            DialogMessageHelper.getInstance().show(this,
+                    "Belum melakukan login, silahkan melakukan masuk pada aplikasi terlebih dahulu",
+                    "Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent loginIntent = new Intent(ProductActivity.this, LoginActivity.class);
+                            startActivity(loginIntent);
+                            DialogMessageHelper.getInstance().dismiss();
+                        }
+                    });
+            return;
+        }
         if (vendorAdapter.getCheckedIdx() == -1) {
             Toast.makeText(getApplicationContext(), "No vendor selected", Toast.LENGTH_SHORT)
                     .show();
@@ -666,6 +681,19 @@ public class ProductActivity extends BaseActivity implements
             Intent i = new Intent(this, ShoppingCartActivity.class);
             startActivity(i);
         } else if (item.getItemId() == R.id.action_wishlist) {
+            if(!Utils.isLogin()){
+                DialogMessageHelper.getInstance().show(this,
+                        "Belum melakukan login, silahkan melakukan masuk pada aplikasi terlebih dahulu",
+                        "Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent loginIntent = new Intent(ProductActivity.this, LoginActivity.class);
+                                startActivity(loginIntent);
+                                DialogMessageHelper.getInstance().dismiss();
+                            }
+                        });
+                return super.onOptionsItemSelected(item);
+            }
             if (!isInWishlist) {
                 item.setIcon(getResources().getDrawable(R.drawable.ic_favorite));
                 isInWishlist = true;

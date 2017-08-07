@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.project.michael.base.database.SharedPref;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -288,6 +290,13 @@ public class Utils {
             DecimalFormat format = new DecimalFormat("#.0");
             return  "(" + format.format(value) + ")";
         }
+    }
+
+    public static Boolean isLogin(){
+        if(SharedPref.getValueString(SharedPref.ACCESS_TOKEN).isEmpty()){
+            return false;
+        }
+        return true;
     }
 
 }

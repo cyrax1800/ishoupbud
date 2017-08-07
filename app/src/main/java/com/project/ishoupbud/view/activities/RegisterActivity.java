@@ -163,6 +163,7 @@ public class RegisterActivity extends BaseActivity implements View.OnFocusChange
             public void onSuccess(Call<User> call, Response<User> response) {
                 super.onSuccess(call, response);
                 progressDialog.dismiss();
+                SharedPref.save(ConstClass.USER,GsonUtils.getJsonFromObject(response.body(),User.class));
 
                 if(getIntent().hasExtra(ConstClass.REGISTER_EXTRA)){
                     Intent i = new Intent();
