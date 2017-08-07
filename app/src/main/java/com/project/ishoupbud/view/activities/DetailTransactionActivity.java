@@ -66,6 +66,7 @@ import com.project.michael.base.views.BaseActivity;
 import com.project.michael.base.views.listeners.ClickEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,6 +199,7 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
 
                     LatLng position = new LatLng(transaction.shipment.lat, transaction.shipment.lng);
 
+                    Collections.reverse(listLatLang);
                     if(animate){
                         Marker marker = mMap.addMarker(new MarkerOptions()
                                 .position(position)
