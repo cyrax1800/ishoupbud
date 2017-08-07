@@ -33,6 +33,15 @@
                 android:orientation="vertical"
                 >
 
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_left_black"
+                    android:background="@drawable/rounded_corner"
+                    android:visibility="invisible"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    />
+
                 <ImageView
                     android:id="@+id/iv_product"
                     android:layout_width="120dp"
@@ -127,7 +136,8 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_review"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
 
                 </android.support.v7.widget.RecyclerView>
 
@@ -149,6 +159,42 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/ib_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_left_black"
+                        android:background="@drawable/rounded_corner"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_total_item"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="1/15"
+                        android:layout_weight="1"
+                        style="@style/ishoupbud_text_black"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/ib_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_right_black"
+                        android:background="@drawable/rounded_corner"
+                        />
+
+                </LinearLayout>
 
                 <ImageView
                     android:id="@+id/iv_compare_product"

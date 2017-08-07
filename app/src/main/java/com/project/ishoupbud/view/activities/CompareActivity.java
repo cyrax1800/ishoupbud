@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -30,6 +31,7 @@ import com.project.michael.base.api.APIManager;
 import com.project.michael.base.utils.GsonUtils;
 import com.project.michael.base.utils.Utils;
 import com.project.michael.base.views.BaseActivity;
+import com.project.michael.base.views.helpers.DividerItemDecoration;
 import com.project.michael.base.views.listeners.OnSwipeTouchListener;
 
 import java.util.HashMap;
@@ -68,6 +70,9 @@ public class CompareActivity extends BaseActivity {
     @BindView(R.id.tv_detail_compare_product) TextView tvCompareDetailProduct;
     @BindView(R.id.rv_compare_review) RecyclerView rvCompareReview;
     @BindView(R.id.compare_progress_bar) ProgressBar compareProgressBar;
+    @BindView(R.id.ib_left) ImageButton ibLeft;
+    @BindView(R.id.ib_right) ImageButton ibRight;
+    @BindView(R.id.tv_total_item) TextView tvPage;
     SimpleReviewAdapter<Review> compareReviewAdapter;
 
     Product source;
@@ -105,6 +110,8 @@ public class CompareActivity extends BaseActivity {
                 if(currentIndex >= target.size() - 1) return;
                 currentIndex++;
                 setTargetProduct(target.get(currentIndex));
+
+                tvPage.setText((currentIndex + 1) + "/" + target.size());
             }
 
             @Override
@@ -114,6 +121,8 @@ public class CompareActivity extends BaseActivity {
                 if(currentIndex <= 0) return;
                 currentIndex--;
                 setTargetProduct(target.get(currentIndex));
+
+                tvPage.setText((currentIndex + 1) + "/" + target.size());
             }
 
             @Override
@@ -135,11 +144,12 @@ public class CompareActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager
                 .VERTICAL, false);
 
-        rvReview.addItemDecoration(new InsetDividerItemDecoration(this));
+        rvReview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         rvReview.setLayoutManager(layoutManager);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager
                 .VERTICAL, false);
         rvCompareReview.setLayoutManager(layoutManager);
+        rvCompareReview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
         rvReview.setAdapter(reviewAdapter);
         rvCompareReview.setAdapter(compareReviewAdapter);
@@ -148,6 +158,10 @@ public class CompareActivity extends BaseActivity {
         setSourceProduct();
         setTargetProduct(target.get(currentIndex));
 
+        tvPage.setText((currentIndex + 1) + "/" + target.size());
+
+        ibLeft.setOnClickListener(this);
+        ibRight.setOnClickListener(this);
     }
 
     public void setSourceProduct(){
@@ -162,6 +176,7 @@ public class CompareActivity extends BaseActivity {
         tvProductPrice.setText(Utils.indonesiaFormat(source.price));
         rbProduct.setRating((float) source.totalRating);
         tvRatingValue.setText(String.valueOf(source.totalRating));
+        tvDetailProduct.setMinLines(0);
         tvDetailProduct.setText(source.description);
 
         progressBar.setVisibility(View.VISIBLE);
@@ -181,10 +196,21 @@ public class CompareActivity extends BaseActivity {
         tvCompareProductPrice.setText(Utils.indonesiaFormat(productTarget.price));
         rbCompareProduct.setRating((float) productTarget.totalRating);
         tvCompareRatingValue.setText(String.valueOf(productTarget.totalRating));
+        tvCompareDetailProduct.setMinLines(0);
         tvCompareDetailProduct.setText(productTarget.description);
+        tvCompareDetailProduct.post(new Runnable() {
+            @Override
+            public void run() {
+                int maxLines = Math.max(tvCompareDetailProduct.getLineCount(), tvDetailProduct.getLineCount());
+                tvCompareDetailProduct.setMinLines(maxLines);
+                tvDetailProduct.setMinLines(maxLines);
+            }
+        });
+
 
         compareProgressBar.setVisibility(View.VISIBLE);
         getTargetReview(productTarget);
+
     }
 
     public void getSourceReview(){
@@ -237,5 +263,25 @@ public class CompareActivity extends BaseActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ib_left:
+                if(currentIndex <= 0) return;
+                currentIndex--;
+                setTargetProduct(target.get(currentIndex));
+
+                tvPage.setText((currentIndex + 1) + "/" + target.size());
+                break;
+            case R.id.ib_right:
+                if(currentIndex >= target.size() - 1) return;
+                currentIndex++;
+                setTargetProduct(target.get(currentIndex));
+
+                tvPage.setText((currentIndex + 1) + "/" + target.size());
+                break;
+        }
     }
 }
