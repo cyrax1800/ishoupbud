@@ -7,7 +7,7 @@
     <tab
         id="@+id/tab_wishlist"
         icon="@drawable/ic_favorite"
-        title="Wishlist" />
+        title="Favorit" />
     <tab
         id="@+id/tab_transaction"
         icon="@drawable/ic_swap"

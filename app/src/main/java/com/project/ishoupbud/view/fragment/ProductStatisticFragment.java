@@ -77,7 +77,7 @@ public class ProductStatisticFragment extends BaseFragment {
     HashMap<Integer, List<String>> statisticDateMapData;
 
     int[] colors = new int[]{
-            Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK
+            Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.BLACK, Color.CYAN, Color.MAGENTA
     };
 
     @Nullable

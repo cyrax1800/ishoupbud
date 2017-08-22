@@ -145,6 +145,8 @@ public class HomeFragment extends BaseFragment {
             if((ConstClass.lastSeenProduct != null) && (ConstClass.lastSeenProduct.size() != 0)){
                 promoProduct.setNew(ConstClass.lastSeenProduct);
                 progressLast.setVisibility(View.GONE);
+            }else {
+                fetchAllPromo();
             }
 
         }

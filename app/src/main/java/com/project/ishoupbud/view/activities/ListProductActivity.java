@@ -193,7 +193,9 @@ public class ListProductActivity extends BaseActivity {
 
     public void fetchProduct(){
         HashMap<String, Object> map = new HashMap<>();
-        map.put("category_id", categoryID + 1);
+        if(categoryID >= 1){
+            map.put("category_id", categoryID + 1);
+        }
         map.put("keyword", etSearch.getText().toString());
         Call<GenericResponse<List<Product>>> categoryProductCall = APIManager.getRepository
                 (ProductRepo.class).getProductFilter(map);

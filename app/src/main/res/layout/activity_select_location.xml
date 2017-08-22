@@ -24,7 +24,7 @@
         android:paddingBottom="24dp"
         android:src="@drawable/ic_place_black_24dp"/>
 
-    <include layout="@layout/app_bar"/>
+    <include layout="@layout/app_bar_select_location"/>
 
     <LinearLayout
         android:layout_width="match_parent"

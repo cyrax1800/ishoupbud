@@ -18,10 +18,20 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,9 +59,12 @@ import butterknife.ButterKnife;
 
 public class SelectLocationActivity extends BaseActivity implements OnMapReadyCallback {
 
+    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
     Toolbar toolbar;
     TextView tvAddress;
     Button btn_submit;
+    EditText etSearchLocation;
 
     private GoogleMap mMap;
 
@@ -62,17 +75,21 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
     protected String mAddressOutput;
     protected Location mLastLocation;
     private AddressResultReceiver mResultReceiver;
+    private Boolean isFromSelectAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
 
+        isFromSelectAddress = false;
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         tvAddress = (TextView) findViewById(R.id.tv_address);
         btn_submit = (Button) findViewById(R.id.btn_submit);
+        etSearchLocation = (EditText) findViewById(R.id.et_search_location);
 
-        toolbar.setTitle("Choose Position");
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null){
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -85,6 +102,7 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        etSearchLocation.setOnClickListener(this);
         btn_submit.setOnClickListener(this);
     }
 
@@ -129,6 +147,10 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
             @Override
             public void onCameraIdle() {
                 if(isRequestedLocation) return;
+                if(isFromSelectAddress){
+                    isFromSelectAddress = false;
+                    return;
+                }
                 isRequestedLocation = true;
                 startIntentService();
             }
@@ -174,8 +196,10 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
          */
         Log.d(TAG, "moveMap: " + latitude + " " + longitude);
         LatLng latLng = new LatLng(latitude, longitude);
-        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+        CameraPosition cameraPosition = CameraPosition.fromLatLngZoom(latLng, 15);
+        CameraUpdate yourLocation = CameraUpdateFactory.newLatLng(latLng);
         mMap.moveCamera(yourLocation);
+
         setMycurrentPosition(false);
 
     }
@@ -195,14 +219,63 @@ public class SelectLocationActivity extends BaseActivity implements OnMapReadyCa
 
     @Override
     public void onClick(View v) {
-        super.onClick(v);
-        if(mAddressOutput == null || mAddressOutput.equals("no address")) return;
-        Intent data = new Intent();
-        data.putExtra(ConstClass.ADDRESS_EXTRA, mAddressOutput);
-        data.putExtra(ConstClass.LATITUDE_EXTRA, latitude);
-        data.putExtra(ConstClass.LONGITUDE_EXTRA, longitude);
-        setResult(-1, data);//Success
-        finish();
+        switch (v.getId()){
+            case R.id.et_search_location:
+                try {
+                    AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                            .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                            .setCountry("ID")
+                            .build();
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                                    .build(this);
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
+                break;
+            case R.id.btn_submit:
+                if(mAddressOutput == null || mAddressOutput.equals("no address")) return;
+                Intent data = new Intent();
+                data.putExtra(ConstClass.ADDRESS_EXTRA, mAddressOutput);
+                data.putExtra(ConstClass.LATITUDE_EXTRA, latitude);
+                data.putExtra(ConstClass.LONGITUDE_EXTRA, longitude);
+                setResult(-1, data);//Success
+                finish();
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Log.i(TAG, "Place: " + place.getName());
+                isFromSelectAddress = true;
+                LatLng lokasi = place.getLatLng();
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(lokasi, 15);
+                mMap.animateCamera(yourLocation);
+
+                longitude = lokasi.longitude;
+                latitude = lokasi.latitude;
+                mLastLocation.setLatitude(latitude);
+                mLastLocation.setLongitude(longitude);
+                mAddressOutput = place.getAddress().toString();
+                etSearchLocation.setText(place.getName());
+                updateAddressText();
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i(TAG, status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
     }
 
     class AddressResultReceiver extends ResultReceiver {

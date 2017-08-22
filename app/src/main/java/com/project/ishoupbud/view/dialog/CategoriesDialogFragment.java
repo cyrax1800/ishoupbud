@@ -53,7 +53,9 @@ public class CategoriesDialogFragment extends DialogFragment {
             @Override
             public boolean onClick(View v, List<Category> categories, Category category, int position) {
                 Intent i = new Intent(getContext(), ListProductActivity.class);
-                i.putExtra(ConstClass.CATEGORY_EXTRA, position);
+                if(position >= 1){
+                    i.putExtra(ConstClass.CATEGORY_EXTRA, position);
+                }
                 startActivity(i);
                 dismiss();
                 return false;

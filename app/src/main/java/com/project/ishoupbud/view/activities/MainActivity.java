@@ -228,7 +228,7 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
         if(mNavController.getCurrentFrag() != null && mNavController.getCurrentFrag() instanceof HomeFragment){
             ((HomeFragment)mNavController.getCurrentFrag()).fetchAllNew();
             ((HomeFragment)mNavController.getCurrentFrag()).fetchAllPopular();
-            ((HomeFragment)mNavController.getCurrentFrag()).fetchAllPromo();
+
         }
     }public void statusCheck() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

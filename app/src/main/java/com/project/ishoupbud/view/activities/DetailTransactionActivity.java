@@ -367,7 +367,7 @@ public class DetailTransactionActivity extends BaseActivity implements OnMapRead
 
                 if (t < 1.0) {
                     // Post again 16ms later.
-                    handler.postDelayed(this, 16);
+                    handler.postDelayed(this, 500);
                 } else {
                     if (hideMarker) {
                         marker.setVisible(false);
